@@ -1,0 +1,37 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shilat2132/fitMe.git"
+  },
+  "author": "shilat dahan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shilat2132/fitMe/issues"
+  },
+  "homepage": "https://github.com/shilat2132/fitMe#readme",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "compression": "^1.7.5",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "mongoose": "^8.8.3",
+    "nodemon": "^3.1.7",
+    "path": "^0.12.7",
+    "validator": "^13.12.0",
+    "xss-clean": "^0.1.4"
+  }
+}
