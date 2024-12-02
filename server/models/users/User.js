@@ -52,6 +52,9 @@ const userSchema = new mongoose.Schema({
     passwordResetTokenExpires: Date
 },
 {
+    discriminatorKey: 'role'
+},
+{
     toJSON: {virtuals: true},
     toObject: {virtuals: true}
 })

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const User = require("./User")
 const constants = require('../../constants')
-const Vacation = require('./Vacation')
+const vacationSchema = require('./Vacation')
 
 const trainerSchema = new mongoose.Schema({
     workouts: [{type: String, enum: constants.WORKOUTS} ],
@@ -20,17 +20,18 @@ const trainerSchema = new mongoose.Schema({
             max: [23, 'End time must be between 0 and 23'],
             validate: {
                 validator: function (value) {
-                    // Validate that end is a valid time (0-23)
-                    return value >= 0 && value <= 23;
+                    return value>this.workingHours.start;
                 },
-                message: 'End time must be a valid hour between 0 and 23'
+                message: 'End time must be after start hour'
             }
         }
     },
     restingDay: Number,
-    vacations: [Vacation]
+    vacations: [vacationSchema]
 
 })
 
 
 const Trainer = User.discriminator('Trainer', trainerSchema);
+
+module.exports = Trainer
