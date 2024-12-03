@@ -1,33 +1,45 @@
 const mongoose = require('mongoose')
-
+const validator = require("validator")
 const User = require("./User")
-const constants = require('../../constants')
+const constants = require('../../utils/constants')
 const vacationSchema = require('./Vacation')
 
 const trainerSchema = new mongoose.Schema({
     workouts: [{type: String, enum: constants.WORKOUTS} ],
     workingHours: {
         start: {
-            type: Number,
+            type: String,
             required: [true, 'Start time is required'],
-            min: [0, 'Start time must be between 0 and 23'],
-            max: [23, 'Start time must be between 0 and 23']
+            validate:{
+                validator: function(value){
+                    return validator.isTime(value)
+                },
+                message: "starting time needs to be formatted as hour:minutes and the hour needs to be between 0 and 23"
+            }
+            
         },
         end: {
-            type: Number,
+            type: String,
             required: [true, 'End time is required'],
-            min: [0, 'End time must be between 0 and 23'],
-            max: [23, 'End time must be between 0 and 23'],
             validate: {
                 validator: function (value) {
-                    return value>this.workingHours.start;
+                    if (!value.contains(":")){
+                        return false
+                    }
+                    const intHour = parseInt(value.split(":")[0])
+                    const startIntHour = parseInt(this.workingHours.start.split(":")[0])
+                    return validator.isTime(value) && value>startIntHour
                 },
-                message: 'End time must be after start hour'
+                message: "ending time needs to be formatted as hour:minutes and the hour needs to be between 0 and 23. and it should be greater than the start"
+
             }
         }
     },
     restingDay: Number,
-    vacations: [vacationSchema]
+    vacations: {
+        type: [vacationSchema],
+        default:[]
+    }
 
 })
 
