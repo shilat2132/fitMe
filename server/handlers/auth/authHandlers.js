@@ -1,6 +1,4 @@
 const jwt = require('jsonwebtoken')
-const { promisify } = require('util')
-const crypto = require('crypto')
 
 const User = require("../../models/users/User")
 const catchAsync = require("../../utils/catchAsync")
@@ -90,3 +88,7 @@ exports.logout = (req, res)=>{
       expires: new Date(Date.now() + 10 *1000), httpOnly: true })
       res.status(200).json({status: 'succes'})
   }
+
+
+
+

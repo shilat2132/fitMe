@@ -93,12 +93,13 @@ userSchema.methods.changedPasswordAfter= function(JWTTimestamp){
 }
 
 /** 
- * Creates a secure password reset token and sets the hashed version in the database.
+ * create the reset token and save the encrypted one to the database.
  * @returns {string} - The reset token to be sent to the user.
  */
 userSchema.methods.createPasswordResetToken = function(){
-    //create the reset token and save the encrypted one to the data base
+    // Step 1: Generate a Random Reset Token
     const resetToken = crypto.randomBytes(32).toString('hex')
+    // Step 2: hash the token and save in the data base. update the token expiration in db for 10 from now
     this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex')
     this.passwordResetTokenExpires = Date.now() + 10 * 60 * 1000
     return resetToken;
