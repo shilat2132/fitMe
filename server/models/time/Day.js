@@ -24,6 +24,7 @@ const daySchema = new mongoose.Schema({
     }
 })
 
+daySchema.index({date: 1})
 
 // schema's methods
 /**

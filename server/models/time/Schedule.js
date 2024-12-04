@@ -20,6 +20,8 @@ const scheduleSchema = new mongoose.Schema({
     }
 })
 
+
+
 // SCHEMA METHODS
 
 /** A method that creates day documents for the number of days specified by `maxDaysForward`.*/
@@ -42,8 +44,19 @@ scheduleSchema.methods.initiateScheduleDays = async function(){
     }
 }
 
-// a method that would be triggered everyday. remove the former day and create another one.
-
+/** a method that would be triggered everyday. remove the former day and create another one. */
+scheduleSchema.methods.newDayHandler = async function(){
+    try {
+        const yesterday = new Date()
+        yesterday.setDate(yesterday.getDate()-1)
+        await Day.findOneAndDelete({date: yesterday, schedule: this._id})
+        const lastDay = new Date()
+        lastDay.setDate(lastDay.getDate()+ this.maxDaysForward)
+        await Day.create({date: lastDay, schedule: this._id})
+    } catch (error) {
+        console.log("Error occured in scheduleSchema in the newDayHandler method ", error)
+    }
+}
 
 /** a model of a schedule
  * @property maxDaysForward: Number of days to show forward in the schedule
