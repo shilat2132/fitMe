@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const { promisify } = require('util')
 
 const User = require("../../users/User")
+const Trainer = require("../../models/users/Trainer")
 const catchAsync = require("../../../utils/catchAsync")
 
 
@@ -24,9 +25,14 @@ exports.protect = catchAsync(async (req, res, next)=>{
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
 
     //Step 3: see if the user stil exists
-    const user = await User.findById(decoded.id)
+    let user = await User.findById(decoded.id)
     if(!user){
-      return next(new AppError('המשתמש כבר לא קיים', 401))
+      user = await Trainer.findById(decoded.id)
+
+      if (!user){
+        return next(new AppError('המשתמש כבר לא קיים', 401))
+      }
+      
     }
 
     //Step 4: Check if user changed password after the token was issued

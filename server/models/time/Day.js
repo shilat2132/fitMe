@@ -95,21 +95,6 @@ daySchema.methods.getWorkingTrainers = async function(){
 }
 
 
-/**method for checking whether an hour of the current day is available for a given trainer's id
-* @param hour - string hour of the appintment we want to check
-* @param trainerId - the id of the trainer that we try to schedule to
-
-*@returns true if hour is free, else returns false. returns null if an error occur
-*/
-daySchema.methods.isHourFree = async function(hour, trainerId){
-    try {
-        const appt = await Appointment.findOne({date: this._id, trainer: trainerId, hour: hour}).select("_id").lean()
-        return !appt
-    } catch (error) {
-        console.log("An error occured in daySchema isHourFree method  ", error)
-        return null
-    }
-}
 
 
 // daySchema.methods.getFreeApptsForCurrentDay = async function(){
