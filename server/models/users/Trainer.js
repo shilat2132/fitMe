@@ -4,6 +4,13 @@ const User = require("./User")
 const constants = require('../../utils/constants')
 const vacationSchema = require('./Vacation')
 
+
+/** a class that inherits from user.
+ * @property workouts: an array of strings from the workouts array enum
+ * @property workingHours: embedded schema with a string start time and end time of the trainer’s day
+ * @property restingDay: a numeric field representing the number of the day that is the trainer’s free day
+ * @property vacations: an array of vacation’s schema: from and to fields of dates. description and isApproved(boolean, defaulted to false)
+ */
 const trainerSchema = new mongoose.Schema({
     workouts: [{type: String, enum: constants.WORKOUTS} ],
     workingHours: {
@@ -23,12 +30,9 @@ const trainerSchema = new mongoose.Schema({
             required: [true, 'End time is required'],
             validate: {
                 validator: function (value) {
-                    if (!value.contains(":")){
-                        return false
-                    }
                     const intHour = parseInt(value.split(":")[0])
                     const startIntHour = parseInt(this.workingHours.start.split(":")[0])
-                    return validator.isTime(value) && value>startIntHour
+                    return validator.isTime(value) && intHour>startIntHour
                 },
                 message: "ending time needs to be formatted as hour:minutes and the hour needs to be between 0 and 23. and it should be greater than the start"
 
