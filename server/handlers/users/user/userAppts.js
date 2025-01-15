@@ -6,7 +6,7 @@ const AppError = require("../../../utils/AppError")
 
 /**
  * - this is a restricted route for user with role= trainee
- * - present the user's appointments
+ * - presents the user's appointments
  */
 exports.getMyAppts = catchAsync(async (req, res, next)=>{
     const docs = await Appt.find({trainee: req.user._id}).select("-trainee")
@@ -40,15 +40,25 @@ exports.makeAnAppt = catchAsync(async (req, res, next)=>{
 
 
 // need to add sending email
-/** 
- * cancels an appointment by deleting it
- * expects to get apptId in the request's body
- *  */
-exports.cancelAppt = catchAsync(async (req, res, next)=>{
-    const apptId = req.params.apptId
 
-    if (!await Appt.findByIdAndDelete(apptId)){
-        return next(new AppError("failed to delete an appointment"), 500)
-    }
-    res.status(204).json({status: "success"})
-})
+/** 
+    * - cancels an appointment by deleting it. 
+    * - either by the user himself or the trainer. trainers can't cancel an appointment that isn't for them and so are the users
+    * - expects to get apptId in the request's params
+ */
+exports.cancelAppt = (caller="trainee") => (
+    catchAsync(async (req, res, next)=>{
+        let appt
+        if (caller == "trainee"){
+            appt = await Appt.findOne({_id: req.params.apptId, trainee: req.user._id})
+        }else if (caller=="trainer"){
+            appt = await Appt.findOne({_id: req.params.apptId, trainer: req.user._id})
+        }
+        
+        if (!appt){
+            return next(new AppError("appointment wasn't found"), 404)
+        }
+        await appt.delete()
+        res.status(204).json({status: "success"})
+    })
+)
