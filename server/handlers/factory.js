@@ -31,14 +31,18 @@ exports.getAll = (Model, filterCallback = () => ({}), select= null) =>(
     /**
  * a generic handler for getting one document with a given id and a select string
  * @param Model - the model to query on
- * @param filterCallback - a function that gets the request object and returns the filter object for the query, defaulted to empty object
+ * @param filterCallback - a function that gets the request object and returns the id of the doc to be found, defaulted to null
  * @param select - a string of which fields to select in the query
  * - response with the doc of the Model if successful, otherwise throws a 404 error 
  */
-    exports.getOne = (Model, filterCallback = () => ({}), select= null) =>(
+    exports.getOne = (Model, filterCallback = () => null, select= null) =>(
         catchAsync(async (req, res, next)=>{
 
-            let query = Model.findById(filterCallback(req));
+            id = filterCallback(req)
+            if (!id){
+                throw Error("You have to provide document id")
+            }
+            let query = Model.findById(id);
 
             if (select){
                 query = query.select(select);
@@ -46,7 +50,7 @@ exports.getAll = (Model, filterCallback = () => ({}), select= null) =>(
 
             const doc = await query;
             if(!doc){
-                return next(new AppError('לא נמצאו מסמכים מתאימים'), 404)
+                return next(new AppError("Couldn't find the document"), 404)
             }
             res.status(200).json({status: "success", doc})
         }))

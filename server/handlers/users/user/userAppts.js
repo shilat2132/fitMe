@@ -12,7 +12,7 @@ exports.getMyAppts = catchAsync(async (req, res, next)=>{
     const docs = await Appt.find({trainee: req.user._id}).select("-trainee")
 
     if (!docs){
-        return next(new AppError('לא נמצאו מסמכים '), 404)
+        return next(new AppError("Couldn't find files"), 404)
     }
     res.status(200).json({status: "success", docs})
 })
@@ -23,8 +23,8 @@ exports.getMyAppts = catchAsync(async (req, res, next)=>{
  * an handler for a user to schedule an appointment (workout)
  */
 exports.makeAnAppt = catchAsync(async (req, res, next)=>{
-    const {dayId, date ,trainerId, hour} = req.body
-    if (!dayId || !date || !trainerId || hour){
+    const {dayId, date ,trainerId, hour, workout} = req.body
+    if (!dayId || !date || !trainerId || !hour || !workout){
         return next(new AppError("one of the details are missing"), 400)
     }
     if (utils.isApptAvailable(dayId, date, hour, trainerId)){
