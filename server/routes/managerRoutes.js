@@ -10,28 +10,42 @@ const usersActions = require("../handlers/manager/usersActions")
 const Trainer = require("../models/users/Trainer")
 const User = require("../models/users/User")
 const Appointment = require("../models/time/Appointment")
+const Vacation = require('../models/users/Vacation')
 
 
 
 router.use(authMW.protect, authMW.restrictTo("manager"))
 
     // USERS
+        // TRAINERS
+trainersRoutes = express.Router()
+
 // get all trainers
-router.get("/trainers", factory.getAll(Trainer, ()=>({}) , "_id name"))
+trainersRoutes.get("", factory.getAll(Trainer, ()=>({}) , "_id name"))
 
-// get all trainees
+// get all trainers' vacations
+trainersRoutes.get("vacations", factory.getAll(Vacation, req=> {isApproved: "yes"}, null, { from: 1 }))
+
+vacCallBack = req => ({id: req.params.vacId, update: {isApproved: req.body.approve ? req.body.approve : "Under review" }})
+trainersRoutes
+    .get("vacations/toApprove", factory.getAll(Vacation, {isApproved: {$ne: "yes"}})) // get vacations that need to be approved
+    .put("vacations/:vacId/update", factory.updateOne(Vacation, vacCallBack)) //update vacation's status
+
+
+router.use("trainers", trainersRoutes)
+
+    // get all trainees
 traineesFilter = req => ({role: "trainee"})
-router.get("/trainees", factory.getAll(User), traineesFilter, "_id name")
-
+router.get("trainees", factory.getAll(User), traineesFilter, "_id name")
 
 // turn a user into a trainer
-router.post("/users/:userId", usersActions.userToTrainer)
+router.post("users/:userId", usersActions.userToTrainer)
 
 
     // APPTS
 // get appts for specific day
-const workoutsFilter = req => ({_id: req.params.dayId})
-router.get("/workouts/:dayId", factory.getAll(Appointment, workoutsFilter))
+const workoutsFilter = req => ({date: req.params.dayId})
+router.get("workouts/:dayId", factory.getAll(Appointment, workoutsFilter))
 
     // SCHEDULE
 // update schedule
@@ -41,14 +55,7 @@ router.get("/workouts/:dayId", factory.getAll(Appointment, workoutsFilter))
 
 // delete schedule
 
-    // VACATIONS
-// get all vacations
 
-
-// list of vacations to approve
-
-
-// approve vacation
 
 
     // WORKOUTS
@@ -56,3 +63,6 @@ router.get("/workouts/:dayId", factory.getAll(Appointment, workoutsFilter))
 
 
 // delete a workout type
+
+
+module.exports = router

@@ -198,4 +198,6 @@ daySchema.methods.getWorkingTrainers = async function(){
 //     return null
 //    }
 // }
-module.exports = daySchema
+
+const Day = new mongoose.model('Day', daySchema)
+module.exports = Day

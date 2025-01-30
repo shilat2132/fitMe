@@ -1,8 +1,8 @@
-const catchAsync = require("../../utils/catchAsync")
-const AppError = require("../../utils/AppError")
+const catchAsync = require("../../../utils/catchAsync")
+const AppError = require("../../../utils/AppError")
 // const utils = require("../utils")
-const Trainer = require("../../models/users/Trainer")
-const User = require("../../models/users/User")
+const Trainer = require("../../../models/users/Trainer")
+const User = require("../../../models/users/User")
 
 
 // turn a user into a trainer

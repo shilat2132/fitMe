@@ -17,19 +17,20 @@ exports.isApptAvailable = async (dayId, date, hour, trainerId)=>{
         const weekDay = date.getDay()
         const query ={
             _id: trainerId,
-            restingDay: {$ne: {weekDay}},
-            vacations: {
-                $not: {
-                    $elemMatch: {
-                        from: {$lte: date},
-                        to: {$gte: date}
-                    }
-                }
-            }
+            restingDay: {$ne: weekDay},
         }
-        const trainer = await Trainer.findOne(query)
+        const trainer = await Trainer.findOne(query).populate("vacations").lean()
+        
+        if (!trainer){
+            return false
+        }
+
+        const isOnVacation = trainer.vacations.some(vacation =>
+            date >= vacation.from && date <= vacation.to
+        )
+
         const appt = await Appt.findOne({date: dayId, trainer: trainerId, hour: hour}).select("_id").lean()
-        return !appt && trainer
+        return !appt && isOnVacation
     } catch (error) {
         console.log("An error occured in isApptAvailable function  ", error)
         return null

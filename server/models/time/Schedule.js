@@ -17,7 +17,8 @@ const scheduleSchema = new mongoose.Schema({
             enum: ['h', 'm'], // 'h' for hours, 'm' for minutes
             default: 'h'
         }
-    }
+    },
+    workouts: [String]
 })
 
 

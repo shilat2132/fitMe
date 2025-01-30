@@ -39,14 +39,18 @@ const trainerSchema = new mongoose.Schema({
             }
         }
     },
-    restingDay: Number,
-    vacations: {
-        type: [vacationSchema],
-        default:[]
-    }
-
+    restingDay: {
+        type: Number,
+        min: 0,
+        max: 6
+    },
 })
 
+trainerSchema.virtual("vacations", {
+    ref: 'Vacation',
+    foreignField: "trainer",
+    localField: "_id"
+})
 
 const Trainer = User.discriminator('Trainer', trainerSchema);
 

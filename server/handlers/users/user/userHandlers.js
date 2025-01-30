@@ -17,7 +17,17 @@ exports.updateMe = catchAsync(async (req, res, next)=>{
 
     const filteredObj = utils.filterBody(req.body, "name", "email", "phone")
     let updatedUser;
+    
     if(req.user.role == "trainer"){
+        if (req.body.workingHours){
+            filteredObj["workingHours"] = {
+                start: req.body.workingHours.start ? req.body.workingHours.start : "8:00",
+                end: req.body.workingHours.end ? req.body.workingHours.end : "16:00"
+            }
+        }
+        if(req.body.restingDay){
+            filteredObj["restingDay"] = req.body.restingDay
+        }
         updatedUser = await Trainer.findByIdAndUpdate(req.user._id, filteredObj, {new: true, runValidators: true})
     }else{
         updatedUser = await User.findByIdAndUpdate(req.user._id, filteredObj, {new: true, runValidators: true})

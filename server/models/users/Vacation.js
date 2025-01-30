@@ -8,11 +8,16 @@ const mongoose = require('mongoose');
  * @property isApproved - a boolean property set to false and refers to whether the vacation was approved by the manager
  */
 const vacationSchema = new mongoose.Schema({
-    schedule:{
-            type: mongoose.Schema.ObjectId,
-            ref: 'Schedule',
-            required: [true, 'a vacation must have a schedule']
-        },
+    trainer:{
+        type: mongoose.Schema.ObjectId,
+        ref: 'Trainer',
+        required: [true, 'a vacation must have a trainer that the vacation is his']
+    },
+    // schedule:{
+    //         type: mongoose.Schema.ObjectId,
+    //         ref: 'Schedule',
+    //         required: [true, 'a vacation must have a schedule']
+    //     },
     from: {
         type: Date,
         required: [true, 'Starting day is required']
@@ -32,11 +37,13 @@ const vacationSchema = new mongoose.Schema({
         default: 'general'
     },
     isApproved: {
-        type: Boolean,
-        default: false
+        type: String,
+        enum: ["yes", "no", "Under review"],
+        default: "Under review"
     }
 });
 
 
+const Vacation = new mongoose.model('Vacation', vacationSchema)
 
-module.exports = vacationSchema
+module.exports = Vacation

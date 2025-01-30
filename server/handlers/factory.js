@@ -4,12 +4,10 @@ const AppError = require('../utils/AppError')
 
 /**
  * a generic handler for getting many documents with a given query and a select string
- * @param Model - the model to query on
  * @param filterCallback - a function that gets the request object and returns the filter object for the query, defaulted to empty object
- * @param select - a string of which fields to select in the query
  * - response with the docs of the Model if successful, otherwise throws a 404 error 
  */
-exports.getAll = (Model, filterCallback = () => ({}), select= null) =>(
+exports.getAll = (Model, filterCallback = () => ({}), select= null, sort = null) =>(
     catchAsync(async (req, res, next)=>{
 
         let query = Model.find(filterCallback(req));
@@ -17,6 +15,10 @@ exports.getAll = (Model, filterCallback = () => ({}), select= null) =>(
         // Apply select only if it is not null
         if (select) {
             query = query.select(select);
+        }
+
+        if (sort){
+            query = query.sort(sort)
         }
 
         // Execute the query
@@ -30,9 +32,7 @@ exports.getAll = (Model, filterCallback = () => ({}), select= null) =>(
  
     /**
  * a generic handler for getting one document with a given id and a select string
- * @param Model - the model to query on
  * @param filterCallback - a function that gets the request object and returns the id of the doc to be found, defaulted to null
- * @param select - a string of which fields to select in the query
  * - response with the doc of the Model if successful, otherwise throws a 404 error 
  */
     exports.getOne = (Model, filterCallback = () => null, select= null) =>(
@@ -47,10 +47,32 @@ exports.getAll = (Model, filterCallback = () => ({}), select= null) =>(
             if (select){
                 query = query.select(select);
             }
+           
 
             const doc = await query;
             if(!doc){
                 return next(new AppError("Couldn't find the document"), 404)
+            }
+            res.status(200).json({status: "success", doc})
+        }))
+
+
+      /**
+ * a generic handler for updating one document with a given id 
+ * @param Model - the model to query on
+ * @param filterCallback - a function that gets the request object and returns object with the id of the doc and the updated object
+ * - response with the doc of the Model if successful, otherwise throws a 404 error 
+ */
+    exports.updateOne = (Model, filterCallback = () => null) =>(
+        catchAsync(async (req, res, next)=>{
+            const {id, update} = filterCallback(req) //{id: , update: }
+            if (!id || !update){
+                throw Error("You have to provide document id and updated object")
+            }
+            const doc = await Model.findByIdAndUpdate(id, update);
+
+            if(!doc){
+                return next(new AppError("Couldn't update the document"), 404)
             }
             res.status(200).json({status: "success", doc})
         }))
