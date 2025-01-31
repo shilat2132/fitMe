@@ -3,6 +3,7 @@ const validator = require("validator")
 const User = require("./User")
 const constants = require('../../utils/constants')
 const vacationSchema = require('./Vacation')
+const Schedule = require('../time/Schedule')
 
 
 /** a class that inherits from user.
@@ -12,7 +13,7 @@ const vacationSchema = require('./Vacation')
  * @property vacations: an array of vacation’s schema: from and to fields of dates. description and isApproved(boolean, defaulted to false)
  */
 const trainerSchema = new mongoose.Schema({
-    workouts: [{type: String, enum: constants.WORKOUTS} ],
+    workouts: [String],
     workingHours: {
         start: {
             type: String,
@@ -43,7 +44,10 @@ const trainerSchema = new mongoose.Schema({
         type: Number,
         min: 0,
         max: 6
-    },
+    }
+}, {
+    toJSON: {virtuals: true},
+    toObject: {virtuals: true}
 })
 
 trainerSchema.virtual("vacations", {
@@ -51,6 +55,38 @@ trainerSchema.virtual("vacations", {
     foreignField: "trainer",
     localField: "_id"
 })
+
+
+/**
+ * this mw filters the trainer's workouts field(if modified) to have only the workouts that are in the general workouts types 
+ */
+trainerSchema.pre("save", async function (next) {
+    if (this.isModified("workouts")){
+        let workoutTypes = await Schedule.findOne().select("workouts") //existing workout types
+        if (!workoutTypes) return next();
+
+        workoutTypes = new Set(workoutTypes.workouts)
+        this.workouts = this.workouts.filter(workout => workoutTypes.has(workout));
+    }
+
+    next()
+})
+
+
+trainerSchema.pre("findOneAndUpdate", async function (next) {
+    const update = this.getUpdate(); //gets the values to update
+    if (update.workouts) {
+        let workoutTypes = await Schedule.findOne().select("workouts");
+        if (!workoutTypes) return next();
+
+        workoutTypes = new Set(workoutTypes.workouts);
+        update.workouts = update.workouts.filter(workout => workoutTypes.has(workout));
+
+        this.setUpdate(update); 
+    }
+
+    next();
+});
 
 const Trainer = User.discriminator('Trainer', trainerSchema);
 

@@ -11,9 +11,11 @@ const apptsHandlers = require("../handlers/users/user/userAppts")
 // model
 const Appt = require("../models/time/Appointment")
 const Trainer = require("../models/users/Trainer")
+const Schedule = require('../models/time/Schedule')
 
 router.use(authMW.protect, authMW.restrictTo("trainer"))
 
+router.put("updateWorkDetails", trainerHandlers.updateWorkDetails)
 router.delete("cancelAppt/:apptId", apptsHandlers.cancelAppt("trainer"))
 
 // trainer - view all his scheduled workouts
@@ -30,5 +32,10 @@ router.route("vacations").post(trainerHandlers.addVacation).get(factory.getAll(T
 
 router.delete("vacations/:vacId", trainerHandlers.cancelVacation)
 
+
+// get the workout types for the trainer
+const workoutsTypesFilter = req=> req.params.scheduleId
+router.route("workoutsTypes/:scheduleId")
+    .get(factory.getOne(Schedule, workoutsTypesFilter, "workouts"))
 
 module.exports = router

@@ -5,12 +5,14 @@ const router = express.Router()
 const authMW = require("../handlers/auth/middlewares")
 const factory = require("../handlers/factory")
 const usersActions = require("../handlers/manager/usersActions")
+const workoutsAction = require("../handlers/users/manager/workoutsActions")
 
 // MODELS IMPORTS
 const Trainer = require("../models/users/Trainer")
 const User = require("../models/users/User")
 const Appointment = require("../models/time/Appointment")
 const Vacation = require('../models/users/Vacation')
+const Schedule = require('../models/time/Schedule')
 
 
 
@@ -45,7 +47,7 @@ router.post("users/:userId", usersActions.userToTrainer)
     // APPTS
 // get appts for specific day
 const workoutsFilter = req => ({date: req.params.dayId})
-router.get("workouts/:dayId", factory.getAll(Appointment, workoutsFilter))
+router.get("appointments/:dayId", factory.getAll(Appointment, workoutsFilter))
 
     // SCHEDULE
 // update schedule
@@ -59,10 +61,13 @@ router.get("workouts/:dayId", factory.getAll(Appointment, workoutsFilter))
 
 
     // WORKOUTS
-// add a workout type
+// add a workout type, get workouts types
+const workoutsTypesFilter = req=> req.params.scheduleId
+router.route("workoutsTypes/:scheduleId")
+    .get(factory.getOne(Schedule, workoutsTypesFilter, "workouts"))
+    .put(workoutsAction.addWorkoutType)
+    .delete(workoutsAction.deleteWorkoutsType)
 
-
-// delete a workout type
 
 
 module.exports = router

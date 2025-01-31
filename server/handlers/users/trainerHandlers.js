@@ -12,13 +12,6 @@ const Vacation = require("../../models/users/Vacation")
 exports.addVacation = catchAsync(async (req, res, next)=>{
     const newVacation = utils.filterBody(req.body, "schedule", "from", "to", "description")
     const vacation = Vacation.create({trainer: req.user._id, ...newVacation})
-
-    // // adds the vacation to the array of the vacations
-    // const trainer = await Trainer.findByIdAndUpdate(
-    //     req.user._id, 
-    //     { $push: { vacations: newVacation } }, 
-    //     { new: true, runValidators: true }
-    //   );
     
       if (!vacation){
         return next (new AppError("Failed to create a vacation", 404))
@@ -34,14 +27,6 @@ exports.addVacation = catchAsync(async (req, res, next)=>{
 exports.cancelVacation = catchAsync(async (req, res, next)=>{
   const vacId = req.params.vacId
 
-  
-  
-  // find by trainer id. remove the vacation item from the vacations array
-  // const trainer = await Trainer.findByIdAndUpdate(trainerId,
-  //   {$pull: {vacations: {_id: vacId}}},
-  //   { new: true}
-  // )
-
   if (!await Vacation.findOneAndDelete({_id: vacId, trainer: req.user._id})){
     return next (new AppError("Couldn't cancel vacation", 404))
   }
@@ -52,15 +37,24 @@ exports.cancelVacation = catchAsync(async (req, res, next)=>{
 
 // add workout type handler
 
+/** an handler for the trainer to update only the details related to work */
+exports.updateWorkDetails = catchAsync(async (req, res, next)=>{
+  const updateValues = utils.filterBody(req.body, "workouts", "workingHours", "restingDay")
 
-exports.updateMe = catchAsync(async (req, res, next)=>{
-  const vacId = req.params.vacId
+  let queryUpdate;
+  if ("workouts" in updateValues){
+    queryUpdate = {
+      ... updateValues,
+      $push: {workouts: {$each: updateValues.workouts}}
+    }
+  }else{
+    queryUpdate ={...updateValues}
+  }
+  const trainer = await Trainer.findByIdAndUpdate(req.user._id, queryUpdate, {runValidators: true, new: true})
 
-  
-
-  if (!await Vacation.findOneAndDelete({_id: vacId, trainer: req.user._id})){
-    return next (new AppError("Couldn't cancel vacation", 404))
+  if (!trainer){
+    return next (new AppError("Couldn't update details", 404))
   }
 
-  res.status(204).json({status: "success"})
+  res.status(200).json({status: "success", trainer})
 })
