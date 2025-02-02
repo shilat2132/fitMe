@@ -1,6 +1,6 @@
 const catchAsync = require("../../utils/catchAsync")
 const AppError = require("../../utils/AppError")
-const utils = require("../utils")
+const utils = require("../../utils/utils")
 const Trainer = require("../../models/users/Trainer")
 const Vacation = require("../../models/users/Vacation")
 
@@ -11,7 +11,7 @@ const Vacation = require("../../models/users/Vacation")
  */
 exports.addVacation = catchAsync(async (req, res, next)=>{
     const newVacation = utils.filterBody(req.body, "schedule", "from", "to", "description")
-    const vacation = Vacation.create({trainer: req.user._id, ...newVacation})
+    const vacation = Vacation.Create({trainer: req.user._id, ...newVacation})
     
       if (!vacation){
         return next (new AppError("Failed to create a vacation", 500))

@@ -1,8 +1,9 @@
 const catchAsync = require("../../../utils/catchAsync")
 // const factory = require("../../factory")
 const Appt = require("../../../models/time/Appointment")
-const utils = require("../../utils")
+const utils = require("../../../utils/utils")
 const AppError = require("../../../utils/AppError")
+const Appointment = require("../../../models/time/Appointment")
 
 /**
  * - this is a restricted route for user with role= trainee
@@ -29,9 +30,9 @@ exports.makeAnAppt = catchAsync(async (req, res, next)=>{
         return next(new AppError("one of the details are missing"), 400)
     }
 
-    if (utils.isApptAvailable(date, hour, trainer)){
-        const newAppt = !await Appt.create({...req.body, trainee: req.user._id})
-        if (newAppt){
+    if (Appointment.isApptAvailable(date, hour, trainer)){
+        const newAppt = await Appt.create({...req.body, trainee: req.user._id})
+        if (!newAppt){
             return next(new AppError("failed to make an appointment"), 500)
     }
     res.status(200).json({status: "success", doc})

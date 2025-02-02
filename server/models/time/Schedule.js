@@ -1,10 +1,7 @@
 const mongoose = require('mongoose')
-const Day = require("./Day")
-const validator = require("validator")
 const AppError = require('../../utils/AppError')
-const Appointment = require('./Appointment')
 const Vacation = require('../users/Vacation')
-
+const utils = require("../../utils/utils")
 
 const scheduleSchema = new mongoose.Schema({
     maxDaysForward: {
@@ -13,13 +10,13 @@ const scheduleSchema = new mongoose.Schema({
         required: [true, "עליך לספק שדה זה"]
     },
     days:{
-        type: [String],
-        validate:{
-                validator: function(dates){
-                    return dates.every(date => validator.isDate(date, {delimiters: [".", "/", "-"]}))
-                },
-                message: "one of the days is not appropriately formatted as a date"
-            }
+        type: [Date],
+        // validate:{
+        //         validator: function(dates){
+        //             return dates.every(date => validator.isDate(date, {delimiters: [".", "/", "-"]}))
+        //         },
+        //         message: "one of the days is not appropriately formatted as a date"
+        //     }
     },
     appointmentTime: { 
         workoutPeriod: {
@@ -40,30 +37,6 @@ const scheduleSchema = new mongoose.Schema({
 
 
 
-// SCHEMA MW
-// when retrieving the schedule - ensure that its days fields is updated
-scheduleSchema.pre("findOne", async function(next){
-    await this.updateDays()
-    next()
-})
-
-// A mw that creates the days array field for the number of days specified by `maxDaysForward`
-scheduleSchema.pre("save", async function (next) {
-    if (this.isNew){
-        //Ensures there would be only one schedule
-        const count = await this.constructor.countDocuments();
-        if (count === 1) {
-        return next(new AppError("Only one Schedule document is allowed", 400));
-        }
-
-        // creates the days array
-        const dates = this.datesCreation()
-        this.days = dates
-    }
-    next();
-  });
-  
-
 
 // SCHEMA METHODS
 
@@ -81,11 +54,10 @@ scheduleSchema.pre("save", async function (next) {
  * 
  * @throws {Error} Logs and returns `null` if an error occurs during the process.
  */
-scheduleSchema.methods.getWorkingTrainers = async function(dateStr){
+scheduleSchema.methods.getWorkingTrainers = async function(date){
     try {
         // get trainers that don't have a free day on that day, not in restingDay and not in a vacation
-        const dateObj = new Date(dateStr)
-        const currentDayNum = dateObj.getDay()
+        const currentDayNum = date.getDay()
         const trainersQuery = {
             restingDay: {$ne: currentDayNum},
             $or: [
@@ -94,21 +66,31 @@ scheduleSchema.methods.getWorkingTrainers = async function(dateStr){
                     vacations: {
                         $not: {
                             $elemMatch: {
-                                from: {$lte: dateObj},
-                                to: {$gte: dateObj}
+                                from: { $lte: date },
+                                to: { $gte: date}
                             }
                         }
                     }
                 }
             ]
         }
+        const Trainer = await require('../users/Trainer');
         const trainers = await Trainer.find(trainersQuery).select("_id name workouts workingHours").lean()
         if (!trainers || trainers.length ==0){
             return null
         }
 
+        const {start, end} = utils.startEndDay(date)
+        
+        const Appointment = await require('./Appointment')
+
         // retrives all the appointments for today
-        const appts = await Appointment.find({date: dateStr}).select("trainer hour").lean()
+        const appts = await Appointment.find({
+            date: {
+                $gte: start,
+                $lte: end
+            }
+        }).select("trainer hour").lean()
         
         // map each appointment to a trainer
        const trainersHoursDict = {}
@@ -143,11 +125,13 @@ scheduleSchema.methods.getWorkingTrainers = async function(dateStr){
  * 
  * @returns days - the array of the dates
  */
-scheduleSchema.methods.datesCreation = (numOfDays = this.maxDaysForward, currentDate= new Date())=>{
+scheduleSchema.methods.datesCreation = function(numOfDays = null, currentDate= new Date()){
+    if (!numOfDays){
+        numOfDays = this.maxDaysForward
+    }
     const days = [];
-
     for (let i = 0; i < numOfDays; i++) {
-        days.push(currentDate.toLocaleDateString("he-IL"));
+        days.push(new Date(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
     }
     return days
@@ -158,13 +142,20 @@ scheduleSchema.methods.datesCreation = (numOfDays = this.maxDaysForward, current
  * delete the dates, vacations and appointments up until the given index
  */
 scheduleSchema.methods.deleteDates = async amountOfDaysToDelete=>{
-    for(i=0; i<amountOfDaysToDelete; i++){
-        const currentDateStr = this.days[i]
-        await Appointment.deleteMany({date: currentDateStr})
+    const Appointment = await require('./Appointment')
 
-        const currentDateObj = new Date(currentDateStr)
-        await Vacation.deleteMany({to: {$lt: currentDateObj}})
+    for(i=0; i<amountOfDaysToDelete; i++){
+        const currentDate = this.days[i]
+        const {start, end} = utils.startEndDay(currentDate)
+        await Appointment.deleteMany({date: {$gte: start, $lte: end }})
+
+        await Vacation.deleteMany({to: {$lt: end}})
     }
+
+    if(amountOfDaysToDelete != this.days.length){
+        this.days = this.days.slice(amountOfDaysToDelete)
+    }
+    
 }
 
 /**
@@ -175,20 +166,26 @@ scheduleSchema.methods.deleteDates = async amountOfDaysToDelete=>{
  */
 scheduleSchema.methods.updateDays = async function () {
     const today = new Date()
-    let lastExistingDay = this.days.at(-1)
-    lastExistingDay = new Date(lastExistingDay)
+    const lastExistingDay = this.days.at(-1)
     const lastActualDay = new Date(today) //the last day that's SUPPOSESED to be in the array
     lastActualDay.setDate(lastActualDay.getDate()+ this.maxDaysForward)
+
+    lastActualDay.setHours(0, 0, 0, 0)
+    lastExistingDay.setHours(0, 0, 0, 0)
+    today.lastExistingDay.setHours(0, 0, 0, 0)
 
     // checks if you need to update the dates
     if (lastExistingDay <lastActualDay){
         
          // if today is the last existing day - don't remove it, remove all the days before it
-        if(today.toISOString().split("T")[0] == lastExistingDay.toISOString().split("T")[0]){
+        if(today == lastExistingDay){
              await this.deleteDates(this.days.length-1)
+
              const startDate = new Date(today)
              startDate.setDate(startDate.getDate()+1)
-             this.days = this.datesCreation(this.maxDaysForward -1, startDate)
+
+             const dates = this.datesCreation(this.maxDaysForward -1, startDate)
+             this.days.push(...dates) 
              return 1;
         }
 
@@ -199,7 +196,10 @@ scheduleSchema.methods.updateDays = async function () {
             this.days = this.datesCreation()
             return 1
         }else{
-            const num = this.days.indexOf(today.toLocaleDateString("he-IL"))
+            const num = this.days.findIndex(d=>{
+                d.setHours(0,0,0,0)
+                return d== today
+            })
 
             if (num !=-1){
                 await this.deleteDates(num)
@@ -216,6 +216,26 @@ scheduleSchema.methods.updateDays = async function () {
         return -1 //if the last existing date is after the last date that should be, it means that the user's trying to update the maxDaysForward field to a smaller number than before, and that's not allowed
     }
 }
+
+
+// SCHEMA MW
+
+
+// A mw that creates the days array field for the number of days specified by `maxDaysForward`
+scheduleSchema.pre("save", async function (next) {
+    if (this.isNew){
+        //Ensures there would be only one schedule
+        const count = await this.constructor.countDocuments();
+        if (count === 1) {
+        return next(new AppError("Only one Schedule document is allowed", 400));
+        }
+
+        const dates = this.datesCreation()
+        this.days = dates 
+    }
+    next();
+  });
+  
 
 /** a method that would be triggered everyday. remove the former day and create another one. */
 // scheduleSchema.methods.newDayHandler = async function(){

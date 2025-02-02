@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require("validator")
 const User = require("./User")
-const vacationSchema = require('./Vacation')
-const Schedule = require('../time/Schedule')
 
 
 /** a class that inherits from user.
@@ -61,6 +59,7 @@ trainerSchema.virtual("vacations", {
  */
 trainerSchema.pre("save", async function (next) {
     if (this.isModified("workouts")){
+        const Schedule = await require('../time/Schedule')
         let workoutTypes = await Schedule.findOne().select("workouts") //existing workout types
         if (!workoutTypes) return next();
 
@@ -75,6 +74,8 @@ trainerSchema.pre("save", async function (next) {
 trainerSchema.pre("findOneAndUpdate", async function (next) {
     const update = this.getUpdate(); //gets the values to update
     if (update.workouts) {
+        const Schedule = await require('../time/Schedule')
+
         let workoutTypes = await Schedule.findOne().select("workouts");
         if (!workoutTypes) return next();
 

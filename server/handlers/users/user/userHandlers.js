@@ -2,7 +2,7 @@ const catchAsync = require("../../../utils/catchAsync")
 const factory = require("../../factory")
 const User = require("../../../models/users/User")
 const Trainer = require("../../../models/users/Trainer")
-const utils = require("../../utils")
+const utils = require("../../../utils/utils")
 const Appt = require("../../../models/time/Appointment")
 
 /**

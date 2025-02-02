@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
+const utils = require("../utils/utils")
+
 // HANDLERS IMPORTS
 const authMW = require("../handlers/auth/middlewares")
 const factory = require("../handlers/factory")
@@ -46,7 +48,15 @@ router.post("users/:userId", usersActions.userToTrainer)
 
     // APPTS
 // get appts for specific day
-const workoutsFilter = req => ({date: req.params.date})
+const workoutsFilter = req => {
+    const {start, end} = utils.startEndDay(req.params.date)
+    return {
+        date: {
+            $gte: start,
+            $lte: end
+        }
+    }
+}
 router.get("appointments/:date", factory.getAll(Appointment, workoutsFilter))
 
     // WORKOUTS

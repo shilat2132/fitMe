@@ -1,7 +1,26 @@
 const catchAsync = require("../../../utils/catchAsync")
 const AppError = require("../../../utils/AppError")
-const utils = require("../../utils")
+const utils = require("../../../utils/utils")
 const Schedule = require("../../../models/time/Schedule")
+
+
+/**
+ * an handler to get the schedule
+ */
+exports.getSchedule = catchAsync(async (req, res, next)=>{
+  const schedule = await Schedule.findOne()
+
+    if (!schedule){
+      return next (new AppError("Couldn't create schedule", 500))
+    }
+
+    await schedule.updateDays()
+    await schedule.save()
+
+  res.status(200).json({status: "success", schedule})
+})
+
+
 
 /**
  * an handler for the manager to create the schedule
@@ -9,12 +28,13 @@ const Schedule = require("../../../models/time/Schedule")
 exports.createSchedule = catchAsync(async (req, res, next)=>{
    const filterObj = utils.filterBody(req.body, "maxDaysForward", "appointmentTime", "workouts")
 
-    
-   const schedule = await Schedule.Create(filterObj);
+   const schedule = await Schedule.create(filterObj);
 
      if (!schedule){
        return next (new AppError("Couldn't create schedule", 500))
      }
+
+     
 
 
    res.status(200).json({status: "success", schedule})

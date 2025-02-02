@@ -1,18 +1,18 @@
 const mongoose = require("mongoose")
 const validator = require("validator")
-const Schedule = require("./Schedule")
 const AppError = require("../../utils/AppError")
 const Trainer = require("../users/Trainer")
+const utils = require("../../utils/utils")
 
 const apptSchema = new mongoose.Schema({
     date:{
-        type: String,
-        validate:{
-            validator: function(date){
-                return validator.isDate(date, {format: ["DD.MM.YYYY", "D.M.YYYY" ] , delimiters: [".", "/", "-"]})
-            },
-            message: "the date is not appropriately formatted in the appointment model"
-        },
+        type: Date,
+        // validate:{
+        //     validator: function(date){
+        //         return validator.isDate(date, {format: ["DD.MM.YYYY", "D.M.YYYY" ] , delimiters: [".", "/", "-"]})
+        //     },
+        //     message: "the date is not appropriately formatted in the appointment model"
+        // },
         required: [true, 'an appointment must have a day']
     },
     trainer: {
@@ -53,7 +53,9 @@ apptSchema.pre(/^find/, function(next){
     next()
 })
 
-apptSchema.pre("save", async function(){
+apptSchema.pre("save", async function(next){
+    const Schedule = await require("./Schedule")
+    console.log(Schedule)
     const schedule = await Schedule.findOne().select("workouts days")
     if (!schedule){
         return next(new AppError("you can't create an appointment while there isn't an existing schedule", 409))
@@ -65,8 +67,9 @@ apptSchema.pre("save", async function(){
     }
 
     // checks if the date is one of the available days of the schedule
-    if (!schedule.days.includes(this.date)){
-        return next(new AppError("The given date isn't in the range of the opened dates of the schedule"))
+    let d = this.date.toISOString().split("T")[0] //retrieves the date itself
+    if (!schedule.days.some(day => day.toISOString().split("T")[0] === d)) {
+        return next(new AppError("The given date isn't in the range of the opened dates of the schedule"));
     }
     next()
 })
@@ -76,17 +79,17 @@ apptSchema.pre("save", async function(){
 /**
  * a static method for checking whether an appointment for a given trainer is available 
  * - meanning it's not scheduled and not in a day of the trainer's vacation or rest day
-* @param dateStr - the string date of the appointment to check
+* @param {Date} date - the date of the appointment to check
 * @param hour - string hour of the appintment we want to check
 * @param trainerId - the id of the trainer that we try to schedule to
 
 *@returns true if appointment is free, else returns false. returns null if an error occur
 */
-apptSchema.statics.isApptAvailable = async (dateStr, hour, trainerId)=>{
+apptSchema.statics.isApptAvailable = async (date1, hour, trainerId)=>{
     try {
         // a query to find the trainer and make sure the given date is NOT in the range of ANY element of the vacations and not a rest day
-        const dateObj = new Date(dateStr)
-        const weekDay = dateObj.getDay()
+        let date = new Date(date1)
+        const weekDay = date.getDay()
         const query ={
             _id: trainerId,
             restingDay: {$ne: weekDay},
@@ -98,13 +101,22 @@ apptSchema.statics.isApptAvailable = async (dateStr, hour, trainerId)=>{
         }
 
         const isOnVacation = trainer.vacations.some(vacation =>
-            dateObj >= vacation.from && dateObj <= vacation.to
+            date >= vacation.from && date <= vacation.to
         )
 
         if (isOnVacation){
             return false
         }
-        const appt = await this.findOne({date: dateStr, trainer: trainerId, hour: hour}).select("_id").lean()
+
+        const {start, end} = utils.startEndDay(date)
+        const appt = await this.findOne({
+            date: {
+                $gte: start,
+                $lte: end
+            }, 
+            trainer: trainerId, 
+            hour: hour}
+        ).select("_id").lean()
         return !appt
     } catch (error) {
         console.log("An error occured in isApptAvailable function  ", error)

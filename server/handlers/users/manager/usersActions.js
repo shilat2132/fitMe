@@ -1,6 +1,5 @@
 const catchAsync = require("../../../utils/catchAsync")
 const AppError = require("../../../utils/AppError")
-// const utils = require("../utils")
 const Trainer = require("../../../models/users/Trainer")
 const User = require("../../../models/users/User")
 

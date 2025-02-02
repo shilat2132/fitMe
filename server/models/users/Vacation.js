@@ -43,6 +43,12 @@ const vacationSchema = new mongoose.Schema({
     }
 });
 
+vacationSchema.pre("save", function(next){
+    this.from.setHours(0, 0, 0, 0)
+    this.to.setHours(23, 59, 59, 999)
+    next()
+})
+
 
 const Vacation = new mongoose.model('Vacation', vacationSchema)
 
