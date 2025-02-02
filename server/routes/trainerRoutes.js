@@ -23,8 +23,8 @@ const apptsFilter = (req) => ({trainer: req.user._id})
 router.get("appointments", factory.getAll(Appt, apptsFilter))
 
 // trainer - view all his scheduled workouts for a specific day
-const apptsForDay = req => ({trainer: req.user._id, date: req.params.dateId})
-router.get("appointments/:dateId", factory.getAll(Appt, apptsForDay))
+const apptsForDay = req => ({trainer: req.user._id, date: req.params.date})
+router.get("appointments/:date", factory.getAll(Appt, apptsForDay))
 
 const vacationsFilter = req=> ({trainer: req.user._id})
 router.route("vacations").post(trainerHandlers.addVacation).get(factory.getAll(Trainer, vacationsFilter, "-trainer"))

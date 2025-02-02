@@ -1,6 +1,7 @@
 // mostly get all handlers
 const User = require('../models/users/User');
-const AppError = require('../utils/AppError')
+const AppError = require('../utils/AppError');
+const catchAsync = require('../utils/catchAsync');
 
 /**
  * a generic handler for getting many documents with a given query and a select string
@@ -72,7 +73,7 @@ exports.getAll = (Model, filterCallback = () => ({}), select= null, sort = null)
             const doc = await Model.findByIdAndUpdate(id, update);
 
             if(!doc){
-                return next(new AppError("Couldn't update the document"), 404)
+                return next(new AppError("Couldn't update the document"), 500)
             }
             res.status(200).json({status: "success", doc})
         }))

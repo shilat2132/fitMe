@@ -4,17 +4,17 @@ const Trainer = require("../models/users/Trainer")
 /**
  * a function for checking whether an appointment for a given trainer is available 
  * - meanning it's not scheduled and not in a day of the trainer's vacation or rest day
-* @param dayId - the id of the day 
-* @param date - the date of the appointment to check
+* @param dateStr - the string date of the appointment to check
 * @param hour - string hour of the appintment we want to check
 * @param trainerId - the id of the trainer that we try to schedule to
 
 *@returns true if appointment is free, else returns false. returns null if an error occur
 */
-exports.isApptAvailable = async (dayId, date, hour, trainerId)=>{
+exports.isApptAvailable = async (dateStr, hour, trainerId)=>{
     try {
         // a query to find the trainer and make sure the given date is NOT in the range of ANY element of the vacations and not a rest day
-        const weekDay = date.getDay()
+        const dateObj = new Date(dateStr)
+        const weekDay = dateObj.getDay()
         const query ={
             _id: trainerId,
             restingDay: {$ne: weekDay},
@@ -26,11 +26,14 @@ exports.isApptAvailable = async (dayId, date, hour, trainerId)=>{
         }
 
         const isOnVacation = trainer.vacations.some(vacation =>
-            date >= vacation.from && date <= vacation.to
+            dateObj >= vacation.from && dateObj <= vacation.to
         )
 
-        const appt = await Appt.findOne({date: dayId, trainer: trainerId, hour: hour}).select("_id").lean()
-        return !appt && isOnVacation
+        if (isOnVacation){
+            return false
+        }
+        const appt = await Appt.findOne({date: dateStr, trainer: trainerId, hour: hour}).select("_id").lean()
+        return !appt
     } catch (error) {
         console.log("An error occured in isApptAvailable function  ", error)
         return null

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 
 const User = require("../../models/users/User")
 const catchAsync = require("../../utils/catchAsync")
-
+const AppError = require("../../utils/AppError")
 
 //HELPFUL FUNCTIONS
 /**sign a new jwt token with a user'd id */
@@ -37,6 +37,8 @@ const createSendToken = (user, req, statusCode, res)=>{
 
 }
 
+exports.createSendToken = createSendToken
+
 //HANDLERS
 /**
  * - the user signs up with his details and a new user is created in the database
@@ -67,14 +69,14 @@ exports.login = catchAsync(async (req, res, next)=>{
   // Step 1: retrieve the email and password that the user entered
   const {email, password} = req.body
   if(!email || !password){
-    return next(new AppError('עליך לספק גם מייל וגם סיסמה', 400))
+    return next(new AppError("You must provide both email and password in order to login", 400))
   }
   
   // Step 2: check if there's a user with that email and check if the user entered the correct password
   const user = await User.findOne({email}).select('+password')
 
   if(!user || !await user.correctPassword(password, user.password)) {
-    return next(new AppError('מייל או סיסמה לא תקינים', 401))
+    return next(new AppError('Invalid password or email', 401))
   }
 
   // Step 3: create a token to store in a cookie and send a server's response
@@ -86,9 +88,8 @@ exports.login = catchAsync(async (req, res, next)=>{
 exports.logout = (req, res)=>{
     res.cookie('jwt', 'logout', { //overrite the cookie with the token
       expires: new Date(Date.now() + 10 *1000), httpOnly: true })
-      res.status(200).json({status: 'succes'})
+      res.status(200).json({status: 'success'})
   }
-
 
 
 

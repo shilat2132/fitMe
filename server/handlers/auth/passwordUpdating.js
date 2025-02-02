@@ -1,8 +1,11 @@
 
 const crypto = require('crypto')
-
+const Email = require("../../utils/email")
 const User = require("../../models/users/User")
 const catchAsync = require("../../utils/catchAsync")
+const authHandlers = require("./authHandlers")
+const AppError = require('../../utils/AppError')
+
 
 /**creates a token for resetting the password and sends an email with the url for the resetting route */
 exports.forgotPassword = catchAsync(async (req, res, next)=>{
@@ -10,7 +13,7 @@ exports.forgotPassword = catchAsync(async (req, res, next)=>{
     const user = await User.findOne({email: req.body.email})
   
       if(!user){
-        return next(new AppError("לא נמצא משתמש עם המייל המתאים", 404))
+        return next(new AppError("Couldn't find a user with the given email", 404))
       }
   
       // Step 2: create a reset token for a reset and hash it to the db
@@ -55,7 +58,7 @@ exports.forgotPassword = catchAsync(async (req, res, next)=>{
       await user.save()
   
       // create new jwt token for the cookie
-      createSendToken(user, req, 200, res)
+      authHandlers.createSendToken(user, req, 200, res)
   })
   
   
@@ -68,12 +71,12 @@ exports.forgotPassword = catchAsync(async (req, res, next)=>{
   
     const user = await User.findById(req.user._id).select('+password')
     if(!await user.correctPassword(req.body.currentPassword, user.password)){
-      return next (new AppError("הסיסמה הנוכחית שהזנת שגוייה", 401))
+      return next (new AppError("Current password is wrong", 401))
     }
   
     user.password = req.body.password
     user.passwordConfirm = req.body.passwordConfirm
     await user.save()
-    createSendToken(user, req, 200, res)
+    authHandlers.createSendToken(user, req, 200, res)
       
   })

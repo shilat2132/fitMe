@@ -14,7 +14,7 @@ exports.addVacation = catchAsync(async (req, res, next)=>{
     const vacation = Vacation.create({trainer: req.user._id, ...newVacation})
     
       if (!vacation){
-        return next (new AppError("Failed to create a vacation", 404))
+        return next (new AppError("Failed to create a vacation", 500))
       }
 
       res.status(200).json({status: "success", vacation})
@@ -28,7 +28,7 @@ exports.cancelVacation = catchAsync(async (req, res, next)=>{
   const vacId = req.params.vacId
 
   if (!await Vacation.findOneAndDelete({_id: vacId, trainer: req.user._id})){
-    return next (new AppError("Couldn't cancel vacation", 404))
+    return next (new AppError("Couldn't cancel vacation", 500))
   }
 
   res.status(204).json({status: "success"})
@@ -53,7 +53,7 @@ exports.updateWorkDetails = catchAsync(async (req, res, next)=>{
   const trainer = await Trainer.findByIdAndUpdate(req.user._id, queryUpdate, {runValidators: true, new: true})
 
   if (!trainer){
-    return next (new AppError("Couldn't update details", 404))
+    return next (new AppError("Couldn't update details", 500))
   }
 
   res.status(200).json({status: "success", trainer})

@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
+const AppError = require('../../utils/AppError')
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -44,15 +45,12 @@ const userSchema = new mongoose.Schema({
             validator: function(val){
                 return this.password === val
             },
-            message: 'הסיסמאות לא זהות'
+            message: "password and passwordConfirm are different"
         }
     },
     passwordChangedAt: Date, 
     passwordResetToken: String,
     passwordResetTokenExpires: Date
-},
-{
-    discriminatorKey: 'role'
 },
 {
     toJSON: {virtuals: true},
@@ -127,6 +125,9 @@ userSchema.pre('save', async function(next){
  * Ensures it is set before the token is issued.
  */
 userSchema.pre('save', function(next){
+    if (this.isNew && this.role && this.role=="trainer"){
+        return next(new AppError("You can't create a trainer in this model, there is a specified model for that"))
+    }
     if(this.isNew || !this.isModified('password')) return next()
 
     this.passwordChangedAt = Date.now() -1000

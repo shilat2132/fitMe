@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const validator = require("validator")
 const User = require("./User")
-const constants = require('../../utils/constants')
 const vacationSchema = require('./Vacation')
 const Schedule = require('../time/Schedule')
 

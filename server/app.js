@@ -15,9 +15,15 @@ const express = require('express')
 const cookieParser = require('cookie-parser');
 const compression = require("compression")
 
+// errors utils imports
+const errHandler = require("./utils/errHandler");
+const AppError = require('./utils/AppError');
 
-
-
+// routers imports
+const scheduleRouter = require("./routes/scheduleRoutes")
+const managerRouter = require("./routes/managerRoutes")
+const trainerRouter = require("./routes/trainerRoutes")
+const userRouter = require("./routes/userRoutes")
 
 // END OF IMPORTS
 
@@ -60,11 +66,6 @@ app.use(express.json({limit: '10kb'}));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Set Content-Security-Policy header for specific image sources
-app.use((req, res, next) => {
-  res.setHeader('Content-Security-Policy', "img-src 'self' https://img.freepik.com/ data:");
-  next();
-});
 
 // Data sanitization against NoSQL query injection - removes $ and others from req.body/params
 app.use(mongoSanitize());
@@ -75,17 +76,22 @@ app.use(xss()); //prevents inserting html syntax(from forms or queries)
 // Middleware to compress HTTP responses for improved performance
 app.use(compression())
 
+// routes
+app.use("/api/user", userRouter)
+app.use("/api/schedule", scheduleRouter)
+app.use("/api/trainer", trainerRouter)
+app.use("/api/manager", managerRouter)
 
 
 
 
 
-// app.all('*', (req,res, next)=>{
-//     next(new AppError (`couldn't reach ${req.originalUrl} on the server`, 404)) 
-//     //while calling next with an argument, it goes to the global err handling func
-//   })
+app.all('*', (req,res, next)=>{
+    next(new AppError (`couldn't reach ${req.originalUrl} on the server`, 404)) 
+    //while calling next with an argument, it goes to the global err handling func
+  })
 
 // each time i throw appError instance or an error occur from async func, 
 // the catchAsync catches it and moves to this mw
-// app.use(errHandler)
+app.use(errHandler)
 module.exports = app

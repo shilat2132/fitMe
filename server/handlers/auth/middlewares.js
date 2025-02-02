@@ -1,9 +1,11 @@
 const jwt = require('jsonwebtoken')
 const { promisify } = require('util')
 
-const User = require("../../users/User")
+// const User = require("../../users/User")
 const Trainer = require("../../models/users/Trainer")
-const catchAsync = require("../../../utils/catchAsync")
+const User = require('../../models/users/User')
+const catchAsync = require('../../utils/catchAsync')
+const AppError = require('../../utils/AppError')
 
 
 /** a middleware to protect routes by checking if the the jwt token in the cookie is still valid */
@@ -18,7 +20,7 @@ exports.protect = catchAsync(async (req, res, next)=>{
   }
 
     if(!token){
-      return next(new AppError('עליך להיכנס', 401))
+      return next(new AppError('You have to login', 401))
     }
 
     //Step 2: verify the token
@@ -30,7 +32,7 @@ exports.protect = catchAsync(async (req, res, next)=>{
       user = await Trainer.findById(decoded.id)
 
       if (!user){
-        return next(new AppError('המשתמש כבר לא קיים', 401))
+        return next(new AppError('The user does no longer exists', 401))
       }
       
     }
@@ -53,7 +55,7 @@ exports.protect = catchAsync(async (req, res, next)=>{
 exports.restrictTo = (...roles)=>{
     return (req, res, next)=>{
       if(!roles.includes(req.user.role)){
-        return next(new AppError('אינך מוסמך לבצע את הפעולה הזאת', 403))
+        return next(new AppError('You are not authorized to perform this action', 403))
       }
       next()
     }

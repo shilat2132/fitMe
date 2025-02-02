@@ -21,7 +21,7 @@ exports.addWorkoutType = catchAsync(async (req, res, next)=>{
       );
 
       if (!schedule){
-        return next (new AppError("Couldn't add workout types", 404))
+        return next (new AppError("Couldn't add workout types", 500))
       }
 
 
@@ -46,7 +46,7 @@ exports.deleteWorkoutsType = catchAsync(async (req, res, next)=>{
    );
 
    if (!schedule){
-     return next (new AppError("Couldn't delete workout types", 404))
+     return next (new AppError("Couldn't delete workout types", 500))
    }
 
    const filterQuery = {
@@ -57,7 +57,7 @@ exports.deleteWorkoutsType = catchAsync(async (req, res, next)=>{
    
    const trainers = await Trainer.updateMany(filterQuery, updateTrainersObj)
    if (!trainers){
-    return next (new AppError("Couldn't remove workout types from the trainers", 404))
+    return next (new AppError("Couldn't remove workout types from the trainers", 500))
   }
 
  res.status(204).json({status: "success"})

@@ -23,15 +23,18 @@ exports.getMyAppts = catchAsync(async (req, res, next)=>{
  * an handler for a user to schedule an appointment (workout)
  */
 exports.makeAnAppt = catchAsync(async (req, res, next)=>{
-    const {dayId, date ,trainerId, hour, workout} = req.body
-    if (!dayId || !date || !trainerId || !hour || !workout){
+    const {date ,trainer, hour, workout} = req.body
+
+    if (!date || !trainer || !hour || !workout){
         return next(new AppError("one of the details are missing"), 400)
     }
-    if (utils.isApptAvailable(dayId, date, hour, trainerId)){
-        if (!await Appt.create(req.body)){
+
+    if (utils.isApptAvailable(date, hour, trainer)){
+        const newAppt = !await Appt.create({...req.body, trainee: req.user._id})
+        if (newAppt){
             return next(new AppError("failed to make an appointment"), 500)
     }
-    res.status(200).json({status: "success"})
+    res.status(200).json({status: "success", doc})
         
     }else{
         return next(new AppError("appointment isn't available"), 409)

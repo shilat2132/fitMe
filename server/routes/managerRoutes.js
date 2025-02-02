@@ -4,7 +4,7 @@ const router = express.Router()
 // HANDLERS IMPORTS
 const authMW = require("../handlers/auth/middlewares")
 const factory = require("../handlers/factory")
-const usersActions = require("../handlers/manager/usersActions")
+const usersActions = require("../handlers/users/manager/usersActions")
 const workoutsAction = require("../handlers/users/manager/workoutsActions")
 
 // MODELS IMPORTS
@@ -38,7 +38,7 @@ router.use("trainers", trainersRoutes)
 
     // get all trainees
 traineesFilter = req => ({role: "trainee"})
-router.get("trainees", factory.getAll(User), traineesFilter, "_id name")
+router.get("trainees", factory.getAll(User, traineesFilter, "_id name"))
 
 // turn a user into a trainer
 router.post("users/:userId", usersActions.userToTrainer)
@@ -46,19 +46,8 @@ router.post("users/:userId", usersActions.userToTrainer)
 
     // APPTS
 // get appts for specific day
-const workoutsFilter = req => ({date: req.params.dayId})
-router.get("appointments/:dayId", factory.getAll(Appointment, workoutsFilter))
-
-    // SCHEDULE
-// update schedule
-
-// create schedule
-
-
-// delete schedule
-
-
-
+const workoutsFilter = req => ({date: req.params.date})
+router.get("appointments/:date", factory.getAll(Appointment, workoutsFilter))
 
     // WORKOUTS
 // add a workout type, get workouts types
