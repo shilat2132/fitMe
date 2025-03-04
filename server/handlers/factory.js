@@ -27,7 +27,7 @@ exports.getAll = (Model, filterCallback = () => ({}), select= null, sort = null)
         if(!docs){
             return next(new AppError('לא נמצאו מסמכים מתאימים'), 404)
         }
-        res.status(200).json({status: "success", docs})
+        res.status(200).json({status: "success", amount: docs.length , docs})
     }))
 
  
@@ -70,7 +70,7 @@ exports.getAll = (Model, filterCallback = () => ({}), select= null, sort = null)
             if (!id || !update){
                 throw Error("You have to provide document id and updated object")
             }
-            const doc = await Model.findByIdAndUpdate(id, update);
+            const doc = await Model.findByIdAndUpdate(id, update, { new: true, runValidators: true });
 
             if(!doc){
                 return next(new AppError("Couldn't update the document"), 500)

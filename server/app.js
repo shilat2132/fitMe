@@ -24,6 +24,7 @@ const scheduleRouter = require("./routes/scheduleRoutes")
 const managerRouter = require("./routes/managerRoutes")
 const trainerRouter = require("./routes/trainerRoutes")
 const userRouter = require("./routes/userRoutes")
+const workoutTypesRouter = require("./routes/workoutsTypes")
 
 // END OF IMPORTS
 
@@ -81,6 +82,7 @@ app.use("/api/user", userRouter)
 app.use("/api/schedule", scheduleRouter)
 app.use("/api/trainer", trainerRouter)
 app.use("/api/manager", managerRouter)
+app.use("/api/workoutsTypes", workoutTypesRouter)
 
 
 

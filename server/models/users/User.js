@@ -48,6 +48,10 @@ const userSchema = new mongoose.Schema({
             message: "password and passwordConfirm are different"
         }
     },
+    isNewPasswordEncrypted: { //used to when a manager changes a user to a trainer and the password doesn't need to be encrypted again if it already is
+        type: Boolean,
+        default: false
+    },
     passwordChangedAt: Date, 
     passwordResetToken: String,
     passwordResetTokenExpires: Date
@@ -113,8 +117,10 @@ userSchema.methods.createPasswordResetToken = function(){
  */
 userSchema.pre('save', async function(next){
     if(!this.isModified('password')) return next()
+    if(this.isNew && this.isNewPasswordEncrypted) return next() //if the doc is new but the password is already encrypted, don't encrypt it again
     this.password = await bcrypt.hash(this.password, 12)
     this.passwordConfirm = undefined
+    this.isNewPasswordEncrypted = true
     next()
 
 })
@@ -125,7 +131,8 @@ userSchema.pre('save', async function(next){
  * Ensures it is set before the token is issued.
  */
 userSchema.pre('save', function(next){
-    if (this.isNew && this.role && this.role=="trainer"){
+    // ensures that users with the role of a trainer are only created using the Trainer model
+    if (this.isNew && this.role && this.role=="trainer" && this.constructor.modelName === "User"){
         return next(new AppError("You can't create a trainer in this model, there is a specified model for that"))
     }
     if(this.isNew || !this.isModified('password')) return next()

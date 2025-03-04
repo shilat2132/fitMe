@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require("validator")
 const User = require("./User")
+const { getHoursArr } = require('../../utils/utils')
 
 
 /** a class that inherits from user.
@@ -54,39 +55,59 @@ trainerSchema.virtual("vacations", {
 })
 
 
+
+trainerSchema.methods.getWorkingHours = async function(){
+    const Schedule = await require('../time/Schedule')
+    const schedule = await Schedule.findOne().select("appointmentTime")
+
+    if (!schedule){
+        return null
+    }
+
+    const {workoutPeriod, unit} = schedule.appointmentTime
+    const hours = getHoursArr(this.workingHours.start, this.workingHours.end, workoutPeriod, unit)
+    return hours
+}
+
 /**
  * this mw filters the trainer's workouts field(if modified) to have only the workouts that are in the general workouts types 
  */
 trainerSchema.pre("save", async function (next) {
-    if (this.isModified("workouts")){
-        const Schedule = await require('../time/Schedule')
-        let workoutTypes = await Schedule.findOne().select("workouts") //existing workout types
-        if (!workoutTypes) return next();
-
-        workoutTypes = new Set(workoutTypes.workouts)
-        this.workouts = this.workouts.filter(workout => workoutTypes.has(workout));
+    
+    if (!this.workouts) {
+        return next()
     }
 
+    const Schedule = await require('../time/Schedule')
+    const schedule = await Schedule.findOne().select("workouts");
+    if (!schedule) return next();
+
+    const workoutTypes = new Set(schedule.workouts);
+
+    this.workouts = this.workouts.filter(workout => workoutTypes.has(workout))
+
     next()
+});
+
+trainerSchema.pre( /^findOneAnd/, async function (next) {
+    let update = this.getUpdate()
+
+    if (!update.$addToSet || !update.$addToSet.workouts) {
+        return next()
+    }
+
+    const Schedule = await require('../time/Schedule')
+    let workoutTypes = await Schedule.findOne().select("workouts")
+    if (!workoutTypes) return next();
+
+    workoutTypes = new Set(workoutTypes.workouts);
+    update.$addToSet.workouts.$each = update.$addToSet.workouts.$each.filter(workout => workoutTypes.has(workout));
+    
+    this.setUpdate(update)
+    next();
 })
 
 
-trainerSchema.pre("findOneAndUpdate", async function (next) {
-    const update = this.getUpdate(); //gets the values to update
-    if (update.workouts) {
-        const Schedule = await require('../time/Schedule')
-
-        let workoutTypes = await Schedule.findOne().select("workouts");
-        if (!workoutTypes) return next();
-
-        workoutTypes = new Set(workoutTypes.workouts);
-        update.workouts = update.workouts.filter(workout => workoutTypes.has(workout));
-
-        this.setUpdate(update); 
-    }
-
-    next();
-});
 
 const Trainer = User.discriminator('Trainer', trainerSchema);
 

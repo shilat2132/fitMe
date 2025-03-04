@@ -15,7 +15,7 @@ exports.getMyAppts = catchAsync(async (req, res, next)=>{
     if (!docs){
         return next(new AppError("Couldn't find files"), 404)
     }
-    res.status(200).json({status: "success", docs})
+    res.status(200).json({status: "success",amount: docs.length, docs})
 })
 
 // need to add sending email
@@ -30,15 +30,16 @@ exports.makeAnAppt = catchAsync(async (req, res, next)=>{
         return next(new AppError("one of the details are missing"), 400)
     }
 
-    if (Appointment.isApptAvailable(date, hour, trainer)){
-        const newAppt = await Appt.create({...req.body, trainee: req.user._id})
-        if (!newAppt){
+    const {result, message} = await Appointment.isApptAvailable(date, hour, trainer, workout)
+    if (result){
+        const doc = await Appt.create({...req.body, trainee: req.user._id})
+        if (!doc){
             return next(new AppError("failed to make an appointment"), 500)
     }
     res.status(200).json({status: "success", doc})
         
     }else{
-        return next(new AppError("appointment isn't available"), 409)
+        return next(new AppError(message ? message : "error"), 409)
     }
 })
 
@@ -52,17 +53,19 @@ exports.makeAnAppt = catchAsync(async (req, res, next)=>{
  */
 exports.cancelAppt = (caller="trainee") => (
     catchAsync(async (req, res, next)=>{
-        let appt
-        if (caller == "trainee"){
-            appt = await Appt.findOne({_id: req.params.apptId, trainee: req.user._id})
-        }else if (caller=="trainer"){
-            appt = await Appt.findOne({_id: req.params.apptId, trainer: req.user._id})
-        }
         
-        if (!appt){
+        try {
+            if (caller == "trainee"){
+                await Appt.findOneAndDelete({_id: req.params.apptId, trainee: req.user._id})
+            }else if (caller=="trainer"){
+                await Appt.findOneAndDelete({_id: req.params.apptId, trainer: req.user._id})
+            }
+
+            res.status(204).json({status: "success"})
+        } catch (error) {
             return next(new AppError("appointment wasn't found"), 404)
         }
-        await appt.delete()
-        res.status(204).json({status: "success"})
+        
+        
     })
 )

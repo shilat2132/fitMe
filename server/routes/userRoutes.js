@@ -28,10 +28,6 @@ router.route("/me")
 
 router.patch('/updatePassword', passwordHandlers.updatePassword)
 
-// router.use("/trainers", trainersRouter)
-// router.use("/manager", managerRouter)
-
-
 
 // routes restricted to users with the role of 'trainee'
 router.use(authMW.restrictTo("trainee"))

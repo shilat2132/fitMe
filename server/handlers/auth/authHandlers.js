@@ -67,8 +67,10 @@ exports.signup = catchAsync (async (req, res, next)=>{
  */
 exports.login = catchAsync(async (req, res, next)=>{
   // Step 1: retrieve the email and password that the user entered
+ 
   const {email, password} = req.body
   if(!email || !password){
+    
     return next(new AppError("You must provide both email and password in order to login", 400))
   }
   

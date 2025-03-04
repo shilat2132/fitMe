@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const AppError = require('../../utils/AppError');
 
 /** a schema for worker's vaction
  * @property schedule - a ref field to the schedule
@@ -27,7 +28,7 @@ const vacationSchema = new mongoose.Schema({
         required: [true, 'Ending day is required'],
         validate: {
             validator: function (value) {
-                return value>this.from;
+                return value>=this.from;
             },
             message: 'Ending date of vacation must be after starting date'
         }
@@ -43,13 +44,30 @@ const vacationSchema = new mongoose.Schema({
     }
 });
 
-vacationSchema.pre("save", function(next){
-    this.from.setHours(0, 0, 0, 0)
-    this.to.setHours(23, 59, 59, 999)
+vacationSchema.pre("save", async function(next){
+    this.from.setUTCHours(0, 0, 0, 1)
+    this.to.setUTCHours(23, 59, 59, 999)
+
+    // checks whether there is an appointment scheduled in the range of dates of the vacation
+    const Appt = await require('../time/Appointment')
+    const appt = await Appt.findOne({
+        date:{
+            $gte: this.from,
+            $lte: this.to
+        },
+        trainer: this.trainer
+    })
+
+    if(appt){
+        return next(new AppError("You have a scheduled appointment in this range of vacation", 409))
+    }
     next()
 })
 
-
+vacationSchema.pre(/^find/, function(next){
+    this.populate({path: "trainer", select: "name email"})
+    next()
+})
 const Vacation = new mongoose.model('Vacation', vacationSchema)
 
 module.exports = Vacation

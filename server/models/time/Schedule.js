@@ -167,12 +167,12 @@ scheduleSchema.methods.deleteDates = async amountOfDaysToDelete=>{
 scheduleSchema.methods.updateDays = async function () {
     const today = new Date()
     const lastExistingDay = this.days.at(-1)
-    const lastActualDay = new Date(today) //the last day that's SUPPOSESED to be in the array
+    const lastActualDay = new Date() //the last day that's SUPPOSESED to be in the array
     lastActualDay.setDate(lastActualDay.getDate()+ this.maxDaysForward)
 
-    lastActualDay.setHours(0, 0, 0, 0)
-    lastExistingDay.setHours(0, 0, 0, 0)
-    today.lastExistingDay.setHours(0, 0, 0, 0)
+    lastActualDay.setUTCHours(0, 0, 0, 0)
+    lastExistingDay.setUTCHours(0, 0, 0, 0)
+    today.setUTCHours(0, 0, 0, 0)
 
     // checks if you need to update the dates
     if (lastExistingDay <lastActualDay){
@@ -197,7 +197,7 @@ scheduleSchema.methods.updateDays = async function () {
             return 1
         }else{
             const num = this.days.findIndex(d=>{
-                d.setHours(0,0,0,0)
+                d.setUTCHours(0,0,0,0)
                 return d== today
             })
 
@@ -205,7 +205,7 @@ scheduleSchema.methods.updateDays = async function () {
                 await this.deleteDates(num)
             }
             let amountOfDaysToCreate = (lastActualDay-lastExistingDay)/ (1000 * 3600 * 24) //get the days differance between the last date to the existing last date
-            amountOfDaysToCreate = Math.random(amountOfDaysToCreate)
+            amountOfDaysToCreate = Math.round(amountOfDaysToCreate)
             lastExistingDay.setDate(lastExistingDay.getDate()+1) //to start the dates to be created from the day after the last existing date
 
             const dates = this.datesCreation(amountOfDaysToCreate, lastExistingDay)

@@ -55,22 +55,18 @@ apptSchema.pre(/^find/, function(next){
 
 apptSchema.pre("save", async function(next){
     const Schedule = await require("./Schedule")
-    console.log(Schedule)
-    const schedule = await Schedule.findOne().select("workouts days")
+    const schedule = await Schedule.findOne().select("days")
     if (!schedule){
         return next(new AppError("you can't create an appointment while there isn't an existing schedule", 409))
-    }
-
-    // checks if the workout's type is one of the optional workouts
-    if (!schedule.workouts.includes(this.workout)){
-        return next(new AppError("the workout must be in the existing workouts of the schedule", 400))
     }
 
     // checks if the date is one of the available days of the schedule
     let d = this.date.toISOString().split("T")[0] //retrieves the date itself
     if (!schedule.days.some(day => day.toISOString().split("T")[0] === d)) {
-        return next(new AppError("The given date isn't in the range of the opened dates of the schedule"));
+        return next(new AppError("The given date isn't in the range of the opened dates of the schedule", 400));
     }
+
+    this.date = utils.clearTime(this.date)
     next()
 })
 
@@ -78,14 +74,12 @@ apptSchema.pre("save", async function(next){
 // APPOINTMENT METHODS
 /**
  * a static method for checking whether an appointment for a given trainer is available 
- * - meanning it's not scheduled and not in a day of the trainer's vacation or rest day
-* @param {Date} date - the date of the appointment to check
-* @param hour - string hour of the appintment we want to check
-* @param trainerId - the id of the trainer that we try to schedule to
+ * - meanning it's not scheduled and not in a day of the trainer's vacation or rest day, and the required workout is given by that trainer
+
 
 *@returns true if appointment is free, else returns false. returns null if an error occur
 */
-apptSchema.statics.isApptAvailable = async (date1, hour, trainerId)=>{
+apptSchema.statics.isApptAvailable = async (date1, hour, trainerId, workout)=>{
     try {
         // a query to find the trainer and make sure the given date is NOT in the range of ANY element of the vacations and not a rest day
         let date = new Date(date1)
@@ -93,11 +87,17 @@ apptSchema.statics.isApptAvailable = async (date1, hour, trainerId)=>{
         const query ={
             _id: trainerId,
             restingDay: {$ne: weekDay},
+            workouts: workout
+
         }
-        const trainer = await Trainer.findOne(query).populate("vacations").lean()
-        
+        const trainer = await Trainer.findOne(query).populate("vacations")
         if (!trainer){
-            return false
+            return {result: false, message: "Either the trainer doesn't exist, or the given appointment's date is his resting day, or he doesn't train the required workout"}
+        }
+
+        const hours = await trainer.getWorkingHours()
+        if (!hours || (hours && !hours.includes(hour))){
+            return {result: false, message: "The required hour isn't available with this trainer"}
         }
 
         const isOnVacation = trainer.vacations.some(vacation =>
@@ -105,11 +105,11 @@ apptSchema.statics.isApptAvailable = async (date1, hour, trainerId)=>{
         )
 
         if (isOnVacation){
-            return false
+            return {result: false, message: "the trainer is on vacation on the required date"}
         }
 
         const {start, end} = utils.startEndDay(date)
-        const appt = await this.findOne({
+        const appt = await Appointment.findOne({
             date: {
                 $gte: start,
                 $lte: end
@@ -117,10 +117,15 @@ apptSchema.statics.isApptAvailable = async (date1, hour, trainerId)=>{
             trainer: trainerId, 
             hour: hour}
         ).select("_id").lean()
-        return !appt
+
+        if (appt){
+            return {result: false, message: "the appointment is already booked"}
+        }
+        return {result: true}
+
     } catch (error) {
         console.log("An error occured in isApptAvailable function  ", error)
-        return null
+        return {result: false, error}
     }
 }
 

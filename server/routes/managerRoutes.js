@@ -14,7 +14,6 @@ const Trainer = require("../models/users/Trainer")
 const User = require("../models/users/User")
 const Appointment = require("../models/time/Appointment")
 const Vacation = require('../models/users/Vacation')
-const Schedule = require('../models/time/Schedule')
 
 
 
@@ -25,25 +24,25 @@ router.use(authMW.protect, authMW.restrictTo("manager"))
 trainersRoutes = express.Router()
 
 // get all trainers
-trainersRoutes.get("", factory.getAll(Trainer, ()=>({}) , "_id name"))
+trainersRoutes.get("/", factory.getAll(Trainer, ()=>({}) , "_id name email"))
 
-// get all trainers' vacations
-trainersRoutes.get("vacations", factory.getAll(Vacation, req=> {isApproved: "yes"}, null, { from: 1 }))
+// get all trainers' vacations - approved ones, sorted in ascending order of the starting dates
+trainersRoutes.get("/vacations", factory.getAll(Vacation, req=> ({isApproved: "yes"}), null, { from: 1 }))
 
-vacCallBack = req => ({id: req.params.vacId, update: {isApproved: req.body.approve ? req.body.approve : "Under review" }})
+vacCallBack = req => ({id: req.params.vacId, update: {isApproved: req.body.isApproved ? req.body.isApproved : "Under review" }})
 trainersRoutes
-    .get("vacations/toApprove", factory.getAll(Vacation, {isApproved: {$ne: "yes"}})) // get vacations that need to be approved
-    .put("vacations/:vacId/update", factory.updateOne(Vacation, vacCallBack)) //update vacation's status
+    .get("/vacations/toApprove", factory.getAll(Vacation, req=> ({isApproved: {$ne: "yes"}}))) // get vacations that need to be approved
+    .put("/vacations/:vacId/update", factory.updateOne(Vacation, vacCallBack)) //update vacation's status
 
 
-router.use("trainers", trainersRoutes)
+router.use("/trainers", trainersRoutes)
 
     // get all trainees
 traineesFilter = req => ({role: "trainee"})
-router.get("trainees", factory.getAll(User, traineesFilter, "_id name"))
+router.get("/trainees", factory.getAll(User, traineesFilter, "_id name email"))
 
 // turn a user into a trainer
-router.post("users/:userId", usersActions.userToTrainer)
+router.post("/users/:userId", usersActions.userToTrainer)
 
 
     // APPTS
@@ -57,13 +56,11 @@ const workoutsFilter = req => {
         }
     }
 }
-router.get("appointments/:date", factory.getAll(Appointment, workoutsFilter))
+router.get("/appointments/:date", factory.getAll(Appointment, workoutsFilter))
 
     // WORKOUTS
-// add a workout type, get workouts types
-const workoutsTypesFilter = req=> req.params.scheduleId
-router.route("workoutsTypes/:scheduleId")
-    .get(factory.getOne(Schedule, workoutsTypesFilter, "workouts"))
+// add a workout type, delete
+router.route("/workoutsTypes/:scheduleId")
     .put(workoutsAction.addWorkoutType)
     .delete(workoutsAction.deleteWorkoutsType)
 

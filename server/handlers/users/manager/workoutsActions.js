@@ -1,7 +1,7 @@
 const catchAsync = require("../../../utils/catchAsync")
 const AppError = require("../../../utils/AppError")
 const Schedule = require("../../../models/time/Schedule")
-
+const Trainer = require("../../../models/users/Trainer")
 
 /**
  * an handler for the manager to add workout types

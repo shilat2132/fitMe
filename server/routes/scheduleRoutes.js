@@ -7,15 +7,15 @@ const scheduleActions = require("../handlers/users/manager/scheduleActions")
 
 
 
-router.route("/")
-    .get(scheduleActions.getSchedule)
+
+router.route("/").get(scheduleActions.getSchedule)
+
+
 
 router.use(authMW.protect, authMW.restrictTo("manager"))
 router.route("/")
     .delete(scheduleActions.deleteSchedule)
     .patch(scheduleActions.updateSchedule)
     .post(scheduleActions.createSchedule)
-
-
 
 module.exports = router
