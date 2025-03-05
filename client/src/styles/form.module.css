@@ -1,0 +1,180 @@
+.link{
+    color: rgb(199 163 25);
+    border: 2px solid rgb(199 163 25);
+    text-decoration: none;
+    border-radius: 0.3rem;
+    padding: 2%;
+    font-size: 15px;
+    font-weight: 500;
+}
+.form{
+   
+    text-align: right;
+    border: 1px solid #e3e3e3;
+    border-radius: 16px;
+   
+}
+
+label{
+    font-size: 15px;
+}
+
+
+
+.checkboxDiv{
+    display: inline-flex;
+    font-size: 15px;
+    margin-left: 3%;
+}
+
+.checkboxDiv label{
+    margin-right: 9%;
+}
+
+.formGroup{
+    margin: 2%;
+}
+
+/* auth form */
+.authFormGroup input{
+    padding: 3px !important;
+}
+
+.authFormGroup label{
+    text-align: inherit !important;
+}
+
+.formMessage{
+    font-size: 13px;
+    color: rgb(166, 0, 169);
+    font-weight: 600;
+}
+
+.formSuccessMsg{
+    font-size: 13px;
+    color: rgb(0, 194, 0);
+    font-weight: 600;
+}
+
+.formErrorMessage{
+    font-size: 13px;
+    color: red;
+}
+.button{
+    background-color: rgb(40, 129, 244);
+    padding: 6px;
+    border: none;
+    color: white;
+    border-radius: 0.3rem;
+    font-size: 15px;
+    font-weight: 600;
+
+}
+
+.deleteButton{
+    background-color: rgb(255, 115, 115);
+}
+
+.formGroup label{
+    display: block;
+    text-align: left;
+    direction: ltr;
+    font-size: 15px;
+
+}
+
+select{
+    text-align: center;
+    font-size: 13px;
+}
+
+
+.formGroup input{
+    border: solid 1px #bdb8b8;
+    border-radius: 5px;
+    margin: 1.5%;
+    text-align: left;
+    direction: ltr;
+}
+
+
+
+.hourPick{
+    display: flex;
+}
+.hourPick label, .hourPick input{
+    font-size: 13px;
+
+}
+.apptLength input, .apptLength select{
+    max-height: 23px
+}
+
+
+.scheduleUpdateForm input{
+    font-size: 15px;
+    width: inherit;
+    padding: 1%;
+}
+
+
+
+.center {
+    margin-top: 4%;
+    padding: 10px;
+  }
+#passwordUpdateBtn{
+    margin-right: 3%;
+}
+
+  @media screen and (max-width: 500px) {
+    .formGroup input{
+        width: 90%;
+    }
+    .authForm{
+        margin: auto;
+        width: 85%;
+    }
+    .button{
+        min-width: 34%;
+        margin: 4%;
+
+    }
+    .checkboxDiv{
+        margin-left: 7%;
+    }
+    .scheduleUpdateForm .formGroup, .scheduleUpdateForm .scheduleFormGroup,
+    .scheduleUpdateForm .hourPick, .scheduleUpdateForm .apptLength{
+    margin-bottom: 7%;
+}
+    
+  }
+
+  @media screen and (min-width: 501px) {
+    .center {
+        margin: auto;
+        /* width: 30%; */
+    }
+    .apptFooter{
+        margin: auto;
+        width: fit-content;
+    }
+    .link{
+        padding: 1%;
+    }
+    .authForm{
+        margin-top: 5%;
+        width: 30%;
+    }
+    .authFormGroup input{
+        width: 90%;
+    }
+    .inputsDiv{
+        display: flex;
+        margin: auto;
+    }
+    .button{
+        min-width: 14%;
+        margin: 1%;
+    }
+  }

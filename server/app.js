@@ -42,10 +42,10 @@ app.set('trust proxy', 1);
 //SECURITY HANDLING 
 
 // This middleware manages which origins are permitted to access the resources - used when having different domains for the server and client
-// app.use(cors({ credentials: true, // Allow cookies and credentials in requests
-//   origin: ['https://cosmetic-api.onrender.com', 'https://cosmetic.onrender.com', 'http://localhost:3000']
-// }))
-// app.options('*', cors())
+app.use(cors({ credentials: true, // Allow cookies and credentials in requests
+  origin: ['https://cosmetic-api.onrender.com', 'https://cosmetic.onrender.com', 'http://localhost:5173']
+}))
+app.options('*', cors())
 
 
 // Security mw to set HTTP headers for enhanced security to prevent XSS, Clickjacking, Data Leakage...
