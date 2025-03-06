@@ -1,0 +1,26 @@
+.navbar{
+    background-color: rgb(40, 129, 244);
+    padding-left: 3%;
+}
+
+#navbarToggler, #navbarToggler:focus{
+    border: none;
+    box-shadow: none;
+}
+
+
+#navbarBrand{
+    color: white;
+    font-size: 24px;
+}
+
+.navLink{
+    color: white;
+    font-size: 18px;
+}
+
+@media screen and (max-width: 500px) {
+    .navLink{
+        margin-right: 5%;
+    }
+  }

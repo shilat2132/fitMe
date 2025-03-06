@@ -1,4 +1,4 @@
-import { useOutletContext } from "react-router-dom"
+import { NavLink, useOutletContext } from "react-router-dom"
 
 export const Home = ()=>{
     const { isLoggedIn, user } = useOutletContext()

@@ -1,0 +1,170 @@
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'><path stroke='rgb(237, 247, 255)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/></svg>") !important;
+  }
+  
+  .vacationsContainer{
+    margin-top: 9%;
+  }
+  
+  .loading-fallback{
+    color:rgb(40, 129, 244);
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  .toast{
+    margin: auto;
+    text-align: right !important;
+  }
+  
+  #toastHeader{
+    margin-right: 0px !important;
+    font-size: 17px;
+  }
+  .toast-body{
+    background-color: #e7e9e9;
+    font-weight: 500;
+    font-size: 13px;
+  }
+  
+  .btn-close{
+    margin-right: 3% !important;
+  }
+  .box{
+    margin-top: 17%;
+  }
+  .generalMessage{
+    font-size: 13px;
+    color: rgb(166, 0, 169);
+    font-weight: 600;
+  }
+  
+  .formErrorMessage{
+    font-size: 13px;
+    color: red;
+    font-weight: 600;
+  }
+  
+  .errorMessage{
+    font-size: 23px;
+    color: red;
+    font-weight: 600;
+      direction: ltr;
+      text-align: center;
+      margin-top: 15%;
+  }
+  
+  .center {
+      margin: auto;
+      width: 50%;
+      padding: 10px;
+    }
+  
+    .invalidInput:invalid{
+      background-color: rgb(252, 151, 151);
+      /* color: rgb(237, 247, 255); */
+  }
+    
+  
+    hr{
+      border: 1.5px solid rgb(40, 129, 244);
+    }
+    .navLayer{
+      margin-left: 5%;
+      color: rgb(40, 129, 244);
+    }
+   
+    .input-group-text{
+      border: none;
+      background-color: inherit;
+    }
+    .forgotPassLink{
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 3%;
+    }
+  
+    .accountLayout{
+      margin-top: 7%;
+    }
+  
+    .contentLayer{
+      margin-top: 5%;
+      font-size: 15px;
+  
+    }
+  
+    .message{
+      font-size: 13px;
+      color: rgb(166, 0, 169);
+      font-weight: 600;
+    }
+  
+    /* services page */
+    .service-error-msg{
+      color: #da0000;
+    }
+    .service-success-msg{
+      color: rgb(102 255 102);
+      font-weight: 600;
+    }
+    .updateLink{
+      background-color: #86b7fe;
+      color: #343a40;
+      padding: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+  
+    .serviceListItem, .vacationListItem{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .body, .mainBody{
+      margin-top: 12%;
+      margin-left: 5%;
+    }
+    body{
+      margin-bottom: 10%;
+    }
+    .button{
+      background-color: rgb(40, 129, 244);
+      padding: 8px;
+      border: none;
+      color: white;
+      border-radius: 0.3rem;
+      font-size: 20px;
+      font-weight: 800;
+  
+  }
+  
+  .modal{
+    padding-left: 0px !important;
+  }
+  
+    .accordion-button::after {
+      margin-right: 4% !important;
+    }
+  
+    .homeBody{
+      margin-top: 10px;
+      margin-bottom: 0px;
+    }
+    @media screen and (max-width: 500px) {
+      .body {
+        margin-top: 29%;
+        margin-bottom: 30%;
+      }
+    
+  
+      .toast{
+        width: 70%;
+      }
+      .errorMessage{
+        font-size: 16px;
+      }
+    }

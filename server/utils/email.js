@@ -69,8 +69,8 @@ module.exports = class Email{
     }
 
     async sendResetPassword(message, resetUrl){
-        const html = `<p style="direction: rtl; text-align:right"><a href=${resetUrl}>${resetUrl}</a> <br/> שכחת את הסיסמה? צור סיסמה חדשה בלינק המצורף, אם לא הגשת בקשה לשינוי סיסמה, אנא התעלם מהמייל הזה.</p>`
-        await this.send('הקישור לאיפוס הסיסמה שלך, תקף ל 10 הדקות הבאות', message, html)
+        const html = `<p style="direction: ltr; text-align:left"><a href=${resetUrl}>${resetUrl}</a> <br/> ${message}</p>`
+        await this.send('The link for resetting your password in Fitme expires in 10 minutes', message, html)
     }
 
     async sendScheduledAppt(message){

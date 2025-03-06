@@ -21,10 +21,9 @@ exports.forgotPassword = catchAsync(async (req, res, next)=>{
       await user.save({validateBeforeSave: false})
   
       // Step 3: create the url for resetting with the token and send the email
-      const resetUrl = `${req.body.domain}/resetPassword/${resetToken}`
+      const resetUrl = `${req.headers.origin}/auth/resetPassword/${resetToken}`
   
-      const message = `שכחת את הסיסמה? צור סיסמה חדשה בלינק המצורף, אם לא הגשת בקשה לשינוי סיסמה, אנא התעלם מהמייל הזה. ${resetUrl}`
-  
+      const message = `You applied a request for resetting your password? enter the link below. if you didn't request, please ignore this mail.`
       try {
         await new Email(user).sendResetPassword(message, resetUrl)
         res.status(200).json({status: "success", message: "token sent to email"})
@@ -32,7 +31,7 @@ exports.forgotPassword = catchAsync(async (req, res, next)=>{
           user.passwordResetToken = undefined
           user.passwordResetTokenExpires = undefined
           await user.save({validateBeforeSave: false})
-          return next(new AppError("שליחת המייל נכשלה, אנא נסו שוב מאוחר יותר", 500))
+          return next(new AppError("Couldn't send email. Please try again later", 500))
       }
   })
   
