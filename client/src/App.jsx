@@ -1,6 +1,6 @@
 import { RouterProvider, createBrowserRouter, Outlet } from "react-router";
 import { Home } from "./pages/home";
-import { lazy, Suspense } from 'react';
+import { Suspense } from 'react';
 
 import Spinner from 'react-bootstrap/Spinner';
 import { ErrorPage } from "./pages/errorPage";
@@ -9,6 +9,7 @@ import { rootLoader } from "./pages/auth/actions/auth";
 
 import authRouter from "./pages/auth/authRouter";
 import "./styles/general.css"
+import scheduleRouter from "./pages/schedule/scheduleRouter";
 
 
 
@@ -28,10 +29,9 @@ export function dynamicActionImport(key) {
   };
 }
 
-// const loaderModules = {
-//   dashboard: () => import("./pages/dashboard/dashboardLoader"),
-//   profile: () => import("./pages/profile/profileLoader"),
-// };
+const loaderModules = {
+  general: () => import("./utils/loaders"),
+};
 
 /** dynamicly imports loaders functions (that are exported as default) */
 function dynamicLoaderImport(key, apiUrl) {
@@ -62,7 +62,9 @@ export function suspenseElement(component){
 const router = createBrowserRouter([
   {path: "/", element: <Layout/>, errorElement: <ErrorPage/>, loader: rootLoader , children:[
     {index: true, element: <Home/>},
-    authRouter( suspenseElement, dynamicActionImport )
+    authRouter( suspenseElement, dynamicActionImport ),
+    scheduleRouter(suspenseElement, dynamicLoaderImport, dynamicActionImport)
+    
     
   ]}
 ])

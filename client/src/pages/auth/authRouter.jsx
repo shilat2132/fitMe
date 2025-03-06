@@ -3,8 +3,8 @@ import { lazy } from "react";
 import { Outlet } from "react-router-dom";
 
 
-const AuthPage = lazy(() => import("./authPage"));
-const ResetPassPage = lazy(()=> import("./resetPassPage"))
+const AuthPage = lazy(() => import("./pages/authPage"));
+const ResetPassPage = lazy(()=> import("./pages/resetPassPage"))
 
 const authRouter = (suspenseElement, dynamicActionImport)=>{
 

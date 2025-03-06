@@ -30,8 +30,8 @@ const MainNav = ({isLoggedIn})=>{
                     {/* {isLoggedIn && <NavLink className={`${styles.navLink} nav-link`} to="/me"><CgProfile /></NavLink>} */}
                     </Nav>
             </Navbar.Collapse>
-            {/* <NavLink className={`${styles.navLink} nav-link`} to="/makeAnAppointment"><Button variant="outline-light">+תור</Button>{' '}
-                    </NavLink> */}
+            <NavLink className={`${styles.navLink} nav-link`} to="/makeAnAppt"><Button variant="outline-light">Appointment+</Button>{' '}
+                    </NavLink>
         </Navbar>
     )
 }
