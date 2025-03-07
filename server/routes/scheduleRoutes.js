@@ -8,8 +8,8 @@ const scheduleActions = require("../handlers/users/manager/scheduleActions")
 
 
 
-router.route("/").get(scheduleActions.getSchedule)
-
+router.get("/", scheduleActions.getSchedule)
+router.get("/:date", scheduleActions.getTrainersForDay)
 
 
 router.use(authMW.protect, authMW.restrictTo("manager"))

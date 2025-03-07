@@ -74,7 +74,8 @@ apptSchema.pre("save", async function(next){
 // APPOINTMENT METHODS
 /**
  * a static method for checking whether an appointment for a given trainer is available 
- * - meanning it's not scheduled and not in a day of the trainer's vacation or rest day, and the required workout is given by that trainer
+ * - meanning it's not scheduled and not in a day of the trainer's vacation or rest day,
+ *  and the required workout is given by that trainer
 
 
 *@returns true if appointment is free, else returns false. returns null if an error occur
@@ -95,7 +96,9 @@ apptSchema.statics.isApptAvailable = async (date1, hour, trainerId, workout)=>{
             return {result: false, message: "Either the trainer doesn't exist, or the given appointment's date is his resting day, or he doesn't train the required workout"}
         }
 
-        const hours = await trainer.getWorkingHours()
+        let hours = await trainer.getAvailableHours(date)
+        hours = hours.availableHours 
+        console.log(hours)
         if (!hours || (hours && !hours.includes(hour))){
             return {result: false, message: "The required hour isn't available with this trainer"}
         }
@@ -108,19 +111,19 @@ apptSchema.statics.isApptAvailable = async (date1, hour, trainerId, workout)=>{
             return {result: false, message: "the trainer is on vacation on the required date"}
         }
 
-        const {start, end} = utils.startEndDay(date)
-        const appt = await Appointment.findOne({
-            date: {
-                $gte: start,
-                $lte: end
-            }, 
-            trainer: trainerId, 
-            hour: hour}
-        ).select("_id").lean()
+        // const {start, end} = utils.startEndDay(date)
+        // const appt = await Appointment.findOne({
+        //     date: {
+        //         $gte: start,
+        //         $lte: end
+        //     }, 
+        //     trainer: trainerId, 
+        //     hour: hour}
+        // ).select("_id").lean()
 
-        if (appt){
-            return {result: false, message: "the appointment is already booked"}
-        }
+        // if (appt){
+        //     return {result: false, message: "the appointment is already booked"}
+        // }
         return {result: true}
 
     } catch (error) {

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const validator = require("validator")
 const User = require("./User")
 const { getHoursArr } = require('../../utils/utils')
-
+const utils = require("../../utils/utils")
 
 /** a class that inherits from user.
  * @property workouts: an array of strings from the workouts array enum
@@ -56,17 +56,56 @@ trainerSchema.virtual("vacations", {
 
 
 
-trainerSchema.methods.getWorkingHours = async function(){
-    const Schedule = await require('../time/Schedule')
-    const schedule = await Schedule.findOne().select("appointmentTime")
+/** given a d(date) and period (int, optional) and unit ('h' or 'm', optional):
+ *  - creates an array of string hours that are available for the trainer in the given day, and are not scheduled
+ * @returns {object} {status: "success", availableHours} or {status: "success", error}
+ */
+trainerSchema.methods.getAvailableHours = async function(d, period = null, unit=null){
+   try {
+    
+     // retrieve his appts for the day
+     const Appointment = await require('../time/Appointment')
+     const date = new Date(d)
+     const {start, end} = utils.startEndDay(date)        
+     
+     const appts = await Appointment.find({
+         trainer: this._id,
+         date: {$gte: start, $lte: end}
+             }).select("hour").lean()
+    
+     // create an array of scheduled hours for that day
+     const scheduledHours = appts.map(appt=> appt.hour)
 
-    if (!schedule){
-        return null
-    }
+     // create an array of the hours he works at
+    
+ 
+     let workoutPeriod, workoutUnit
+     if (!period && !unit){
+        
+         const Schedule = await require('../time/Schedule')
+         const schedule = await Schedule.findOne().select("appointmentTime")
+ 
+         if (!schedule){
+             return null
+         }
+     
+         workoutPeriod = schedule.appointmentTime.workoutPeriod
+         workoutUnit = schedule.appointmentTime.unit
+     }else{
+        workoutPeriod = period
+        workoutUnit = unit
+     }
+    
+     const hours = getHoursArr(this.workingHours.start, this.workingHours.end, workoutPeriod, workoutUnit)
+     
+      // remove the hours that are scheduled
+     const availableHours = hours.filter(h=> !scheduledHours.includes(h))
+     return {status: "success", availableHours}
 
-    const {workoutPeriod, unit} = schedule.appointmentTime
-    const hours = getHoursArr(this.workingHours.start, this.workingHours.end, workoutPeriod, unit)
-    return hours
+   } catch (error) {
+    console.log(error)
+        return {status: "error", error}
+   }
 }
 
 /**

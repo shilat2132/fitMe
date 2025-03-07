@@ -15,7 +15,7 @@ exports.getSchedule = catchAsync(async (req, res, next)=>{
   const schedule = await Schedule.findOne()
 
     if (!schedule){
-      return next (new AppError("Couldn't create schedule", 500))
+      return next (new AppError("Couldn't get schedule", 500))
     }
 
     await schedule.updateDays()
@@ -24,6 +24,22 @@ exports.getSchedule = catchAsync(async (req, res, next)=>{
   res.status(200).json({status: "success", schedule})
 })
 
+
+exports.getTrainersForDay = catchAsync(async (req, res, next)=>{
+  const schedule = await Schedule.findOne()
+
+    if (!schedule){
+      return next (new AppError("Couldn't find a schedule", 500))
+    }
+
+   const trainers = await schedule.getWorkingTrainers(req.params.date)
+
+   if (!trainers){
+    return next (new AppError("Couldn't get trainers", 500))
+   }
+
+  res.status(200).json({status: "success", trainers})
+})
 
 
 /**
@@ -35,7 +51,7 @@ exports.createSchedule = catchAsync(async (req, res, next)=>{
    const schedule = await Schedule.create(filterObj);
 
      if (!schedule){
-       return next (new AppError("Couldn't create schedule", 500))
+       return next (new AppError("Couldn't create a schedule", 500))
      }
 
      

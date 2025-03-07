@@ -78,7 +78,9 @@ function minutesToStrTime(minutes){
  * @returns an array of the string hours from the start to the end according to the wourkout period and unit
  */
 exports.getHoursArr = (start, end, workoutPeriod, unit) =>{
-    
+    if (unit!= 'h' && unit!="m"){
+        throw TypeError("The unit should be either 'h' or 'm'")
+    }
     const endMinutes = strHourToMinutesInt(end)
     const periodMinutes = unit== "h" ? workoutPeriod*60 : workoutPeriod
     let currentHourMinutes = strHourToMinutesInt(start)

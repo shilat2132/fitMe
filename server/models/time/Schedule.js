@@ -54,9 +54,10 @@ const scheduleSchema = new mongoose.Schema({
  * 
  * @throws {Error} Logs and returns `null` if an error occurs during the process.
  */
-scheduleSchema.methods.getWorkingTrainers = async function(date){
+scheduleSchema.methods.getWorkingTrainers = async function(d){
     try {
         // get trainers that don't have a free day on that day, not in restingDay and not in a vacation
+        const date = new Date(d)
         const currentDayNum = date.getDay()
         const trainersQuery = {
             restingDay: {$ne: currentDayNum},
@@ -75,40 +76,22 @@ scheduleSchema.methods.getWorkingTrainers = async function(date){
             ]
         }
         const Trainer = await require('../users/Trainer');
-        const trainers = await Trainer.find(trainersQuery).select("_id name workouts workingHours").lean()
+        const trainers = await Trainer.find(trainersQuery).select("_id name workouts workingHours")
         if (!trainers || trainers.length ==0){
             return null
         }
 
-        const {start, end} = utils.startEndDay(date)
-        
-        const Appointment = await require('./Appointment')
-
-        // retrives all the appointments for today
-        const appts = await Appointment.find({
-            date: {
-                $gte: start,
-                $lte: end
+        const finalTrainersArray = await Promise.all( trainers.map(async trainer=>{
+            const availableHours = await trainer.getAvailableHours(date, this.appointmentTime.workoutPeriod, this.appointmentTime.unit)
+            
+            return {
+                _id: trainer._id,
+                name: trainer.name,
+                workouts: trainer.workouts,
+                availableHours: availableHours.availableHours ? availableHours.availableHours : []
             }
-        }).select("trainer hour").lean()
-        
-        // map each appointment to a trainer
-       const trainersHoursDict = {}
-       if (appts && appts.length > 0){
-            let trainerId;
-            appts.forEach(appt=>{
-                trainerId = appt.trainer._id.toString()
-                if (!trainersHoursDict[trainerId]) trainersHoursDict[trainerId] = []
-                trainersHoursDict[trainerId].push(appt.hour)
-            })
-       }
-
-        const finalTrainersArray = trainers.map(trainer=>(
-            {
-                ...trainer,
-                scheduledHours: trainersHoursDict[trainer._id] || []
-            }
-        ))
+        }))
+    
         return finalTrainersArray
         
     } catch (error) {
