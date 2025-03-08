@@ -104,26 +104,14 @@ apptSchema.statics.isApptAvailable = async (date1, hour, trainerId, workout)=>{
         }
 
         const isOnVacation = trainer.vacations.some(vacation =>
-            date >= vacation.from && date <= vacation.to
+            date >= vacation.from && date <= vacation.to && vacation.isApproved == "yes"
         )
 
         if (isOnVacation){
             return {result: false, message: "the trainer is on vacation on the required date"}
         }
 
-        // const {start, end} = utils.startEndDay(date)
-        // const appt = await Appointment.findOne({
-        //     date: {
-        //         $gte: start,
-        //         $lte: end
-        //     }, 
-        //     trainer: trainerId, 
-        //     hour: hour}
-        // ).select("_id").lean()
-
-        // if (appt){
-        //     return {result: false, message: "the appointment is already booked"}
-        // }
+      
         return {result: true}
 
     } catch (error) {

@@ -33,7 +33,6 @@ exports.getTrainersForDay = catchAsync(async (req, res, next)=>{
     }
 
    const trainers = await schedule.getWorkingTrainers(req.params.date)
-
    if (!trainers){
     return next (new AppError("Couldn't get trainers", 500))
    }

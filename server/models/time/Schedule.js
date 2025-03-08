@@ -68,7 +68,8 @@ scheduleSchema.methods.getWorkingTrainers = async function(d){
                         $not: {
                             $elemMatch: {
                                 from: { $lte: date },
-                                to: { $gte: date}
+                                to: { $gte: date},
+                                isApproved: "yes"
                             }
                         }
                     }
@@ -124,21 +125,21 @@ scheduleSchema.methods.datesCreation = function(numOfDays = null, currentDate= n
 /**
  * delete the dates, vacations and appointments up until the given index
  */
-scheduleSchema.methods.deleteDates = async amountOfDaysToDelete=>{
+scheduleSchema.methods.deleteDates = async function (amountOfDaysToDelete){
     const Appointment = await require('./Appointment')
-
     for(i=0; i<amountOfDaysToDelete; i++){
         const currentDate = this.days[i]
         const {start, end} = utils.startEndDay(currentDate)
+        
         await Appointment.deleteMany({date: {$gte: start, $lte: end }})
 
         await Vacation.deleteMany({to: {$lt: end}})
     }
-
     if(amountOfDaysToDelete != this.days.length){
         this.days = this.days.slice(amountOfDaysToDelete)
+    }else{
+        this.days = []
     }
-    
 }
 
 /**
@@ -163,7 +164,7 @@ scheduleSchema.methods.updateDays = async function () {
          // if today is the last existing day - don't remove it, remove all the days before it
         if(today == lastExistingDay){
              await this.deleteDates(this.days.length-1)
-
+           
              const startDate = new Date(today)
              startDate.setDate(startDate.getDate()+1)
 
@@ -196,6 +197,15 @@ scheduleSchema.methods.updateDays = async function () {
             return 1   
         }
     }  else{
+        // if there are more days than the amount that's supposed to be, 
+        // and the last day is the last day that's supposed to be, but the first day isn't today
+        const num = this.days.findIndex(d=>{
+            // d.setUTCHours(0,0,0,0)
+            return d.toLocaleDateString()== today.toLocaleDateString()
+        })
+        if (num !=-1){
+            await this.deleteDates(num)
+        }
         return -1 //if the last existing date is after the last date that should be, it means that the user's trying to update the maxDaysForward field to a smaller number than before, and that's not allowed
     }
 }

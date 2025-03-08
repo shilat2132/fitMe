@@ -66,7 +66,7 @@ trainerSchema.methods.getAvailableHours = async function(d, period = null, unit=
      // retrieve his appts for the day
      const Appointment = await require('../time/Appointment')
      const date = new Date(d)
-     const {start, end} = utils.startEndDay(date)        
+     const {start, end} = utils.startEndDay(date) 
      
      const appts = await Appointment.find({
          trainer: this._id,
