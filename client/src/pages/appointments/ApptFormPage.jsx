@@ -3,6 +3,7 @@ import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { useEffect, useReducer } from "react";
 import { he } from 'date-fns/locale';
+import ApptForm from "../../components/appointments/ApptForm";
 
 
 function reducer(state, action){
@@ -26,7 +27,7 @@ function reducer(state, action){
     }
 }
 
-export default function SchedulePage(){
+export default function ApptFormPage(){
     const data = useLoaderData()
 
     const [state, dispatch] = useReducer(reducer, {
@@ -67,8 +68,6 @@ export default function SchedulePage(){
     
     function onSelectDayHandler(date){
         // change the date on the reducer
-        // const d = new Date(date)
-        // console.log(d)
         const utcDate = new Date(Date.UTC(
             date.getFullYear(), 
             date.getMonth(), 
@@ -76,20 +75,23 @@ export default function SchedulePage(){
             0, 0, 0, 0
         ));
         dispatch({type: "SET_DATE", date: utcDate })
-        // this case of changing the date would check whether the data is already in the cache, 
-        // if it is, set the data of the reducer to this data
-        // if it isn't in the cache - set the data to null
-        // in the useEffect, first check if the date isn't null but the data is, then call the server, set the data and set the cache, otherwise - break
+        
+    }
+
+    let footer;
+    if(!state.date){
+        footer = "Pick a day"
+    }else{
+        footer = <ApptForm date={state.date} trainers={state.footer ? state.footer : {}}/>
     }
     
     return (<DayPicker
+        style={{margin: "auto"}}
         animate
         mode="single"
         selected={state.date}
         onSelect={onSelectDayHandler}
         locale={he}
-        footer={
-          state.date ? `Selected: ${state.date.toLocaleDateString()}` : "Pick a day."
-        }
+        footer={ footer }
       />)
 }

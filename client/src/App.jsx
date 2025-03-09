@@ -9,7 +9,7 @@ import { rootLoader } from "./pages/auth/actions/auth";
 
 import authRouter from "./pages/auth/authRouter";
 import "./styles/general.css"
-import scheduleRouter from "./pages/schedule/scheduleRouter";
+import apptRouter from "./pages/appointments/ApptRouter";
 
 
 
@@ -63,7 +63,7 @@ const router = createBrowserRouter([
   {path: "/", element: <Layout/>, errorElement: <ErrorPage/>, loader: rootLoader , children:[
     {index: true, element: <Home/>},
     authRouter( suspenseElement, dynamicActionImport ),
-    scheduleRouter(suspenseElement, dynamicLoaderImport, dynamicActionImport)
+    apptRouter(suspenseElement, dynamicLoaderImport, dynamicActionImport)
     
     
   ]}

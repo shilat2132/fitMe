@@ -32,10 +32,18 @@ exports.getTrainersForDay = catchAsync(async (req, res, next)=>{
       return next (new AppError("Couldn't find a schedule", 500))
     }
 
-   const trainers = await schedule.getWorkingTrainers(req.params.date)
-   if (!trainers){
+   const trainersArray = await schedule.getWorkingTrainers(req.params.date)
+   if (!trainersArray){
     return next (new AppError("Couldn't get trainers", 500))
    }
+
+   let trainers = {}
+   trainersArray.forEach(trainer => {
+      if (trainer.availableHours.length >0 && trainer.workouts.length >0){
+        trainers[trainer._id] = trainer
+      }
+   });
+
 
   res.status(200).json({status: "success", trainers})
 })
