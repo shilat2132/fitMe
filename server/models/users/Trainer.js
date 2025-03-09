@@ -68,6 +68,7 @@ trainerSchema.methods.getAvailableHours = async function(d, period = null, unit=
      const date = new Date(d)
      const {start, end} = utils.startEndDay(date) 
      
+     
      const appts = await Appointment.find({
          trainer: this._id,
          date: {$gte: start, $lte: end}

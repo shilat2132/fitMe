@@ -4,7 +4,7 @@ import "react-day-picker/style.css";
 import { useEffect, useReducer } from "react";
 import { he } from 'date-fns/locale';
 import ApptForm from "../../components/appointments/ApptForm";
-
+import styles from "../../styles/appts.module.css"
 
 function reducer(state, action){
     switch (action.type){
@@ -12,7 +12,8 @@ function reducer(state, action){
         case "SET_DATE":
             // if the specific date data is already cached than set the footer to it
             if (state.cachedFooter[action.date]){
-                return {...state, date: action.date, footer: state.cachedFooter[action.date]}
+                const data = state.cachedFooter[action.date]
+                return {...state, date: action.date, footer: data.footer, error: data.error}
             }else{
                 // if it isn't - set only the date to the new date and the footer to null - to sign the useEffect that it needs to call the server
                 return {...state, date: action.date, footer: null}
@@ -20,7 +21,11 @@ function reducer(state, action){
         
         // this is called after the useEffect called the server with the data on the current date and it need to be cached
         case "SET_CACHE":
-            return {...state, cachedFooter: {...state.cachedFooter, [state.date]: action.footer }, footer: action.footer}
+            return {...state, cachedFooter: {...state.cachedFooter, [state.date]: {footer: action.footer, error: action.error} }, 
+                footer: action.footer, error: action.error}
+        
+        case "RESET_FOOTER":
+            return {...state, date: null, footer: "Please select a day", error: false}
     
         default:
             return state
@@ -29,14 +34,21 @@ function reducer(state, action){
 
 export default function ApptFormPage(){
     const data = useLoaderData()
+    
+    if (!data.schedule){
+        const errorMsg = data.error || "Something went wrong"
+        return (<div className="errorMessage container">{errorMsg}</div>)
+    }
+
+    const {maxDaysForward} = data.schedule
 
     const [state, dispatch] = useReducer(reducer, {
         date: null,
         cachedFooter: {},
-        footer: "Please select a day"
+        footer: "Please select a day",
+        error: false
     })
     
-    console.log(state)
 
     // use effect would call the server with the current date, its dependencies are only the date itself
     useEffect(()=>{
@@ -48,18 +60,28 @@ export default function ApptFormPage(){
                 const responseData = await response.json()
 
                 if(!response.ok || (responseData && !responseData.trainers)){
-                    throw new Error(responseData ? responseData : "Something went wrong")
+                    let footer = "Something went wrong"
+                    if (responseData && responseData.message){
+                        footer = responseData.message
+                    }
+                    return {error: true, footer: <p style={{color: "red"}}>{ footer}</p> }
                 }
 
-                return responseData.trainers 
+                return {error: false, footer: responseData.trainers }
             } catch (error) {
-                throw error
+                return {error: true, footer: <p style={{color: "red"}}>{ responseData ? responseData : "Something went wrong"}</p> }
             }
         }
 
         async function setCache(){
-            const footer = await fetchTrainersForDay()
-            dispatch({type: "SET_CACHE", footer })
+           try {
+            const result = await fetchTrainersForDay()
+            dispatch({type: "SET_CACHE", footer: result.footer, error: result.error })
+           
+            
+           } catch (error) {
+            dispatch({type: "SET_CACHE", error: true, footer: <p style={{color: "red"}}>Something went wrong</p> })
+           }
         }
         
         setCache()
@@ -67,6 +89,10 @@ export default function ApptFormPage(){
     
     
     function onSelectDayHandler(date){
+        if (!date){
+            dispatch({type: "RESET_FOOTER"})
+            return;
+        }
         // change the date on the reducer
         const utcDate = new Date(Date.UTC(
             date.getFullYear(), 
@@ -82,15 +108,31 @@ export default function ApptFormPage(){
     if(!state.date){
         footer = "Pick a day"
     }else{
-        footer = <ApptForm date={state.date} trainers={state.footer ? state.footer : {}}/>
+        if(state.error){
+            footer = state.footer
+        }else{
+            footer = <ApptForm  date={state.date} trainers={state.footer ? state.footer : {}}/>
+        }
+        
     }
     
+
+    const allowedRange = {
+        from: new Date(),
+        to: new Date()
+    }
+    allowedRange.to.setDate(allowedRange.to.getDate()+ maxDaysForward)
+    const modifiers = {
+        disabled: { before: allowedRange.from, after: allowedRange.to },
+      };
+
     return (<DayPicker
-        style={{margin: "auto"}}
+        className={`${styles.dayPicker} container`}
         animate
         mode="single"
         selected={state.date}
         onSelect={onSelectDayHandler}
+        modifiers={modifiers}
         locale={he}
         footer={ footer }
       />)

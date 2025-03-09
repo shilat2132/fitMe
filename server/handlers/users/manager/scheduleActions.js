@@ -32,6 +32,12 @@ exports.getTrainersForDay = catchAsync(async (req, res, next)=>{
       return next (new AppError("Couldn't find a schedule", 500))
     }
 
+    let d = new Date(req.params.date)
+    d = d.toISOString().split("T")[0] //retrieves the date itself
+    if (!schedule.days.some(day => day.toISOString().split("T")[0] === d)) {
+        return next(new AppError("The given date isn't in the range of the opened dates of the schedule", 400));
+    }
+
    const trainersArray = await schedule.getWorkingTrainers(req.params.date)
    if (!trainersArray){
     return next (new AppError("Couldn't get trainers", 500))

@@ -33,11 +33,7 @@
   .box{
     margin-top: 17%;
   }
-  .generalMessage{
-    font-size: 13px;
-    color: rgb(166, 0, 169);
-    font-weight: 600;
-  }
+  
   
   .formErrorMessage{
     font-size: 13px;

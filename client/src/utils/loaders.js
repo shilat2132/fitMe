@@ -13,7 +13,6 @@ const generalLoader = async ({ apiUrl }) => {
   
       return data;
     } catch (error) {
-      // במקרה של שגיאה, החזר Response מותאם אישית עם פרטי השגיאה
       throw new Response(
         JSON.stringify({ message: error.message || 'Unknown error' }),
         { status: 500 }

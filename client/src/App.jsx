@@ -17,15 +17,17 @@ import apptRouter from "./pages/appointments/ApptRouter";
 
 const actionModules = {
   auth: () => import('./pages/auth/actions/auth'),
-  logout: ()=> import("./pages/auth/actions/logoutAction")
+  logout: ()=> import("./pages/auth/actions/logoutAction"),
+  makeAnAppt: ()=> import("./pages/appointments/actions")
 };
 
 /** dynamicly loads actions functions (that are exported as default) */
-export function dynamicActionImport(key) {
+export function dynamicActionImport(key, functionName=null) {
   return async function actionHandler({ request, params }) {
     if (!actionModules[key]) throw new Error(`Action not found for key: ${key}`);
     const module = await actionModules[key]();
-    return module.default({ request, params });
+    const func = functionName ? module[functionName] : module.default;
+    return func({ request, params });
   };
 }
 
@@ -34,11 +36,12 @@ const loaderModules = {
 };
 
 /** dynamicly imports loaders functions (that are exported as default) */
-function dynamicLoaderImport(key, apiUrl) {
+function dynamicLoaderImport(key, apiUrl, functionName= null) {
   return async function loaderHandler({ request, params }) {
     if (!loaderModules[key]) throw new Error(`Loader not found for key: ${key}`);
     const module = await loaderModules[key]();
-    return module.default({ request, params, apiUrl });
+    const func = functionName ? module[functionName] : module.default;
+    return func({ request, params, apiUrl });
   };
 }
 
