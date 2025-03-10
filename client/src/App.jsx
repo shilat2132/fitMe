@@ -18,7 +18,7 @@ import apptRouter from "./pages/appointments/ApptRouter";
 const actionModules = {
   auth: () => import('./pages/auth/actions/auth'),
   logout: ()=> import("./pages/auth/actions/logoutAction"),
-  makeAnAppt: ()=> import("./pages/appointments/actions")
+  appointments: ()=> import("./pages/appointments/actions")
 };
 
 /** dynamicly loads actions functions (that are exported as default) */
@@ -66,7 +66,7 @@ const router = createBrowserRouter([
   {path: "/", element: <Layout/>, errorElement: <ErrorPage/>, loader: rootLoader , children:[
     {index: true, element: <Home/>},
     authRouter( suspenseElement, dynamicActionImport ),
-    apptRouter(suspenseElement, dynamicLoaderImport, dynamicActionImport)
+    ...apptRouter(suspenseElement, dynamicLoaderImport, dynamicActionImport)
     
     
   ]}

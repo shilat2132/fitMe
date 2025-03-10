@@ -2,6 +2,18 @@
     background-image: url("data:image/svg+xml,<svg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'><path stroke='rgb(237, 247, 255)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/></svg>") !important;
   }
   
+  .okBtn{
+    border: none;
+    background-color: rgb(166, 0, 169);
+    color: white;
+  }
+
+  .cancelBtn{
+    border: none;
+    background-color: cornflowerblue;
+    color: white;
+  }
+
   .vacationsContainer{
     margin-top: 9%;
   }
@@ -35,12 +47,7 @@
   }
   
   
-  .formErrorMessage{
-    font-size: 13px;
-    color: red;
-    font-weight: 600;
-  }
-  
+
   .errorMessage{
     font-size: 23px;
     color: red;
@@ -49,6 +56,13 @@
       text-align: center;
       margin-top: 15%;
   }
+
+  .message{
+    font-size: 13px;
+    color: rgb(166, 0, 169);
+    font-weight: 600;
+  }
+
   
   .center {
       margin: auto;
@@ -91,12 +105,7 @@
   
     }
   
-    .message{
-      font-size: 13px;
-      color: rgb(166, 0, 169);
-      font-weight: 600;
-    }
-  
+    
     /* services page */
     .service-error-msg{
       color: #da0000;
@@ -154,6 +163,11 @@
       .body {
         margin-top: 29%;
         margin-bottom: 30%;
+      }
+
+      .mainBody{
+        margin-top: 29%;
+
       }
     
   

@@ -1,12 +1,12 @@
+/** a general loader for a get request */
 const generalLoader = async ({ apiUrl }) => {
     try {
       const response = await fetch(apiUrl, { credentials: 'include' });
       const data = await response.json();
   
       if (!response.ok) {
-        // יצירת Response מותאם אישית עם הודעת שגיאה וסטטוס
         throw new Response(
-          JSON.stringify({ message: data.error }),
+          JSON.stringify({ message: data.error || "Something went wrong" }),
           { status: response.status }
         );
       }

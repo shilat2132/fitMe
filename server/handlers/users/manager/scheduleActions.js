@@ -32,9 +32,16 @@ exports.getTrainersForDay = catchAsync(async (req, res, next)=>{
       return next (new AppError("Couldn't find a schedule", 500))
     }
 
-    let d = new Date(req.params.date)
-    d = d.toISOString().split("T")[0] //retrieves the date itself
-    if (!schedule.days.some(day => day.toISOString().split("T")[0] === d)) {
+    const givenDate = new Date(req.params.date)
+    const today = new Date()
+    const {start} = utils.startEndDay(today)
+
+    const lastDay = new Date()
+    lastDay.setDate(lastDay.getDate()+schedule.maxDaysForward)
+    const {end} = utils.startEndDay(lastDay)
+    
+    
+    if (!(givenDate>= start && givenDate<=end)) {
         return next(new AppError("The given date isn't in the range of the opened dates of the schedule", 400));
     }
 

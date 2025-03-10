@@ -3,6 +3,7 @@ const validator = require("validator")
 const User = require("./User")
 const { getHoursArr } = require('../../utils/utils')
 const utils = require("../../utils/utils")
+const AppError = require('../../utils/AppError')
 
 /** a class that inherits from user.
  * @property workouts: an array of strings from the workouts array enum
@@ -29,9 +30,12 @@ const trainerSchema = new mongoose.Schema({
             required: [true, 'End time is required'],
             validate: {
                 validator: function (value) {
-                    const intHour = parseInt(value.split(":")[0])
-                    const startIntHour = parseInt(this.workingHours.start.split(":")[0])
-                    return validator.isTime(value) && intHour>startIntHour
+                    if (this.workingHours){
+                        const intHour = parseInt(value.split(":")[0])
+                        const startIntHour = parseInt(this.workingHours.start.split(":")[0])
+                        return validator.isTime(value) && intHour>startIntHour
+                    }
+                    
                 },
                 message: "ending time needs to be formatted as hour:minutes and the hour needs to be between 0 and 23. and it should be greater than the start"
 
@@ -97,7 +101,8 @@ trainerSchema.methods.getAvailableHours = async function(d, period = null, unit=
         workoutUnit = unit
      }
     
-     const hours = getHoursArr(this.workingHours.start, this.workingHours.end, workoutPeriod, workoutUnit)
+     
+     const hours = getHoursArr(this.workingHours.start, this.workingHours.end, workoutPeriod, workoutUnit, date)
      
       // remove the hours that are scheduled
      const availableHours = hours.filter(h=> !scheduledHours.includes(h))
@@ -117,6 +122,20 @@ trainerSchema.pre("save", async function (next) {
     if (!this.workouts) {
         return next()
     }
+
+trainerSchema.pre("findOneAndUpdate", function(next){
+    const updateDoc = this.getUpdate()
+    const workingHours = updateDoc.workingHours
+    if (workingHours){
+        const {start, end} = workingHours
+        const intHour = parseInt(end.split(":")[0])
+        const startIntHour = parseInt(start.split(":")[0])
+        if (!(validator.isTime(start) && validator.isTime(end) && intHour>startIntHour)){
+            return (new AppError("The given workingHours field is invalid", 400))
+        }
+        next()
+    }
+})
 
     const Schedule = await require('../time/Schedule')
     const schedule = await Schedule.findOne().select("workouts");

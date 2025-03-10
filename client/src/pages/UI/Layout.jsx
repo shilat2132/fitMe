@@ -4,9 +4,13 @@ import MainNav from "./MainNav";
 
 export default function Layout() {
   const { isLoggedIn, user } = useLoaderData()
+  let role = ""
+  if (user){
+    role = user.role || ""
+  }
     return (
       <div>
-        <MainNav isLoggedIn={isLoggedIn}/>
+        <MainNav role ={role} isLoggedIn={isLoggedIn}/>
         <main className="mainBody">
           <Outlet context={{ isLoggedIn, user }} />
         </main>

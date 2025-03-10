@@ -113,6 +113,41 @@
     .rdp-caption{
       display: inline;
     }
+
+
+    /* the appts page */
+    .apptListItem{
+      border: 2px solid black;
+      border-radius: 4px;
+      display: flex; 
+      flex-direction: column;
+  
+      margin-bottom: 5%;
+      padding: 4px;
+     
+      align-content: center;
+      justify-content: center;
+      align-items: center;
+      max-width: 130px;
+      margin: 14px;
+      box-shadow: 0 0 5px 2px;
+  }
+
+  .apptInfoSpan{
+    margin-left: 3%;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.button{
+  border: none;
+  background: none;
+  color: cornflowerblue;
+  margin: 4%;
+  font-size: 13px;
+  font-weight: 500;
+
+}
   
     @media screen and (min-width: 501px) {
       .dayPicker{
@@ -122,8 +157,10 @@
     }
   
     @media screen and (max-width: 500px) {
-      #schedulingBtn{
-        margin-right: 27%;
-  
-      }
+     .dayPicker{
+      margin-top: 30%;
+     }
+     .apptInfoSpan{
+      font-size: 12px;
+  }
     }    

@@ -5,13 +5,13 @@ import Navbar from 'react-bootstrap/Navbar'
 import Button from 'react-bootstrap/Button';
 import { CgProfile } from "react-icons/cg";
 
-const MainNav = ({isLoggedIn})=>{
+const MainNav = ({role, isLoggedIn})=>{
     const submit = useSubmit()
     async function logoutHandler(event){
         event.preventDefault()
         await submit(null, {action: "/auth/logout", method: "post"})
-       
     }
+
     let a = <>
             <NavLink className={`${styles.navLink} nav-link`} to="/auth/signup">Sign up </NavLink>
             <NavLink className={`${styles.navLink} nav-link`} to="/auth/login">Log in</NavLink>
@@ -20,6 +20,8 @@ const MainNav = ({isLoggedIn})=>{
     if(isLoggedIn){
         a = <NavLink onClick={logoutHandler} to="/auth/logout" className={`${styles.navLink} nav-link`} >Log out</NavLink>
     }
+
+
     return (
         <Navbar bg="dark" data-bs-theme="dark" fixed="top" expand="lg" className={` ${styles.navbar}`}>
             <Navbar.Brand id={styles.navbarBrand} href="/">FitMe</Navbar.Brand>
@@ -28,6 +30,7 @@ const MainNav = ({isLoggedIn})=>{
                 <Nav className="me-auto">
                     {a}
                     {/* {isLoggedIn && <NavLink className={`${styles.navLink} nav-link`} to="/me"><CgProfile /></NavLink>} */}
+                    {isLoggedIn && role==="trainee" && <NavLink className={`${styles.navLink} nav-link`} to="/myAppointments">My Appointments</NavLink>}
                     </Nav>
             </Navbar.Collapse>
             <NavLink className={`${styles.navLink} nav-link`} to="/makeAnAppt"><Button variant="outline-light">Appointment+</Button>{' '}

@@ -5,6 +5,11 @@ import TrainerInputs from "./TrainerInputs";
 import styles from "../../styles/appts.module.css"
 
 export default function ApptForm({trainers, date}){
+    if (trainers.length== 0){
+        return (<p className={`${styles.apptForm} message container`}>
+            No Trainers were found available for the required time
+        </p>)
+    }
     const [inputs, setInputs] = useState(null)
     const [selectedTrainer, setSelectedTrainer] = useState("default")
     let action = useActionData()

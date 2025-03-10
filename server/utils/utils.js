@@ -37,13 +37,20 @@ exports.filterBody = (obj, ...allowedFields) =>{
     return newObj
 }
 
+const isToday= (date)=> {
+    const today = new Date()
+    date.setHours(0, 0, 0, 0)
+    today.setHours(0, 0, 0, 0)
+  
+    return date.getTime() === today.getTime()
+  }
 
 /**
  * 
  * @param {string} time gets the string time formatted as hh:mm or h:mm
  * @returns the amount of minutes in this time as a int
  */
-function strHourToMinutesInt (time){
+const strHourToMinutesInt = (time)=>{
     // given time = 18:04
     
     let [h, m] = time.split(":") // ["18", "04"]
@@ -77,14 +84,39 @@ function minutesToStrTime(minutes){
 /** 
  * @returns an array of the string hours from the start to the end according to the wourkout period and unit
  */
-exports.getHoursArr = (start, end, workoutPeriod, unit) =>{
+exports.getHoursArr = (start, end, workoutPeriod, unit, date) =>{
     if (unit!= 'h' && unit!="m"){
         throw TypeError("The unit should be either 'h' or 'm'")
     }
+
+   
+    
     const endMinutes = strHourToMinutesInt(end)
     const periodMinutes = unit== "h" ? workoutPeriod*60 : workoutPeriod
     let currentHourMinutes = strHourToMinutesInt(start)
     const hours = []
+
+
+    // if the given date is today, insert only hours that are later than now
+    const isTodayVar = isToday(date)
+   
+
+    if (isTodayVar){
+        const now = new Date()
+
+        const hour = now.getHours()
+        const minutes = now.getMinutes()
+
+        const totalMinutes = strHourToMinutesInt([hour, minutes].join(":"))
+
+        while (currentHourMinutes + periodMinutes <= endMinutes){
+            if(totalMinutes < currentHourMinutes){
+                hours.push(minutesToStrTime(currentHourMinutes))
+            }
+            currentHourMinutes += periodMinutes
+        }
+        return hours
+    }
 
     while (currentHourMinutes + periodMinutes <= endMinutes){
         hours.push(minutesToStrTime(currentHourMinutes))

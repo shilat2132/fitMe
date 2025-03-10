@@ -7,12 +7,7 @@ const utils = require("../../utils/utils")
 const apptSchema = new mongoose.Schema({
     date:{
         type: Date,
-        // validate:{
-        //     validator: function(date){
-        //         return validator.isDate(date, {format: ["DD.MM.YYYY", "D.M.YYYY" ] , delimiters: [".", "/", "-"]})
-        //     },
-        //     message: "the date is not appropriately formatted in the appointment model"
-        // },
+        index: true,
         required: [true, 'an appointment must have a day']
     },
     trainer: {
@@ -54,17 +49,6 @@ apptSchema.pre(/^find/, function(next){
 })
 
 apptSchema.pre("save", async function(next){
-    const Schedule = await require("./Schedule")
-    const schedule = await Schedule.findOne().select("days")
-    if (!schedule){
-        return next(new AppError("you can't create an appointment while there isn't an existing schedule", 409))
-    }
-
-    // checks if the date is one of the available days of the schedule
-    let d = this.date.toISOString().split("T")[0] //retrieves the date itself
-    if (!schedule.days.some(day => day.toISOString().split("T")[0] === d)) {
-        return next(new AppError("The given date isn't in the range of the opened dates of the schedule", 400));
-    }
 
     this.date = utils.clearTime(this.date)
     next()
@@ -75,7 +59,7 @@ apptSchema.pre("save", async function(next){
 /**
  * a static method for checking whether an appointment for a given trainer is available 
  * - meanning it's not scheduled and not in a day of the trainer's vacation or rest day,
- *  and the required workout is given by that trainer
+ *  and the required workout is given by that trainer, and the required date is in the allowed range of opened dates
 
 
 *@returns true if appointment is free, else returns false. returns null if an error occur
@@ -84,6 +68,25 @@ apptSchema.statics.isApptAvailable = async (date1, hour, trainerId, workout)=>{
     try {
         // a query to find the trainer and make sure the given date is NOT in the range of ANY element of the vacations and not a rest day
         let date = new Date(date1)
+
+        const Schedule = await require("./Schedule")
+        const schedule = await Schedule.findOne().select("days maxDaysForward")
+        if (!schedule){
+            return {result: false, message: "you can't create an appointment while there isn't an existing schedule"}
+        }
+    
+        // checks if the date is one of the available days of the schedule
+           const today = new Date()
+           const {start} = utils.startEndDay(today)
+       
+           const lastDay = new Date()
+           lastDay.setDate(lastDay.getDate()+schedule.maxDaysForward)
+           const {end} = utils.startEndDay(lastDay)
+           
+           if (!(date>= start && date<=end)) {
+            return {result: false, message: "The given date isn't in the range of the opened dates of the schedule"}
+        }
+
         const weekDay = date.getDay()
         const query ={
             _id: trainerId,
@@ -98,7 +101,6 @@ apptSchema.statics.isApptAvailable = async (date1, hour, trainerId, workout)=>{
 
         let hours = await trainer.getAvailableHours(date)
         hours = hours.availableHours 
-        console.log(hours)
         if (!hours || (hours && !hours.includes(hour))){
             return {result: false, message: "The required hour isn't available with this trainer"}
         }

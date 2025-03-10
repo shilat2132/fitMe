@@ -57,6 +57,7 @@ const workoutsFilter = req => {
     }
 }
 router.get("/appointments/:date", factory.getAll(Appointment, workoutsFilter))
+router.get("/appointments", factory.getAll(Appointment, ()=>{}, null, {date:1}) )
 
     // WORKOUTS
 // add a workout type, delete

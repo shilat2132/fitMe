@@ -16,6 +16,9 @@ export const ErrorPage = ()=>{
     }else{
         errorMessage="something went wrong"
     }
+    if (typeof errorMessage !== "string"){
+        errorMessage="something went wrong"
+    }
     return(
         <>
             {/* <MainNav/> */}

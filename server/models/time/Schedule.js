@@ -9,15 +9,7 @@ const scheduleSchema = new mongoose.Schema({
         max: 60,
         required: [true, "עליך לספק שדה זה"]
     },
-    days:{
-        type: [Date],
-        // validate:{
-        //         validator: function(dates){
-        //             return dates.every(date => validator.isDate(date, {delimiters: [".", "/", "-"]}))
-        //         },
-        //         message: "one of the days is not appropriately formatted as a date"
-        //     }
-    },
+    days:[Date],
     appointmentTime: { 
         workoutPeriod: {
             type: Number,
@@ -82,16 +74,23 @@ scheduleSchema.methods.getWorkingTrainers = async function(d){
             return null
         }
 
-        const finalTrainersArray = await Promise.all( trainers.map(async trainer=>{
-            const availableHours = await trainer.getAvailableHours(date, this.appointmentTime.workoutPeriod, this.appointmentTime.unit)
-            
-            return {
-                _id: trainer._id,
-                name: trainer.name,
-                workouts: trainer.workouts,
-                availableHours: availableHours.availableHours ? availableHours.availableHours : []
+        
+
+        let finalTrainersArray = [] 
+        for (const trainer of trainers) {
+            const availableHours = await trainer.getAvailableHours(date, this.appointmentTime.workoutPeriod, this.appointmentTime.unit);
+            if (availableHours.availableHours && availableHours.availableHours.length > 0) {
+                console.log("here");
+                const record = {
+                    _id: trainer._id,
+                    name: trainer.name,
+                    workouts: trainer.workouts,
+                    availableHours: availableHours.availableHours
+                };
+        
+                finalTrainersArray.push(record);
             }
-        }))
+        }
     
         return finalTrainersArray
         

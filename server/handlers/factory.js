@@ -1,5 +1,4 @@
 // mostly get all handlers
-const User = require('../models/users/User');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
 

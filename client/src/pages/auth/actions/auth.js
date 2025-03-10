@@ -9,7 +9,6 @@ export const rootLoader = async()=>{
     if(!response.ok){
         return {user: null, isLoggedIn: false}
     }
-
     return {user: responseData.user, isLoggedIn: true}
 }
 
