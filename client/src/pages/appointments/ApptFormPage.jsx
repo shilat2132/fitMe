@@ -5,6 +5,8 @@ import { useEffect, useReducer } from "react";
 import { he } from 'date-fns/locale';
 import ApptForm from "../../components/appointments/ApptForm";
 import styles from "../../styles/appts.module.css"
+import { suspenseElement } from "../../App";
+import { Spinner } from "react-bootstrap";
 
 function reducer(state, action){
     switch (action.type){
@@ -16,16 +18,16 @@ function reducer(state, action){
                 return {...state, date: action.date, footer: data.footer, error: data.error}
             }else{
                 // if it isn't - set only the date to the new date and the footer to null - to sign the useEffect that it needs to call the server
-                return {...state, date: action.date, footer: null}
+                return {...state, date: action.date, footer: null, isLoading: true}
             }
         
         // this is called after the useEffect called the server with the data on the current date and it need to be cached
         case "SET_CACHE":
-            return {...state, cachedFooter: {...state.cachedFooter, [state.date]: {footer: action.footer, error: action.error} }, 
+            return {...state, isLoading: false, cachedFooter: {...state.cachedFooter, [state.date]: {footer: action.footer, error: action.error} }, 
                 footer: action.footer, error: action.error}
         
         case "RESET_FOOTER":
-            return {...state, date: null, footer: "Please select a day", error: false}
+            return {...state, date: null, footer: "Please select a day", error: false, isLoading: true}
     
         default:
             return state
@@ -46,7 +48,8 @@ export default function ApptFormPage(){
         date: null,
         cachedFooter: {},
         footer: "Please select a day",
-        error: false
+        error: false,
+        isLoading: true
     })
     
 
@@ -111,7 +114,14 @@ export default function ApptFormPage(){
         if(state.error){
             footer = state.footer
         }else{
-            footer = <ApptForm  date={state.date} trainers={state.footer ? state.footer : {}}/>
+            if(state.isLoading){
+                footer = <Spinner className="loading-fallback" animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                         </Spinner>
+            }else{
+                footer = <ApptForm  date={state.date} trainers={state.footer ? state.footer : {}}/>
+            }
+            
         }
         
     }
@@ -121,7 +131,7 @@ export default function ApptFormPage(){
         from: new Date(),
         to: new Date()
     }
-    allowedRange.to.setDate(allowedRange.to.getDate()+ maxDaysForward)
+    allowedRange.to.setDate(allowedRange.to.getDate()+ maxDaysForward- 1)
     const modifiers = {
         disabled: { before: allowedRange.from, after: allowedRange.to },
       };

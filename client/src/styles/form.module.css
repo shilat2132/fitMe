@@ -71,10 +71,17 @@ label{
 
 }
 
-.deleteButton{
+.deleteButton, .cancelVacationBtn{
     background-color: rgb(255, 115, 115);
 }
 
+.cancelVacationBtn{
+    border: none;
+    padding: inherit;
+    box-shadow: 2px 2px gray;
+    font-size: 13px;
+    font-weight: 500;
+}
 .formGroup label{
     display: block;
     text-align: left;

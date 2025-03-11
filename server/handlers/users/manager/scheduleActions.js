@@ -85,17 +85,17 @@ exports.createSchedule = catchAsync(async (req, res, next)=>{
  */
 exports.updateSchedule = catchAsync(async (req, res, next)=>{
     const filterObj = utils.filterBody(req.body, "maxDaysForward", "appointmentTime")
+
+    // update the schedule only if the new value for maxDaysForward is larger or equal to the previous one
     const query = "maxDaysForward" in filterObj ? {maxDaysForward: {$lte: filterObj.maxDaysForward}} : {}
     const schedule = await Schedule.findOneAndUpdate( query , filterObj, {new: true});
  
       if (!schedule){
-        return next (new AppError("Couldn't update schedule", 500))
+        return next (new AppError("Couldn't update schedule. Please notice that you can only update the field of maxDaysForward to be larger or equal to the previous one", 500))
       }
 
       if ("maxDaysForward" in filterObj){
-        if (await schedule.updateDays()== -1){
-            return next (new AppError("Couldn't update schedule", 500))
-        }
+        await schedule.updateDays()
       }
 
       await schedule.save()

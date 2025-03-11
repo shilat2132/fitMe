@@ -47,14 +47,21 @@
   }
   
   
+  .errorPageMessage{
+    font-size: 23px;
+    color: red;
+    font-weight: 600;
+    direction: ltr;
+    text-align: center;
+    margin-top: 15%;
+  }
 
   .errorMessage{
-    font-size: 23px;
+    font-size: 13px;
     color: red;
     font-weight: 600;
       direction: ltr;
       text-align: center;
-      margin-top: 15%;
   }
 
   .message{

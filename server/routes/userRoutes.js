@@ -12,7 +12,7 @@ const factory = require("../handlers/factory")
 
 
 const express = require('express')
-const Appointment = require("../models/time/Appointment")
+const { getAppts } = require("../handlers/users/trainerHandlers")
 const router = express.Router()
 
 router.post("/signup", authHandlers.signup)
@@ -22,6 +22,9 @@ router.post('/forgotPassword', passwordHandlers.forgotPassword)
 router.patch('/resetPassword/:token', passwordHandlers.resetPassword)
 
 router.use(authMW.protect)
+
+
+
 router.route("/me")
     .get(userHandlers.getUser)
     .patch(userHandlers.updateMe)
@@ -30,11 +33,6 @@ router.route("/me")
 router.patch('/updatePassword', passwordHandlers.updatePassword)
 
 
-// routes restricted to users with the role of 'trainee'
-router.use(authMW.restrictTo("trainee"))
 
-router.get("/myAppts", factory.getAll(Appointment, ()=>{}, null, {date:1}) )
-router.post("/makeAnAppt", apptsHandlers.makeAnAppt) // make an appointment route
-router.delete("/cancelAppt/:apptId", apptsHandlers.cancelAppt("trainee")) // cancel appointment route
 
 module.exports = router

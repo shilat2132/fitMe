@@ -9,7 +9,7 @@ const AppError = require('../../utils/AppError')
  * @property workouts: an array of strings from the workouts array enum
  * @property workingHours: embedded schema with a string start time and end time of the trainer’s day
  * @property restingDay: a numeric field representing the number of the day that is the trainer’s free day
- * @property vacations: an array of vacation’s schema: from and to fields of dates. description and isApproved(boolean, defaulted to false)
+ * @property vacations: an array of vacation’s schema: from and to fields of dates. description and status
  */
 const trainerSchema = new mongoose.Schema({
     workouts: [String],

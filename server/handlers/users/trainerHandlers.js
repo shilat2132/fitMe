@@ -3,7 +3,39 @@ const AppError = require("../../utils/AppError")
 const utils = require("../../utils/utils")
 const Trainer = require("../../models/users/Trainer")
 const Vacation = require("../../models/users/Vacation")
+const Appointment = require("../../models/time/Appointment")
 
+
+
+/** gets all appointment for the trainer, with option of filtering by date */
+exports.getAppts = catchAsync(async (req, res, next)=>{
+
+
+    let filter = {}
+    if (req.user.role == "trainer"){
+      filter= {trainer: req.user._id}
+    }else if(req.user.role == "trainee"){
+      filter= {trainee: req.user._id}
+    }
+
+    if (req.query.date){
+      const {start, end} = utils.startEndDay(req.query.date)
+      filter = {...filter,
+                  date: {
+                    $gte: start,
+                    $lte: end
+                }}
+    }
+   
+    
+      const appts = await Appointment.find(filter).sort({date: 1})
+
+    
+      if(!appts){
+        return next(new AppError("Couldn't find appointments"), 404)
+      }
+      res.status(200).json({status: "success", amount: appts.length , appts})
+  })
 
 // add vacation
 /** restricted route for a trainer.

@@ -9,7 +9,10 @@ const scheduleSchema = new mongoose.Schema({
         max: 60,
         required: [true, "עליך לספק שדה זה"]
     },
-    days:[Date],
+    days: {
+        type: [Date],
+        default: []
+    },
     appointmentTime: { 
         workoutPeriod: {
             type: Number,
@@ -61,7 +64,7 @@ scheduleSchema.methods.getWorkingTrainers = async function(d){
                             $elemMatch: {
                                 from: { $lte: date },
                                 to: { $gte: date},
-                                isApproved: "yes"
+                                status: "approved"
                             }
                         }
                     }
@@ -80,7 +83,6 @@ scheduleSchema.methods.getWorkingTrainers = async function(d){
         for (const trainer of trainers) {
             const availableHours = await trainer.getAvailableHours(date, this.appointmentTime.workoutPeriod, this.appointmentTime.unit);
             if (availableHours.availableHours && availableHours.availableHours.length > 0) {
-                console.log("here");
                 const record = {
                     _id: trainer._id,
                     name: trainer.name,
@@ -106,39 +108,51 @@ scheduleSchema.methods.getWorkingTrainers = async function(d){
  * @param numOfDays - the amount of dates to create, defaulted to the maxDaysForward field
  * @param currentDate - the date(object) to start the creation from, defaulted to today's date
  * 
- * @returns days - the array of the dates
  */
 scheduleSchema.methods.datesCreation = function(numOfDays = null, currentDate= new Date()){
     if (!numOfDays){
         numOfDays = this.maxDaysForward
     }
-    const days = [];
+    
     for (let i = 0; i < numOfDays; i++) {
-        days.push(new Date(currentDate));
+        this.days.push(new Date(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
     }
-    return days
+    
 }
 
 
 /**
  * delete the dates, vacations and appointments up until the given index
  */
-scheduleSchema.methods.deleteDates = async function (amountOfDaysToDelete){
+scheduleSchema.methods.deleteDates = async function (lastExistingDay, today){
     const Appointment = await require('./Appointment')
-    for(i=0; i<amountOfDaysToDelete; i++){
-        const currentDate = this.days[i]
-        const {start, end} = utils.startEndDay(currentDate)
-        
-        await Appointment.deleteMany({date: {$gte: start, $lte: end }})
+    const {start} = utils.startEndDay(today)
 
-        await Vacation.deleteMany({to: {$lt: end}})
-    }
-    if(amountOfDaysToDelete != this.days.length){
-        this.days = this.days.slice(amountOfDaysToDelete)
-    }else{
+    // deletes all the vacations and appts that are before the start of today
+    await Vacation.deleteMany({to: {$lt: start}})
+    await Appointment.deleteMany({date: {$lt: start}})
+
+
+    // delete the days before today from the array of the schedule
+
+    // if all the days are before today - delete them all
+    if (lastExistingDay< today){
         this.days = []
+    }else{
+        const i = this.days.findIndex(d=>{
+            
+            return d.toLocaleDateString()== today.toLocaleDateString()
+        })
+
+
+        if (i !=-1){
+            // the new array would start from today's date
+            this.days = this.days.slice(i) 
+        }
+
     }
+
 }
 
 /**
@@ -151,62 +165,33 @@ scheduleSchema.methods.updateDays = async function () {
     const today = new Date()
     const lastExistingDay = this.days.at(-1)
     const lastActualDay = new Date() //the last day that's SUPPOSESED to be in the array
-    lastActualDay.setDate(lastActualDay.getDate()+ this.maxDaysForward)
+    lastActualDay.setDate(lastActualDay.getDate()+ this.maxDaysForward -1)
 
     lastActualDay.setUTCHours(0, 0, 0, 0)
     lastExistingDay.setUTCHours(0, 0, 0, 0)
     today.setUTCHours(0, 0, 0, 0)
 
-    // checks if you need to update the dates
-    if (lastExistingDay <lastActualDay){
-        
-         // if today is the last existing day - don't remove it, remove all the days before it
-        if(today == lastExistingDay){
-             await this.deleteDates(this.days.length-1)
-           
-             const startDate = new Date(today)
-             startDate.setDate(startDate.getDate()+1)
 
-             const dates = this.datesCreation(this.maxDaysForward -1, startDate)
-             this.days.push(...dates) 
-             return 1;
-        }
+    await this.deleteDates(lastExistingDay, today)
 
-         // if there aren't any dates from today and after today, start from today and create maxDaysForward dates
-            // delete all the vacations and appointments before today
-        if (lastExistingDay< today){
-            await this.deleteDates(this.days.length) //delete all the array
-            this.days = this.datesCreation()
-            return 1
-        }else{
-            const num = this.days.findIndex(d=>{
-                d.setUTCHours(0,0,0,0)
-                return d== today
-            })
 
-            if (num !=-1){
-                await this.deleteDates(num)
-            }
-            let amountOfDaysToCreate = (lastActualDay-lastExistingDay)/ (1000 * 3600 * 24) //get the days differance between the last date to the existing last date
-            amountOfDaysToCreate = Math.round(amountOfDaysToCreate)
-            lastExistingDay.setDate(lastExistingDay.getDate()+1) //to start the dates to be created from the day after the last existing date
-
-            const dates = this.datesCreation(amountOfDaysToCreate, lastExistingDay)
-            this.days.push(...dates) 
-            return 1   
-        }
-    }  else{
-        // if there are more days than the amount that's supposed to be, 
-        // and the last day is the last day that's supposed to be, but the first day isn't today
-        const num = this.days.findIndex(d=>{
-            // d.setUTCHours(0,0,0,0)
-            return d.toLocaleDateString()== today.toLocaleDateString()
-        })
-        if (num !=-1){
-            await this.deleteDates(num)
-        }
-        return -1 //if the last existing date is after the last date that should be, it means that the user's trying to update the maxDaysForward field to a smaller number than before, and that's not allowed
+    if (lastExistingDay < today){
+        // if all the days are before today, it would create maxForwardDays starting from today
+         this.datesCreation()
+         return
     }
+    
+    let amountOfDaysToAdd = utils.daysDifference(lastActualDay, lastExistingDay)
+
+    if (amountOfDaysToAdd <= 0) return;
+
+    // adding dates from the day after the last one
+    let currentDate = new Date(lastExistingDay)
+    currentDate.setDate(currentDate.getDate()+1)
+
+    this.datesCreation(amountOfDaysToAdd +1, currentDate)
+
+    
 }
 
 
@@ -229,19 +214,7 @@ scheduleSchema.pre("save", async function (next) {
   });
   
 
-/** a method that would be triggered everyday. remove the former day and create another one. */
-// scheduleSchema.methods.newDayHandler = async function(){
-//     try {
-//         const yesterday = new Date()
-//         yesterday.setDate(yesterday.getDate()-1)
-//         await Day.findOneAndDelete({date: yesterday, schedule: this._id})
-//         const lastDay = new Date()
-//         lastDay.setDate(lastDay.getDate()+ this.maxDaysForward)
-//         await Day.create({date: lastDay, schedule: this._id})
-//     } catch (error) {
-//         console.log("Error occured in scheduleSchema in the newDayHandler method ", error)
-//     }
-// }
+
 
 /** a model of a schedule
  * @property maxDaysForward: Number of days to show forward in the schedule

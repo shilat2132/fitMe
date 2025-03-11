@@ -106,7 +106,7 @@ apptSchema.statics.isApptAvailable = async (date1, hour, trainerId, workout)=>{
         }
 
         const isOnVacation = trainer.vacations.some(vacation =>
-            date >= vacation.from && date <= vacation.to && vacation.isApproved == "yes"
+            date >= vacation.from && date <= vacation.to && vacation.status == "approved"
         )
 
         if (isOnVacation){

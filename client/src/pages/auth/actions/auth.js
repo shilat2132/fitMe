@@ -1,16 +1,7 @@
 import { redirect } from "react-router-dom"
 
 
-export const rootLoader = async()=>{
 
-    const response = await fetch("/api/user/me")
-    const responseData = await response.json()
-
-    if(!response.ok){
-        return {user: null, isLoggedIn: false}
-    }
-    return {user: responseData.user, isLoggedIn: true}
-}
 
 
 /** action for : signup, login, forgotPassword, resetPassword */

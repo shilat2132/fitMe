@@ -68,6 +68,15 @@
     margin-left: 5%;
   }
   
+
+  
+
+  .filterDateBtn{
+    border-radius: 5px;
+    border: none;
+    background-color: cornflowerblue;
+    color: white;
+  }
   
   
   /* form modal- vacations page */
@@ -134,17 +143,24 @@
   }
 
   .apptInfoSpan{
-    margin-left: 3%;
     font-size: 14px;
     font-weight: 500;
+    margin-top: 10%;
 }
+
+.apptTime, .apptTrainee{
+  font-size: 13px;
+}
+
+/* .apptTime{
+  text-align: center;
+} */
 
 .button{
   border: none;
   background: none;
   color: cornflowerblue;
-  margin: 4%;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
 
 }
@@ -153,6 +169,10 @@
       .dayPicker{
         margin: auto;
         width: fit-content;
+      }
+      /* the date input for the appts page */
+      .dateInputGroup{
+        width: 40% !important;
       }
     }
   

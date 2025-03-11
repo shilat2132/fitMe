@@ -1,5 +1,6 @@
 import  {Outlet, useLoaderData} from "react-router-dom"
-import MainNav from "./MainNav";
+import MainNav from "./navbars/MainNav";
+import { TrainerNav } from "./navbars/TrainerNav";
 
 
 export default function Layout() {
@@ -13,6 +14,10 @@ export default function Layout() {
         <MainNav role ={role} isLoggedIn={isLoggedIn}/>
         <main className="mainBody">
           <Outlet context={{ isLoggedIn, user }} />
+
+          <div className="accountLayer">
+            {isLoggedIn && role === "trainer" &&  <TrainerNav/>}
+                        </div> 
         </main>
       </div>
     );

@@ -24,7 +24,7 @@ exports.getAll = (Model, filterCallback = () => ({}), select= null, sort = null)
         // Execute the query
         const docs = await query;
         if(!docs){
-            return next(new AppError('לא נמצאו מסמכים מתאימים'), 404)
+            return next(new AppError("Couldn't find docs"), 404)
         }
         res.status(200).json({status: "success", amount: docs.length , docs})
     }))

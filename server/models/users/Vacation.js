@@ -6,7 +6,7 @@ const AppError = require('../../utils/AppError');
  * @property from - a starting date for the vacation
  * @property to - an ending date for the vacation
  * @property description - the purpose of the vacation, defaulted to 'general'
- * @property isApproved - a boolean property set to false and refers to whether the vacation was approved by the manager
+ * @property status - a boolean property set to false and refers to whether the vacation was approved by the manager
  */
 const vacationSchema = new mongoose.Schema({
     trainer:{
@@ -37,9 +37,9 @@ const vacationSchema = new mongoose.Schema({
         type: String,
         default: 'general'
     },
-    isApproved: {
+    status: {
         type: String,
-        enum: ["yes", "no", "Under review"],
+        enum: ["approved", "not approved", "Under review"],
         default: "Under review"
     }
 });

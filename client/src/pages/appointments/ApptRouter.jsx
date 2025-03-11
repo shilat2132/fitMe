@@ -11,10 +11,12 @@ const apptRouter = (suspenseElement, dynamicLoaderImport, dynamicActionImport)=>
                   loader: dynamicLoaderImport("general", "/api/schedule") , 
                   action: dynamicActionImport("appointments", "makeAnApptAction")},
             
-            {path: "myAppointments", element: suspenseElement(<ApptsPage/>), 
-                  loader: dynamicLoaderImport("general", "/api/user/myAppts"),
-                  action: dynamicActionImport("appointments", "cancelAppt")
-            }
+            {path: "appointments", loader: dynamicLoaderImport("general", null, "protectedRouteLoader", true) , children: [
+                  {index: true, element: suspenseElement(<ApptsPage/>), 
+                        loader: dynamicLoaderImport("appts"),
+                        action: dynamicActionImport("appointments", "cancelAppt")
+                  }
+            ]}
             
       ]
 }

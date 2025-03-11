@@ -8,7 +8,7 @@ export const makeAnApptAction = async({request, params})=>{
         hour: formInputs.get("hour")
     }
 
-    const response = await fetch("/api/user/makeAnAppt", {
+    const response = await fetch("/api/appointments/makeAnAppt", {
         method: "POST",
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
@@ -28,10 +28,10 @@ export const makeAnApptAction = async({request, params})=>{
 
 
 export const cancelAppt = async ({request, params})=>{
-    const formData = await request.formData(); // מחלץ את הנתונים בפורמט FormData
-    const apptId = formData.get("apptId"); // מקבל את ה-id
+    const formData = await request.formData(); 
+    const apptId = formData.get("apptId"); 
 
-    const response = await fetch(`/api/user/cancelAppt/${apptId}`, {
+    const response = await fetch(`/api/appointments/cancelAppt/${apptId}`, {
         method: "DELETE",
         credentials: 'include',
     })

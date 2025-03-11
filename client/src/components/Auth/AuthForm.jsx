@@ -1,7 +1,6 @@
 import { Form as FormRouter, NavLink, useActionData } from "react-router";
-import {Form, InputGroup} from 'react-bootstrap';
-import { IoEye } from "react-icons/io5";
-import { IoMdEyeOff } from "react-icons/io";
+import {Form} from 'react-bootstrap';
+
 
 import styles from "../../styles/form.module.css"
 import { useRef, useState } from "react";
@@ -42,7 +41,7 @@ const AuthForm = ({type}) => {
   let content = (
     <>
       <Form.Group  className={`${styles.formGroup} ${styles.authFormGroup}`}>
-        <Form.Label>Email</Form.Label>
+        <Form.Label htmlFor="email">Email</Form.Label>
         <Form.Control type="email" name="email" placeholder="Enter email" required />
       </Form.Group>
 
@@ -53,10 +52,10 @@ const AuthForm = ({type}) => {
   if(isReset){
     content = (<>
     <PasswordInput ref={password} name="password" error = {error} 
-      show={showPassword} setShow={setShowPassword} />
+      show={showPassword} label = "Password" setShow={setShowPassword} />
     
     <PasswordInput ref={passwordConfirm} name="passwordConfirm" error = {error} 
-      show={showPasswordConfirm} setShow={setShowPasswordConfirm} />      
+      show={showPasswordConfirm} label="Confirm Password" setShow={setShowPasswordConfirm} />      
       
     </>)
   }
@@ -65,7 +64,7 @@ const AuthForm = ({type}) => {
     content = (<>
       {content}
       <PasswordInput ref={password} name="password" error = {error} 
-        show={showPassword} setShow={setShowPassword} />
+        show={showPassword} label = "Password" setShow={setShowPassword} />
     </>)
   }
 
@@ -74,7 +73,7 @@ const AuthForm = ({type}) => {
       <>
         {content}
         <PasswordInput ref={passwordConfirm} name="passwordConfirm" error = {error} 
-          show={showPasswordConfirm} setShow={setShowPasswordConfirm} />    
+          show={showPasswordConfirm} label="Confirm Password" setShow={setShowPasswordConfirm} />    
 
 
         <Form.Group className={`${styles.formGroup} ${styles.authFormGroup}`}>

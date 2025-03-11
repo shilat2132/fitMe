@@ -11,7 +11,7 @@ import styles from "../../styles/form.module.css"
  *  - includes the eye icon and toggler for show/hide password
  */
   const PasswordInput = forwardRef((props, ref)=>{
-    const {name, show, setShow, error} = props
+    const {name, show, setShow, error, label} = props
 
     function passwordsToggler (e){
         setShow(prev=> !prev)
@@ -21,13 +21,19 @@ import styles from "../../styles/form.module.css"
     }
 
     const isConfirm = name === "passwordConfirm"
+    let placeholder;
+    if (isConfirm){
+      placeholder = label
+    }else{
+      placeholder = "Enter a " + label 
+    }
     return (
       <Form.Group className={`${styles.formGroup} ${styles.authFormGroup}`}>
-        <Form.Label>Password {isConfirm ? "confirm": ""}</Form.Label>
+        <Form.Label htmlFor={name}>{label}</Form.Label>
         <InputGroup>
-          <Form.Control 
+          <Form.Control placeholder={placeholder}
             type = {show ? "text" : "password"}
-            name={name} placeholder={isConfirm ? "Confirm password" : "Enter a password"} required
+            name={name} required
             ref={ref}
             />
             <InputGroup.Text onClick={passwordsToggler}>

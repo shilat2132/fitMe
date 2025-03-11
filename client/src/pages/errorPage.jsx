@@ -1,6 +1,6 @@
 import { useRouteError } from "react-router-dom"
-// import { MainNav } from "../UI/MainNav"
-// import '../styles/general.css'
+import MainNav from "../components/UI/navbars/MainNav";
+import '../styles/general.css'
 
 export const ErrorPage = ()=>{
     const error = useRouteError()
@@ -21,8 +21,8 @@ export const ErrorPage = ()=>{
     }
     return(
         <>
-            {/* <MainNav/> */}
-            <div className="errorMessage container">{errorMessage}</div>
+            <MainNav/>
+            <div className="errorPageMessage container">{errorMessage}</div>
         </>
         
     )

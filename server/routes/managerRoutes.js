@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 
-const utils = require("../utils/utils")
 
 // HANDLERS IMPORTS
 const authMW = require("../handlers/auth/middlewares")
@@ -12,7 +11,6 @@ const workoutsAction = require("../handlers/users/manager/workoutsActions")
 // MODELS IMPORTS
 const Trainer = require("../models/users/Trainer")
 const User = require("../models/users/User")
-const Appointment = require("../models/time/Appointment")
 const Vacation = require('../models/users/Vacation')
 
 
@@ -27,11 +25,11 @@ trainersRoutes = express.Router()
 trainersRoutes.get("/", factory.getAll(Trainer, ()=>({}) , "_id name email"))
 
 // get all trainers' vacations - approved ones, sorted in ascending order of the starting dates
-trainersRoutes.get("/vacations", factory.getAll(Vacation, req=> ({isApproved: "yes"}), null, { from: 1 }))
+trainersRoutes.get("/vacations", factory.getAll(Vacation, req=> ({status: "approved"}), null, { from: 1 }))
 
-vacCallBack = req => ({id: req.params.vacId, update: {isApproved: req.body.isApproved ? req.body.isApproved : "Under review" }})
+vacCallBack = req => ({id: req.params.vacId, update: {status: req.body.status ? req.body.status : "Under review" }})
 trainersRoutes
-    .get("/vacations/toApprove", factory.getAll(Vacation, req=> ({isApproved: {$ne: "yes"}}))) // get vacations that need to be approved
+    .get("/vacations/toApprove", factory.getAll(Vacation, req=> ({status: {$ne: "approved"}}))) // get vacations that need to be approved
     .put("/vacations/:vacId/update", factory.updateOne(Vacation, vacCallBack)) //update vacation's status
 
 
@@ -44,20 +42,6 @@ router.get("/trainees", factory.getAll(User, traineesFilter, "_id name email"))
 // turn a user into a trainer
 router.post("/users/:userId", usersActions.userToTrainer)
 
-
-    // APPTS
-// get appts for specific day
-const workoutsFilter = req => {
-    const {start, end} = utils.startEndDay(req.params.date)
-    return {
-        date: {
-            $gte: start,
-            $lte: end
-        }
-    }
-}
-router.get("/appointments/:date", factory.getAll(Appointment, workoutsFilter))
-router.get("/appointments", factory.getAll(Appointment, ()=>{}, null, {date:1}) )
 
     // WORKOUTS
 // add a workout type, delete

@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
             validator: function (val){
                 return val.length === 10
             },
-            message: 'מספר פלאפון אמור להכיל 10 ספרות'
+            message: "Phone number should have 10 digits"
         }
     },
     role:{

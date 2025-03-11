@@ -55,7 +55,7 @@ const sendErrorProd = (err, req, res)=>{
 
 const handleValidationErrorDB = error =>{
     const errors = Object.values(error.errors).map(el=> el.message)
-    const message = `illegal value ${errors.join('. ')}`;
+    const message = `${errors.join('. ')}`;
     return new AppError(message, 400);
 }
 

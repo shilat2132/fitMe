@@ -127,3 +127,14 @@ exports.getHoursArr = (start, end, workoutPeriod, unit, date) =>{
 
 }
 
+
+exports.daysDifference = (day1, day2)=> {
+    if ((!day1 instanceof Date) || (!day2 instanceof Date) ){
+        throw TypeError("One of the parameters aren't instance of Date in the function daysDifference")
+    }
+
+    const diffInMs = day1.getTime() - day2.getTime()
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24)
+    return Math.round(diffInDays)
+}
+
