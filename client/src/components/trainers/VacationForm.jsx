@@ -40,30 +40,6 @@ export const VacationForm = ()=>{
 
             <button className={styles.button} type="submit">Submit</button>
         </FormRouter>
-        // <Form onSubmit={onSubmitFetcher} id="modalForm">
-        //     <DayPicker
-        //         id="day"
-        //         className="modalDayPicker"
-        //         mode="range"
-        //         selected={range}
-        //         onSelect={setRange}
-        //         modifiers={modifiers}
-        //         locale={he}
-        //         footer={footer}
-        //     />
-
-        //     <div className={styles.formGroup}>
-        //         <label htmlFor="description">סוג חופשה</label>
-        //         <input type="text" id="description" name="description"/>
-        //     </div>
-        //     {range && <input readOnly hidden value={JSON.stringify(range)} name="range" id="range"/>}
-        //     {action && action.error && <p className={styles.formErrorMessage}>{action.error} </p>}
-        //     {action && action.success && <p className={styles.formSuccessMsg}>{action.success} </p>}
-        //     <div className="buttons">
-        //         <button onClick={onClose} type="button">ביטול</button>
-        //         <button type="submit" disabled={!range} className="button">הוספה</button>
-        //     </div>
-        // </Form>
 
 
     )

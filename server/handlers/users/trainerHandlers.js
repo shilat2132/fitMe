@@ -71,13 +71,9 @@ exports.cancelVacation = catchAsync(async (req, res, next)=>{
 
 /** an handler for the trainer to update only the details related to work */
 exports.updateWorkDetails = catchAsync(async (req, res, next)=>{
-  const updateValues = utils.filterBody(req.body, "workingHours", "restingDay")
+  const updateValues = utils.filterBody(req.body, "workingHours", "restingDay", "workouts")
   
-  let queryUpdate = updateValues
-  if ("workouts" in req.body) {
-    queryUpdate.$addToSet = { workouts: { $each: req.body.workouts } };
-}
-  const trainer = await Trainer.findByIdAndUpdate(req.user._id, queryUpdate, {runValidators: true, new: true})
+  const trainer = await Trainer.findByIdAndUpdate(req.user._id, updateValues, {runValidators: true, new: true})
 
   if (!trainer){
     return next (new AppError("Couldn't update details", 500))

@@ -1,7 +1,7 @@
 import { NavLink} from "react-router-dom"
 import Nav from 'react-bootstrap/Nav';
 
-export const TrainerNav = ()=>{
+export const ManagerNav = ()=>{
 
 
     return(
@@ -15,11 +15,15 @@ export const TrainerNav = ()=>{
         
 
             <Nav.Item>
-                <NavLink className="nav-link accountNavLink" to="trainer/updateWorkDetails">Work Details</NavLink>
+                <NavLink className="nav-link accountNavLink" to="manager/users/trainees">Users</NavLink>
             </Nav.Item>
 
             <Nav.Item>
-                <NavLink className="nav-link accountNavLink" to="trainer/vacations">Vacations</NavLink>
+                <NavLink className="nav-link accountNavLink" to="manager/vacations/approved">Vacations</NavLink>
+            </Nav.Item>
+
+            <Nav.Item>
+                <NavLink className="nav-link accountNavLink" to="manager/schedule">Schedule</NavLink>
             </Nav.Item>
             
 

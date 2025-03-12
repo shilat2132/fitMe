@@ -14,11 +14,7 @@ const vacationSchema = new mongoose.Schema({
         ref: 'Trainer',
         required: [true, 'a vacation must have a trainer that the vacation is his']
     },
-    // schedule:{
-    //         type: mongoose.Schema.ObjectId,
-    //         ref: 'Schedule',
-    //         required: [true, 'a vacation must have a schedule']
-    //     },
+    
     from: {
         type: Date,
         required: [true, 'Starting day is required']
@@ -63,6 +59,25 @@ vacationSchema.pre("save", async function(next){
     }
     next()
 })
+
+vacationSchema.pre('save', async function (next) {
+    try {
+        // נבדוק אם יש רשומה עם אותו trainer, from ו-to
+        const existingVacation = await Vacation.findOne({
+            trainer: this.trainer,
+            from: this.from,
+            to: this.to
+        });
+
+        if (existingVacation) {
+            return next(new AppError('Vacation already exists for this trainer and date range.', 400));
+        }
+
+        next();
+    } catch (error) {
+        next(error)
+    }
+});
 
 vacationSchema.pre(/^find/, function(next){
     this.populate({path: "trainer", select: "name email"})

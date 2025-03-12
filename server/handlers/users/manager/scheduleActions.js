@@ -14,14 +14,28 @@ const Trainer = require("../../../models/users/Trainer")
 exports.getSchedule = catchAsync(async (req, res, next)=>{
   const schedule = await Schedule.findOne()
 
+  // don't raise an error, just don't return any schedule
     if (!schedule){
-      return next (new AppError("Couldn't get schedule", 500))
+      return res.status(200).json({status: "success"})
     }
 
     await schedule.updateDays()
     await schedule.save()
 
   res.status(200).json({status: "success", schedule})
+})
+
+/**
+ * an handler to get the schedule
+ */
+exports.getScheduleToUpdate = catchAsync(async (req, res, next)=>{
+  const schedule = await Schedule.findOne().select("-days")
+
+    if (!schedule){
+      return res.status(200).json({hasSchedule: false})
+    }
+
+  res.status(200).json({status: "success", schedule, hasSchedule: true})
 })
 
 

@@ -13,24 +13,29 @@ export const rootLoader = async()=>{
 }
 
 /** a general loader for a get request */
-const generalLoader = async ({ apiUrl }) => {
+const generalLoader = async ({ apiUrl, params }) => {
     try {
+      const id = params.id
+      
+      if (id){
+        apiUrl += `/${id}`
+      }
       const response = await fetch(apiUrl, { credentials: 'include' });
       const data = await response.json();
   
       if (!response.ok) {
-        throw new Response(
-          JSON.stringify({ message: data.error || "Something went wrong" }),
-          { status: response.status }
-        );
+        throw new Error(data.message || "Something went wrong");
       }
   
       return data;
     } catch (error) {
+      console.log(error)
       throw new Response(
-        JSON.stringify({ message: error.message || 'Unknown error' }),
+        JSON.stringify({ 
+            message: error instanceof Error ? error.message : String(error) || 'Unknown error' 
+        }),
         { status: 500 }
-      );
+    );
     }
   };
   

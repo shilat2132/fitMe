@@ -27,7 +27,7 @@ export const makeAnApptAction = async({request, params})=>{
 }
 
 
-export const cancelAppt = async ({request, params})=>{
+export const cancelAppt = async ({request})=>{
     const formData = await request.formData(); 
     const apptId = formData.get("apptId"); 
 

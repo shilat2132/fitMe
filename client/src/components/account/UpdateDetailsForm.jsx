@@ -4,6 +4,7 @@ import { Form } from "react-bootstrap"
 import PasswordInput from "../Auth/PasswordInput"
 import { useRef, useState } from "react"
 import CustomModal from "../UI/CustomModal"
+import { generateActionMsg } from "../../utils/utils"
 
 /**
  * A form component for updating account's details
@@ -27,14 +28,7 @@ const UpdateDetailsForm = ({type})=>{
 
     const submit = useSubmit()
     const action = useActionData()
-    let actionMsg
-    if(action){
-        if(action.error){
-            actionMsg = <p className= "errorMessage">{action.error}</p>
-        }else if(action.message){
-            actionMsg = <p className= "message">{action.message}</p>
-        }
-    }
+    const actionMsg = generateActionMsg(action)
 
     function deleteUserHandler(){
         setShowModal(false)

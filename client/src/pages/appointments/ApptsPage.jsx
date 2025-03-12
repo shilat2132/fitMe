@@ -1,18 +1,15 @@
 import { useActionData, useLoaderData, useNavigate, useSearchParams } from "react-router-dom"
-// import { Appt } from "./Appt"
 import styles from '../../styles/appts.module.css'
 import formStyles from "../../styles/form.module.css"
-import Appt from "../../components/appointments/Appt"
 import { Form, InputGroup } from "react-bootstrap"
 import { FaSearch } from "react-icons/fa";
+import AllAppts from "../../components/appointments/AllAppts"
 
-// import formStyles from '../styles/form.module.css'
-// import { isLoggedIn } from "../utils/auth"
+
 
 const ApptsPage = ()=>{
     
 
-    // const fromTrainer = from==="admin"
     const {appts, amount } = useLoaderData()
     const haveAppts = amount >0
     const action = useActionData()
@@ -48,20 +45,17 @@ const ApptsPage = ()=>{
                         <Form.Label htmlFor="date">Filter by date</Form.Label>
                         <InputGroup className= {styles.dateInputGroup}>
                             <Form.Control defaultValue={date || null} min={new Date()} id="dateInput" type="date" name="date"  />
-                            <FaSearch onClick={filterDateHandler} style={{height: "auto"}} />
+                            <FaSearch onClick={filterDateHandler} style={{height: "auto", cursor: "pointer"}} />
                         </InputGroup>
                         
                     </Form.Group>
                  </form>
              
              {haveAppts && 
-                <div className={`${styles.apptsList} row`}>
+             <div>
                 {actionMessage && <span>{actionMessage}</span>}
-                {haveAppts && appts.map(appt=>(
-                    <Appt className="col-lg-4 col-xs-6 col-sm-6" key={appt._id} 
-                    date={appt.date} hour={appt.hour} workout={appt.workout} trainer={appt.trainer.name} trainee={appt.trainee.name}
-                    apptId={appt._id} />
-                ))}
+                
+                <AllAppts appts={appts}/>
             </div>
             }
             {!haveAppts && <p className="message">No Appointment was scheduled yet</p>}

@@ -1,10 +1,9 @@
-import { Children, lazy } from "react";
+import { lazy } from "react";
 import { redirect } from "react-router-dom";
 
 
-// const ApptFormPage = lazy(() => import("./ApptFormPage"));
 const VacationsPage = lazy(()=> import("./pages/VacationsPage"))
-// const UpdateDetailsForm = lazy(()=> import("../../components/account/UpdateDetailsForm"))
+const WorkDetailsForm = lazy(()=> import("../../components/trainers/WorkDetailsForm"))
 
 
 const trainerRouter = (suspenseElement, dynamicLoaderImport, dynamicActionImport)=>{
@@ -14,6 +13,9 @@ const trainerRouter = (suspenseElement, dynamicLoaderImport, dynamicActionImport
             {path: "vacations", element: suspenseElement(<VacationsPage/>),
                 loader: dynamicLoaderImport("general", "/api/trainer/vacations"),
                 action: dynamicActionImport("trainers", "vacationActions")
+            },
+            {path: "updateWorkDetails", loader: dynamicLoaderImport("general", "/api/schedule"),
+                element: suspenseElement(<WorkDetailsForm/> ) , action: dynamicActionImport("trainers", "workDetailsAction")
             }
         ]
       })

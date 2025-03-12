@@ -9,6 +9,7 @@ const scheduleActions = require("../handlers/users/manager/scheduleActions")
 
 
 router.get("/", scheduleActions.getSchedule)
+router.get("/scheduleToUpdate", scheduleActions.getScheduleToUpdate)
 router.get("/:date", scheduleActions.getTrainersForDay)
 
 

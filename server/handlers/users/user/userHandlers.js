@@ -49,16 +49,25 @@ exports.getUser = catchAsync(async (req, res, next)=>{
  * - deletes all the user's appointments
  * - delete the user's collection doc
  */
-exports.deleteUser = catchAsync(async (req, res, next)=>{
-    try {
-        res.cookie('jwt', 'logout', { expires: new Date(Date.now() + 10 *1000), httpOnly: true })
-        await Appt.deleteMany({trainee: req.user._id})
-        await User.findByIdAndDelete(req.user._id)
-        return res.status(204).json({status: 'success'})
-    } catch (error) {
-        return next(new AppError("couldn't delete user", 500))
-    }
-})
+exports.deleteUser = (from)=>{
+    return (catchAsync(async (req, res, next)=>{
+        let id;
+        if (from=== "manager"){
+            id = req.params.id
+        }else{
+            id = req.user._id
+            res.cookie('jwt', 'logout', { expires: new Date(Date.now() + 10 *1000), httpOnly: true })
+        }
+        try {
+            
+            await Appt.deleteMany({trainee: id})
+            await User.findByIdAndDelete(id)
+            return res.status(204).json({status: 'success'})
+        } catch (error) {
+            return next(new AppError("couldn't delete user", 500))
+        }
+    }))
+}
 
 
 

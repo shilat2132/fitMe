@@ -1,0 +1,23 @@
+.moreInfo{
+    margin-top: 7%;
+}
+
+.deleteUserBtn, .button{
+   
+    border: none;
+    color: white;
+    border-radius: 0.3rem;
+    font-weight: 400;
+    padding: 7px;
+}
+
+.deleteUserBtn{
+    background-color: rgb(9, 9, 9);
+}
+
+.button{
+    background-color: rgb(197, 37, 255);
+    margin-left: 3%;
+    
+}
+

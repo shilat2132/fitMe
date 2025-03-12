@@ -207,8 +207,7 @@ scheduleSchema.pre("save", async function (next) {
         return next(new AppError("Only one Schedule document is allowed", 400));
         }
 
-        const dates = this.datesCreation()
-        this.days = dates 
+       this.datesCreation()
     }
     next();
   });

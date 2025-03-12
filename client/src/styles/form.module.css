@@ -14,6 +14,20 @@
     border-radius: 16px;
    
 }
+.restingDay{
+    width: initial;
+}
+
+.shortInput{
+    width: auto !important;
+}
+
+.inlineInputs{
+    display: ruby-text;
+
+}
+
+    
 
 label{
     font-size: 15px;
@@ -35,6 +49,14 @@ label{
     margin: 2%;
 }
 
+/* vacation page in the manager interface */
+.editVacationBtn{
+    background-color: rgb(40, 129, 244);
+    padding: 6px;
+    border: none;
+    color: white;
+    border-radius: 0.3rem;
+}
 /* auth form */
 .authFormGroup input{
     padding: 3px !important;
@@ -72,7 +94,8 @@ label{
 }
 
 .deleteButton, .cancelVacationBtn{
-    background-color: rgb(255, 115, 115);
+    background-color: rgb(17, 1, 1);
+    color: white;
 }
 
 .cancelVacationBtn{

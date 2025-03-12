@@ -1,6 +1,7 @@
 import  {Outlet, useLoaderData} from "react-router-dom"
-import MainNav from "./navbars/MainNav";
-import { TrainerNav } from "./navbars/TrainerNav";
+import MainNav from "../navbars/MainNav";
+import { TrainerNav } from "../navbars/TrainerNav";
+import { ManagerNav } from "../navbars/ManagerNav";
 
 
 export default function Layout() {
@@ -17,6 +18,7 @@ export default function Layout() {
 
           <div className="accountLayer">
             {isLoggedIn && role === "trainer" &&  <TrainerNav/>}
+            {isLoggedIn && role === "manager" &&  <ManagerNav/>}
                         </div> 
         </main>
       </div>

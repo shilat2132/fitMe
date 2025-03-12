@@ -63,6 +63,13 @@ const strHourToMinutesInt = (time)=>{
 }
 
 
+/** checks whether a given start (string hour) is before a given end (string hour) */
+exports.startBeforeEnd = (start, end)=>{
+    const sMinutes = strHourToMinutesInt(start)
+    const eMinutes = strHourToMinutesInt(end)
+    return sMinutes < eMinutes
+}
+    
 /**
  * 
  * @param {int} minutes

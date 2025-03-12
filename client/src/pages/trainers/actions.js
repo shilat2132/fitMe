@@ -46,3 +46,40 @@ export const vacationActions = async({request})=>{
         return {message: "The vacation request was sent successfully"}
     }
 }
+
+
+export const workDetailsAction = async ({request})=>{
+    const formData = await request.formData()
+    
+
+    const workingHoursStart = formData.get("workingHours[start]");
+    const workingHoursEnd = formData.get("workingHours[end]");
+
+
+    const workingHours = {
+    start: workingHoursStart,
+    end: workingHoursEnd
+    }
+
+
+    let restingDay = formData.get("restingDay")
+    restingDay = parseInt(restingDay)
+    const workouts = formData.getAll("workouts")
+
+    const body = {workingHours, restingDay, workouts}
+
+    const response = await fetch("/api/trainer/updateWorkDetails", {
+        method: request.method,
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body)
+    })
+
+    const responseData = await response.json()
+    if(!response.ok){
+        return {error: responseData.message ? responseData.message : "Error"}
+    }
+
+    return {message: "Your work details were updated"}
+
+}

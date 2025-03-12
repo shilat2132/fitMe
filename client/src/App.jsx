@@ -1,17 +1,20 @@
-import { RouterProvider, createBrowserRouter, Outlet } from "react-router";
+import { RouterProvider, createBrowserRouter } from "react-router";
 import { Home } from "./pages/home";
 import { Suspense } from 'react';
 
 import Spinner from 'react-bootstrap/Spinner';
 import { ErrorPage } from "./pages/errorPage";
-import Layout from "./components/UI/Layout";
 import { rootLoader } from "./utils/loaders";
 
-import authRouter from "./pages/auth/authRouter";
 import "./styles/general.css"
+
+// ROUTERS
+import authRouter from "./pages/auth/authRouter";
 import apptRouter from "./pages/appointments/ApptRouter";
 import accountRouter from "./pages/account/AccountRouter";
 import trainerRouter from "./pages/trainers/trainersRouter";
+import managerRouter from "./pages/manager/mangerRouter";
+import Layout from "./components/UI/layouts/Layout";
 
 
 
@@ -20,7 +23,8 @@ const actionModules = {
   logout: ()=> import("./pages/auth/actions/logoutAction"),
   appointments: ()=> import("./pages/appointments/actions"),
   account: ()=> import("./pages/account/actions"),
-  trainers: ()=> import("./pages/trainers/actions")
+  trainers: ()=> import("./pages/trainers/actions"),
+  managers: ()=> import("./pages/manager/actions")
 };
 
 /** dynamicly loads actions functions (that are exported as default) */
@@ -36,7 +40,9 @@ export function dynamicActionImport(key, functionName=null) {
 const loaderModules = {
   general: () => import("./utils/loaders"),
   appts: ()=> import("./pages/appointments/loaders"),
-  trainers: ()=> import("./pages/trainers/trainersRouter")
+  trainers: ()=> import("./pages/trainers/trainersRouter"),
+  managers: ()=> import("./pages/manager/mangerRouter")
+
 };
 
 /** dynamicly imports loaders functions 
@@ -84,7 +90,8 @@ const router = createBrowserRouter([
     authRouter( suspenseElement, dynamicActionImport ),
     ...apptRouter(suspenseElement, dynamicLoaderImport, dynamicActionImport),
     accountRouter(suspenseElement, dynamicLoaderImport, dynamicActionImport),
-    trainerRouter(suspenseElement, dynamicLoaderImport, dynamicActionImport)
+    trainerRouter(suspenseElement, dynamicLoaderImport, dynamicActionImport),
+    managerRouter(suspenseElement, dynamicLoaderImport, dynamicActionImport)
     
     
   ]}

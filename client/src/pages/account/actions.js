@@ -21,7 +21,8 @@ const accountActions = async ({request, params})=>{
         })
 
         if (!response.ok){
-            return {error: "Error"}
+            const responseData = await response.json()
+            return {error: responseData.message || "Error"}
         }else{
             return redirect ("/auth/signup")
         }

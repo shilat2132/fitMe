@@ -1,8 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require("validator")
 const User = require("./User")
-const { getHoursArr } = require('../../utils/utils')
-const utils = require("../../utils/utils")
+const utils = require('../../utils/utils')
 const AppError = require('../../utils/AppError')
 
 /** a class that inherits from user.
@@ -31,9 +30,7 @@ const trainerSchema = new mongoose.Schema({
             validate: {
                 validator: function (value) {
                     if (this.workingHours){
-                        const intHour = parseInt(value.split(":")[0])
-                        const startIntHour = parseInt(this.workingHours.start.split(":")[0])
-                        return validator.isTime(value) && intHour>startIntHour
+                        return validator.isTime(value) && utils.startBeforeEnd(this.workingHours.start, value)
                     }
                     
                 },
@@ -102,7 +99,7 @@ trainerSchema.methods.getAvailableHours = async function(d, period = null, unit=
      }
     
      
-     const hours = getHoursArr(this.workingHours.start, this.workingHours.end, workoutPeriod, workoutUnit, date)
+     const hours = utils.getHoursArr(this.workingHours.start, this.workingHours.end, workoutPeriod, workoutUnit, date)
      
       // remove the hours that are scheduled
      const availableHours = hours.filter(h=> !scheduledHours.includes(h))
@@ -123,19 +120,6 @@ trainerSchema.pre("save", async function (next) {
         return next()
     }
 
-trainerSchema.pre("findOneAndUpdate", function(next){
-    const updateDoc = this.getUpdate()
-    const workingHours = updateDoc.workingHours
-    if (workingHours){
-        const {start, end} = workingHours
-        const intHour = parseInt(end.split(":")[0])
-        const startIntHour = parseInt(start.split(":")[0])
-        if (!(validator.isTime(start) && validator.isTime(end) && intHour>startIntHour)){
-            return (new AppError("The given workingHours field is invalid", 400))
-        }
-        next()
-    }
-})
 
     const Schedule = await require('../time/Schedule')
     const schedule = await Schedule.findOne().select("workouts");
@@ -148,11 +132,38 @@ trainerSchema.pre("findOneAndUpdate", function(next){
     next()
 });
 
+
+/** pre query mw that validates the working hours field:
+ *  - checks if it's an actual hour
+ *  - checks if the start is before the end
+ */
+trainerSchema.pre(/^findOneAnd/, function(next){
+    const updateDoc = this.getUpdate()
+    const workingHours = updateDoc.workingHours
+    if (workingHours){
+        const {start, end} = workingHours
+       
+        
+        if (!(validator.isTime(start) && validator.isTime(end))){
+            return next(new AppError("The given workingHours field is invalid", 400))
+        }else{
+           
+            if(!utils.startBeforeEnd(start, end)){
+                return next(new AppError("The given start hour is after the end hour", 400))
+            }
+        }
+    }
+    next()
+})
+
 trainerSchema.pre( /^findOneAnd/, async function (next) {
     let update = this.getUpdate()
 
-    if (!update.$addToSet || !update.$addToSet.workouts) {
+    if (!update.workouts) {
         return next()
+    }
+    if(!Array.isArray(update.workouts)){
+        return next(new AppError("The given workouts field isn't an array", 400))
     }
 
     const Schedule = await require('../time/Schedule')
@@ -160,7 +171,9 @@ trainerSchema.pre( /^findOneAnd/, async function (next) {
     if (!workoutTypes) return next();
 
     workoutTypes = new Set(workoutTypes.workouts);
-    update.$addToSet.workouts.$each = update.$addToSet.workouts.$each.filter(workout => workoutTypes.has(workout));
+    let workouts = new Set(update.workouts) //remove duplicates
+    workouts = [...workouts]
+    update.workouts = workouts.filter(workout => workoutTypes.has(workout));
     
     this.setUpdate(update)
     next();

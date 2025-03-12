@@ -5,7 +5,6 @@ import { useEffect, useReducer } from "react";
 import { he } from 'date-fns/locale';
 import ApptForm from "../../components/appointments/ApptForm";
 import styles from "../../styles/appts.module.css"
-import { suspenseElement } from "../../App";
 import { Spinner } from "react-bootstrap";
 
 function reducer(state, action){
@@ -38,8 +37,8 @@ export default function ApptFormPage(){
     const data = useLoaderData()
     
     if (!data.schedule){
-        const errorMsg = data.error || "Something went wrong"
-        return (<div className="errorMessage container">{errorMsg}</div>)
+        const errorMsg = "The manager hasn't created a schedule yet"
+        return (<div className="errorPageMessage container">{errorMsg}</div>)
     }
 
     const {maxDaysForward} = data.schedule

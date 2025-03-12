@@ -12,6 +12,8 @@ const workoutsAction = require("../handlers/users/manager/workoutsActions")
 const Trainer = require("../models/users/Trainer")
 const User = require("../models/users/User")
 const Vacation = require('../models/users/Vacation')
+const { deleteUser } = require('../handlers/users/user/userHandlers')
+// const { default: trainerRouter } = require('../../client/src/pages/trainers/trainersRouter')
 
 
 
@@ -19,10 +21,12 @@ router.use(authMW.protect, authMW.restrictTo("manager"))
 
     // USERS
         // TRAINERS
-trainersRoutes = express.Router()
+const trainersRoutes = express.Router()
 
 // get all trainers
-trainersRoutes.get("/", factory.getAll(Trainer, ()=>({}) , "_id name email"))
+trainersRoutes.get("/", factory.getAll(Trainer, ()=>({}) , "_id name"))
+
+
 
 // get all trainers' vacations - approved ones, sorted in ascending order of the starting dates
 trainersRoutes.get("/vacations", factory.getAll(Vacation, req=> ({status: "approved"}), null, { from: 1 }))
@@ -33,14 +37,26 @@ trainersRoutes
     .put("/vacations/:vacId/update", factory.updateOne(Vacation, vacCallBack)) //update vacation's status
 
 
+    // get a specific trainer
+trainersRoutes.route("/:id")
+    .get(usersActions.getUser(Trainer, "-isNewPasswordEncrypted -__v -__t", "trainer", "vacations"))
+   
+
+
+
 router.use("/trainers", trainersRoutes)
 
     // get all trainees
 traineesFilter = req => ({role: "trainee"})
-router.get("/trainees", factory.getAll(User, traineesFilter, "_id name email"))
+router.get("/trainees", factory.getAll(User, traineesFilter, "_id name"))
+router.route("/trainees/:id").get(usersActions.getUser(User, "name email _id phone role", "trainee", "appointments"))
+
 
 // turn a user into a trainer
 router.post("/users/:userId", usersActions.userToTrainer)
+
+router.delete("/users/:id", deleteUser("manager"))
+
 
 
     // WORKOUTS

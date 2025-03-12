@@ -63,11 +63,11 @@ const userSchema = new mongoose.Schema({
 
 
 //virtual populate
-// userSchema.virtual('appointments', {
-//     ref: "Appt",
-//     foreignField: "user",
-//     localField: "_id"
-// })
+userSchema.virtual('appointments', {
+    ref: "Appointment",
+    foreignField: "trainee",
+    localField: "_id"
+})
 
 //SCHEMA METHODS
 

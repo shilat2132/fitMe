@@ -28,7 +28,7 @@ router.use(authMW.protect)
 router.route("/me")
     .get(userHandlers.getUser)
     .patch(userHandlers.updateMe)
-    .delete(userHandlers.deleteUser)
+    .delete(userHandlers.deleteUser("user"))
 
 router.patch('/updatePassword', passwordHandlers.updatePassword)
 

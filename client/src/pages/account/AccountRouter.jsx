@@ -3,7 +3,7 @@ import { redirect } from "react-router-dom";
 
 
 // const ApptFormPage = lazy(() => import("./ApptFormPage"));
-const AccountLayout = lazy(()=> import("../../components/UI/AccountLayout"))
+const AccountLayout = lazy(()=> import("../../components/UI/layouts/AccountLayout"))
 const UpdateDetailsForm = lazy(()=> import("../../components/account/UpdateDetailsForm"))
 
 
