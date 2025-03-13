@@ -46,7 +46,18 @@
     margin-top: 17%;
   }
   
+  .adjacentIcon{
+    height: auto;
+    cursor: pointer;
+  }
   
+  .generalBtn{
+    background-color: rgb(40, 129, 244);
+    padding: 6px;
+    border: none;
+    color: white;
+    border-radius: 0.3rem;
+}
   .errorPageMessage{
     font-size: 23px;
     color: red;

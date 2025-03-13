@@ -209,8 +209,21 @@ scheduleSchema.pre("save", async function (next) {
 
        this.datesCreation()
     }
+    if(this.isModified("workouts")){
+        let workouts = new Set(this.workouts) //remove duplicates
+        this.workouts = [...workouts]
+    }
     next();
   });
+
+  scheduleSchema.post("findOneAndUpdate", async function (doc) {
+    if (!doc) return
+
+    doc.workouts = [...new Set(doc.workouts)]
+    await doc.save()
+});
+
+
   
 
 

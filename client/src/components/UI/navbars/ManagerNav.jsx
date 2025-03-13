@@ -7,7 +7,7 @@ export const ManagerNav = ()=>{
     return(
         <Nav variant="tabs" className="fixed-bottom">
             <Nav.Item className="disabled">
-                <Nav.Link disabled className="nav-link">Trainer's tools</Nav.Link>
+                <Nav.Link disabled className="nav-link">Manager's tools</Nav.Link>
             </Nav.Item>
             <Nav.Item>
                 <NavLink className="nav-link accountNavLink" to="appointments">Appointments</NavLink>
@@ -24,6 +24,10 @@ export const ManagerNav = ()=>{
 
             <Nav.Item>
                 <NavLink className="nav-link accountNavLink" to="manager/schedule">Schedule</NavLink>
+            </Nav.Item>
+
+            <Nav.Item>
+                <NavLink className="nav-link accountNavLink" to="manager/workouts">Workouts</NavLink>
             </Nav.Item>
             
 

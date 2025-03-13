@@ -61,6 +61,7 @@ router.delete("/users/:id", deleteUser("manager"))
 
     // WORKOUTS
 // add a workout type, delete
+router.get("/workoutsTypes", workoutsAction.getWorkoutsTypes)
 router.route("/workoutsTypes/:scheduleId")
     .put(workoutsAction.addWorkoutType)
     .delete(workoutsAction.deleteWorkoutsType)

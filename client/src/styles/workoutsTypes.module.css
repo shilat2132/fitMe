@@ -1,0 +1,40 @@
+.stackItems{
+    box-shadow: #6c757d 2px 2px 2px 2px;
+}
+
+.stack{
+    padding-top: 4%;
+}
+
+
+.toggleDeleteWorkoutsBtn{
+    padding: 6px;
+    border: none;
+    color: white;
+    border-radius: 0.3rem;
+    background-color: rgb(9, 9, 9);
+    margin-right: 4%;
+}
+.workoutsBadges{
+    margin-left: 5px;
+}
+.deleteBtn{
+    border: none;
+    background-color: inherit;
+    padding: 7px;
+    color: red;
+    box-shadow: #6c757d 2px 2px 2px 2px;
+    margin-top: 10%;
+}
+
+.icon{
+    margin-right: 3px;
+}
+
+.inputs{
+    display: flex;
+}
+
+.input{
+    margin-right: 9%;
+}

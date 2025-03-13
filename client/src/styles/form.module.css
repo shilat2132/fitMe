@@ -27,6 +27,17 @@
 
 }
 
+.purpleBtn{
+   
+    border: none;
+    color: white;
+    border-radius: 0.3rem;
+    font-weight: 400;
+    background-color: rgb(197, 37, 255);
+    margin-top: 3%;
+    
+}
+
     
 
 label{

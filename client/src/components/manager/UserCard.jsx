@@ -36,7 +36,12 @@ function UserCard(){
                 <Card.Body>
                 <Card.Title>{user.name} </Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">{user.role}  </Card.Subtitle>
-                <Card.Text>{user.phone} - {user.email} </Card.Text>
+                <Card.Text>{user.phone} - {user.email} 
+                    <br/>
+                    {isTrainer && <span>
+                        {user.workouts.map(w => ({w}))}
+                        </span>}
+                </Card.Text>
 
                 
                 <button className= {styles.deleteUserBtn} onClick={e => setShow(true)}>Delete User</button>

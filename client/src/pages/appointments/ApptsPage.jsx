@@ -45,7 +45,7 @@ const ApptsPage = ()=>{
                         <Form.Label htmlFor="date">Filter by date</Form.Label>
                         <InputGroup className= {styles.dateInputGroup}>
                             <Form.Control defaultValue={date || null} min={new Date()} id="dateInput" type="date" name="date"  />
-                            <FaSearch onClick={filterDateHandler} style={{height: "auto", cursor: "pointer"}} />
+                            <FaSearch onClick={filterDateHandler} className="adjacentIcon" />
                         </InputGroup>
                         
                     </Form.Group>

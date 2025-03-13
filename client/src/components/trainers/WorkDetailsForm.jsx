@@ -11,6 +11,8 @@ const WorkDetailsForm = ()=>{
     const {schedule} = useLoaderData()
     const allowedWorkouts = schedule.workouts 
 
+    const haveWorkouts = allowedWorkouts.length >0
+
     const {user} = useOutletContext()
     const currentTrainerWorkouts = user.workouts
 
@@ -52,7 +54,7 @@ const WorkDetailsForm = ()=>{
                 </Form.Select>
                 
 
-                <Form.Group className={`${styles.formGroup}`}>
+                {haveWorkouts && <Form.Group className={`${styles.formGroup}`}>
                     <Form.Label htmlFor="workouts">Workouts</Form.Label>
                     {allowedWorkouts.map(w=> (
                         <Form.Check
@@ -67,7 +69,7 @@ const WorkDetailsForm = ()=>{
                     />
                     ))}
                     
-                </Form.Group>
+                </Form.Group>}
             
             </div>
             

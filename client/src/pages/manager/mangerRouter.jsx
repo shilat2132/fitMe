@@ -8,6 +8,7 @@ const UserCard = lazy(()=> import("../../components/manager/UserCard"))
 const AllUsers = lazy(()=> import("./pages/AllUsers"))
 const VacationsPage = lazy(()=> import("./pages/VacationsPage"))
 const ScheduleForm = lazy(()=> import("./pages/ScheduleForm"))
+const WorkoutsPage = lazy(()=> import("./pages/WorkoutsPage"))
 
 
 
@@ -52,6 +53,10 @@ const managerRouter = (suspenseElement, dynamicLoaderImport, dynamicActionImport
 
         {path: "schedule", loader: dynamicLoaderImport("general", "/api/schedule/scheduleToUpdate"),
             element: suspenseElement(<ScheduleForm/>), action: dynamicActionImport("managers", "scheduleActions")
+        },
+
+        {path: "workouts", loader: dynamicLoaderImport("general", "/api/manager/workoutsTypes/"),
+            element: suspenseElement(<WorkoutsPage/>), action: dynamicActionImport("managers", "workoutsTypesActions")
         }
         ]
       })
