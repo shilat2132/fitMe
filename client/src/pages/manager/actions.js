@@ -51,7 +51,7 @@ export const workoutsTypesActions = async({request})=>{
     }
     const body = {workouts}
 
-    const response = await fetch(`/api/manager/workoutsTypes//${scheduleId}`, {
+    const response = await fetch(`/api/manager/workoutsTypes/${scheduleId}`, {
         method,
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
