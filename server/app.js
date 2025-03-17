@@ -43,7 +43,7 @@ app.set('trust proxy', 1);
 
 // This middleware manages which origins are permitted to access the resources - used when having different domains for the server and client
 app.use(cors({ credentials: true, // Allow cookies and credentials in requests
-  origin: ['https://cosmetic-api.onrender.com', 'https://cosmetic.onrender.com', 'http://localhost:5173']
+  origin: ['https://fitMe-api.onrender.com', 'https://fitMe.onrender.com', 'http://localhost:5173']
 }))
 app.options('*', cors())
 
@@ -84,8 +84,12 @@ app.use("/api/trainer", trainerRouter)
 app.use("/api/manager", managerRouter)
 app.use("/api/appointments", appointmentsRouter)
 
+// Serve static files from the React client build directory
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
-
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
 
 
 app.all('*', (req,res, next)=>{
