@@ -23,7 +23,7 @@ exports.userToTrainer = catchAsync(async (req, res, next)=>{
       }
 
       const workingHours = {
-        start: "8:00",
+        start: "08:00",
         end: "16:00"
       }
 
