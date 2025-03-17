@@ -2,15 +2,7 @@ import { useLoaderData } from "react-router-dom";
 import AllVacations from "../../../components/trainers/AllVacations";
 
 
-// export default function VacationsToApprove(){
-//     const {docs: vacations, amount} = useLoaderData()
 
-
-//     return (<>
-//     <h1>Vacations To Approve</h1>
-//     <AllVacations from="manager" vacations={vacations} all={true}/>
-//     </>)
-// }
 
 export default function VacationsPage({approved}){
     const {docs: vacations, amount} = useLoaderData()
@@ -26,8 +18,8 @@ export default function VacationsPage({approved}){
         return <>{msg} </>
     }
     return (<>
-    {approved && <h1>Approved Vacations</h1>}
-    {!approved && <h1>Vacations To Approve</h1>}
+    {approved && <h3>Approved Vacations</h3>}
+    {!approved && <h3>Vacations To Approve</h3>}
     <AllVacations from="manager" vacations={vacations} />
     </>)
 }

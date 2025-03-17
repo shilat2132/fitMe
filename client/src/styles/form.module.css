@@ -60,14 +60,7 @@ label{
     margin: 2%;
 }
 
-/* vacation page in the manager interface */
-.editVacationBtn{
-    background-color: rgb(40, 129, 244);
-    padding: 6px;
-    border: none;
-    color: white;
-    border-radius: 0.3rem;
-}
+
 /* auth form */
 .authFormGroup input{
     padding: 3px !important;
@@ -104,18 +97,28 @@ label{
 
 }
 
-.deleteButton, .cancelVacationBtn{
+
+/* ScheduleForm componnent */
+.deleteButton{
     background-color: rgb(17, 1, 1);
     color: white;
 }
 
-.cancelVacationBtn{
+.secondBtn{
+    background-color: rgb(40, 129, 244);
     border: none;
-    padding: inherit;
-    box-shadow: 2px 2px gray;
-    font-size: 13px;
-    font-weight: 500;
+    color: white;
+    margin-left: 3%;
 }
+
+.btnsLine{
+    margin-top: 5%;
+    justify-content: left;
+}
+
+/* end of ScheduleForm componnent */
+
+
 .formGroup label{
     display: block;
     text-align: left;
@@ -161,6 +164,7 @@ select{
 
 
 .center {
+    margin: auto;
     margin-top: 4%;
     padding: 10px;
   }
@@ -169,7 +173,7 @@ select{
 }
 
   @media screen and (max-width: 500px) {
-    .formGroup input{
+    .formGroup input:not([type="checkbox"]){
         width: 90%;
     }
     .authForm{
@@ -192,10 +196,7 @@ select{
   }
 
   @media screen and (min-width: 501px) {
-    .center {
-        margin: auto;
-        /* width: 30%; */
-    }
+   
     .apptFooter{
         margin: auto;
         width: fit-content;

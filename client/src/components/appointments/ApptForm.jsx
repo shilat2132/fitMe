@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import { Form as FormRouter, useActionData } from "react-router-dom";
+import { Form as FormRouter, useActionData, useNavigation } from "react-router-dom";
 import TrainerInputs from "./TrainerInputs";
 import styles from "../../styles/appts.module.css"
 import { generateActionMsg } from "../../utils/utils";
@@ -15,6 +15,8 @@ export default function ApptForm({trainers, date}){
     const [selectedTrainer, setSelectedTrainer] = useState("default")
     let action = useActionData()
 
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === "submitting"
 
     const [actionMsg, setActionMsg] = useState(null)
 
@@ -68,7 +70,7 @@ export default function ApptForm({trainers, date}){
                 <TrainerInputs availableHours={trainers[selectedTrainer].availableHours} 
                     workouts={trainers[selectedTrainer].workouts} />
 
-                <button type="submit" className={styles.submitBtn} >Schedule Appointment</button>
+                <button type="submit" disabled={isSubmitting} className={styles.submitBtn} >{isSubmitting ?  "Scheduling..." : "Schedule Appointment"}</button>
                 
             </>
             

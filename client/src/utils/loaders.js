@@ -29,7 +29,6 @@ const generalLoader = async ({ apiUrl, params }) => {
   
       return data;
     } catch (error) {
-      console.log(error)
       throw new Response(
         JSON.stringify({ 
             message: error instanceof Error ? error.message : String(error) || 'Unknown error' 

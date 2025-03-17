@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const User = require("../../models/users/User")
 const catchAsync = require("../../utils/catchAsync")
 const AppError = require("../../utils/AppError")
+const Email = require('../../utils/email')
 
 //HELPFUL FUNCTIONS
 /**sign a new jwt token with a user'd id */
@@ -53,6 +54,12 @@ exports.signup = catchAsync (async (req, res, next)=>{
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm, 
     })
+
+    try {
+      await new Email(user).sendWelcome()
+    } catch (error) {
+      console.log(error)
+    }
 
    createSendToken(user, req, 200, res)
 

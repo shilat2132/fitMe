@@ -23,9 +23,9 @@ exports.forgotPassword = catchAsync(async (req, res, next)=>{
       // Step 3: create the url for resetting with the token and send the email
       const resetUrl = `${req.headers.origin}/auth/resetPassword/${resetToken}`
   
-      const message = `You applied a request for resetting your password? enter the link below. if you didn't request, please ignore this mail.`
+      // const message = `You applied a request for resetting your password? enter the link below. if you didn't request, please ignore this mail.`
       try {
-        await new Email(user).sendResetPassword(message, resetUrl)
+        await new Email(user).sendResetPassword(resetUrl)
         res.status(200).json({status: "success", message: "token sent to email"})
       } catch (error) {
           user.passwordResetToken = undefined

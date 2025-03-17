@@ -140,7 +140,6 @@ exports.deleteSchedule = catchAsync(async (req, res, next)=>{
     } catch (error) {
       await session.abortTransaction()
       session.endSession()
-      console.log(error)
       return next (new AppError("Couldn't delete schedule", 500))
     }
  })

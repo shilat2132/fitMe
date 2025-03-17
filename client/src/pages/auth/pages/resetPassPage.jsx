@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom"
-import AuthForm from "../../components/Auth/AuthForm"
+import AuthForm from "../../../components/Auth/AuthForm"
 
 
 

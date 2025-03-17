@@ -87,16 +87,10 @@ const authAction = async({request, params})=>{
         return {error: responseData.message ? responseData.message : "Error"}
     }
 
-    // const tokenDate = new Date()
-    // const days = parseInt(responseData.data.tokenExpiration)
-    // tokenDate.setDate(tokenDate.getDate()+ days)
-    // localStorage.setItem("tokenExpirationDate", tokenDate.toLocaleString())
-    // localStorage.setItem("isLoggedIn", 1)
-    // if(responseData.data.user.role){
-    //     localStorage.setItem("role", responseData.data.user.role)
-    // }
-    // window.dispatchEvent(new Event('storage'))
-
+  
+    if (isForgotPassword){
+        return {message: "An email was sent to your address to reset your password"}
+    }
     return redirect('/')
 }
 

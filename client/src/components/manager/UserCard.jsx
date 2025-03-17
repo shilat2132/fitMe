@@ -10,12 +10,13 @@ import { generateActionMsg } from "../../utils/utils";
 function UserCard(){
     const {user} = useLoaderData()
     const role = user.role
-     const isTrainer = role === "trainer"
-
+    const isTrainer = role === "trainer"
+    
     const action = useActionData()
     const actionMsg = generateActionMsg(action)
 
-   
+    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 
     const [show, setShow] = useState(false)
     const submit = useSubmit()
@@ -32,14 +33,18 @@ function UserCard(){
 
     return(
         <div className="container">
-            <Card style={{ width: '18rem', margin: "auto" }}>
+            <div style={{ width: '18rem', margin: "auto" }}>
                 <Card.Body>
                 <Card.Title>{user.name} </Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">{user.role}  </Card.Subtitle>
                 <Card.Text>{user.phone} - {user.email} 
+                    {isTrainer && <>
+                    <br/>
+                       <b> Resting day: </b> {days[user.restingDay]}
+                    </>}
                     <br/>
                     {isTrainer && <span>
-                        {user.workouts.map(w => ({w}))}
+                        {user.workouts.map(w => (<span key={w}>{w} </span>))}
                         </span>}
                 </Card.Text>
 
@@ -53,7 +58,7 @@ function UserCard(){
                 {!isTrainer && <button onClick={userToTrainerButton} className={styles.button}>Turn user to Trainer</button>}
                 {!isTrainer && actionMsg}
                 </Card.Body>
-            </Card>
+            </div>
 
            
            <div className={styles.moreInfo}>

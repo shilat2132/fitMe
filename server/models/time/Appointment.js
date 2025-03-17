@@ -117,7 +117,6 @@ apptSchema.statics.isApptAvailable = async (date1, hour, trainerId, workout)=>{
         return {result: true}
 
     } catch (error) {
-        console.log("An error occured in isApptAvailable function  ", error)
         return {result: false, error}
     }
 }

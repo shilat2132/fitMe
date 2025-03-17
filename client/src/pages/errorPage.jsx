@@ -4,7 +4,7 @@ import '../styles/general.css'
 
 export const ErrorPage = ()=>{
     const error = useRouteError()
-    console.log(error)
+    // console.log(error)
     let errorMessage;
 
     if(error.data){

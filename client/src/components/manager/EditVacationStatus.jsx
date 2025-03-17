@@ -1,11 +1,11 @@
 import { Form, InputGroup} from 'react-bootstrap';
-import styles from "../../styles/form.module.css"
+import styles from "../../styles/vacations.module.css"
 import { Form as FormRouter} from "react-router-dom"
 
 function EditVacationStatus({vacation}) {
   return (
-    <FormRouter method='PUT'>
-        <InputGroup>
+    <FormRouter action='/manager/vacations/toApprove' method='PUT'>
+        <InputGroup className={styles.InputGroup} >
         <Form.Select name='status' defaultValue={vacation.status}>
             <option value="approved">approved</option>
             <option value="not approved">not approved</option>

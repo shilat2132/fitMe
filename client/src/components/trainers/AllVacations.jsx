@@ -1,6 +1,6 @@
 import { ListGroup } from "react-bootstrap"
 import { useActionData, useSubmit } from "react-router-dom"
-import styles from "../../styles/form.module.css"
+import styles from "../../styles/vacations.module.css"
 import EditVacationStatus from "../manager/EditVacationStatus"
 import { generateActionMsg } from "../../utils/utils"
 
@@ -24,7 +24,7 @@ export default function AllVacations({vacations, from}){
                 const fromStr = new Date(vac.from).toISOString().split("T")[0]
                 const toStr = new Date(vac.to).toISOString().split("T")[0]
                 let vacationStr = {from: fromStr.replaceAll("-", "/") , to: toStr.replaceAll("-", "/") }
-                return (<ListGroup.Item className="vacationListItem" key={vac._id}>
+                return (<ListGroup.Item className={styles.vacationListItem} key={vac._id}>
                         <div className="ms-2 ">
                             <div style={{marginBottom: "9%"}} className="fw-bold">  {`${vacationStr.from} - ${vacationStr.to}`}</div>
                             {fromManager && <>

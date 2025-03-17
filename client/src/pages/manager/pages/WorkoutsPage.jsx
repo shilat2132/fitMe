@@ -1,5 +1,5 @@
 import { Form as FormRouter, useActionData, useLoaderData, useSubmit } from "react-router-dom";
-import { Form, InputGroup, Stack } from "react-bootstrap";
+import { Form, Stack } from "react-bootstrap";
 import styles from "../../../styles/workoutsTypes.module.css"
 import { generateActionMsg } from "../../../utils/utils";
 import { useState } from "react";
@@ -36,7 +36,7 @@ export default function WorkoutsPage (){
         })
     }
 
-    const btnContent = isRead ? "Select workouts to remove from options" : "Back to all workouts"
+    const btnContent = isRead ? "Select workouts" : "Back to all workouts"
 
 
     return (<div className="container">
@@ -47,9 +47,9 @@ export default function WorkoutsPage (){
             {isRead && <FaMinus className={styles.icon} />} {btnContent}  
         </button>
 
-        <button onClick={e => setShow(true)} className="generalBtn">
-        <FaPlus className={styles.icon} />  Add a workout type  
-        </button>
+        {isRead && <button onClick={e => setShow(true)} className="generalBtn">
+        <FaPlus className={styles.icon} />  Add a workout  
+        </button>}
 
         <CustomModal setShow={setShow} show={show} title="Add a workout" body={ <WorkoutForm scheduleId={schedule._id} setShow={setShow} />} defaultBtns={false}/>
 

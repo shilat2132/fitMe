@@ -40,11 +40,21 @@ const vacationSchema = new mongoose.Schema({
     }
 });
 
+vacationSchema.pre(/^find/, function(next){
+    this.populate({path: "trainer", select: "name email"})
+    next()
+})
+
+
+/** 
+ *  - checks whether there is an appointment scheduled in the range of dates of the vacation 
+ *  - set the from to the beginning of the date, and to - to the end of the day
+*/
 vacationSchema.pre("save", async function(next){
-    this.from.setUTCHours(0, 0, 0, 1)
+    this.from.setUTCHours(0, 0, 0, 0)
     this.to.setUTCHours(23, 59, 59, 999)
 
-    // checks whether there is an appointment scheduled in the range of dates of the vacation
+    
     const Appt = await require('../time/Appointment')
     const appt = await Appt.findOne({
         date:{
@@ -60,9 +70,34 @@ vacationSchema.pre("save", async function(next){
     next()
 })
 
+// for when the manager tries to approve a vacation that has an appointment in its range
+vacationSchema.pre("findOneAndUpdate", async function(next){
+   const update = this.getUpdate()
+   
+
+    if(!update.status || (update.status && update.status !== "approved")) return next()
+    
+    const currentDoc = await this.model.findOne(this.getQuery());
+
+    const Appt = await require('../time/Appointment')
+    const appt = await Appt.findOne({
+        date:{
+            $gte: currentDoc.from,
+            $lte: currentDoc.to
+        },
+        trainer: currentDoc.trainer
+    })
+    if(appt){
+        return next(new AppError("This trainer has a scheduled appointment in this range of vacation", 409))
+    }
+    next()
+})
+
+
+// check wheather there is already a vacation in this range for the trainer
 vacationSchema.pre('save', async function (next) {
     try {
-        // נבדוק אם יש רשומה עם אותו trainer, from ו-to
+        
         const existingVacation = await Vacation.findOne({
             trainer: this.trainer,
             from: this.from,
@@ -79,10 +114,7 @@ vacationSchema.pre('save', async function (next) {
     }
 });
 
-vacationSchema.pre(/^find/, function(next){
-    this.populate({path: "trainer", select: "name email"})
-    next()
-})
+
 const Vacation = new mongoose.model('Vacation', vacationSchema)
 
 module.exports = Vacation

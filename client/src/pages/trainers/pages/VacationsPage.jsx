@@ -26,11 +26,9 @@ export default function VacationsPage(){
    
     return (<>
         <h5>Vacations</h5>
-        <div className="text-center">
                <button  className= {styles.button} onClick={e=> setShowVacationModal(true)}>
                     Add a Vacation <FaPlus />
                </button> 
-            </div>
 
             <CustomModal show={showVacationModal} setShow={setShowVacationModal} title="Add a vacation"
             body={<VacationForm/>} defaultBtns={false} />

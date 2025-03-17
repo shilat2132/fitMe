@@ -19,8 +19,16 @@
     font-size: 18px;
 }
 
+.apptsLink{
+    margin-right: 4%;
+}
+
 @media screen and (max-width: 500px) {
     .navLink{
-        margin-right: 5%;
+        margin-left: 5%;
+        font-size: 14px;
+    }
+    .apptsBtn{
+        font-size: 14px;
     }
   }

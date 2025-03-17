@@ -54,25 +54,44 @@ scheduleSchema.methods.getWorkingTrainers = async function(d){
         // get trainers that don't have a free day on that day, not in restingDay and not in a vacation
         const date = new Date(d)
         const currentDayNum = date.getDay()
-        const trainersQuery = {
-            restingDay: {$ne: currentDayNum},
-            $or: [
-                {vacations: {$size: 0}},
-                {
-                    vacations: {
-                        $not: {
-                            $elemMatch: {
-                                from: { $lte: date },
-                                to: { $gte: date},
-                                status: "approved"
+
+        const aggregation = [
+            // joins the vacations field to later query on it
+            {$lookup:{
+                from: "vacations", 
+                localField: "_id",
+                foreignField: "trainer",
+                as: "vacations"
+            }},
+
+            {$match: {
+                restingDay: {$ne: currentDayNum},
+                $or: [
+                    {vacations: {$size: 0}},
+                    {
+                        vacations: {
+                            $not: {
+                                $elemMatch: {
+                                    from: { $lte: date },
+                                    to: { $gte: date},
+                                    status: "approved"
+                                }
                             }
                         }
                     }
-                }
-            ]
-        }
+                ]
+            }},
+
+            {$project: {
+                 _id: 1, name: 1, workouts: 1, workingHours: 1, vacations: 1 
+            }}
+        ]
+
+     
         const Trainer = await require('../users/Trainer');
-        const trainers = await Trainer.find(trainersQuery).select("_id name workouts workingHours")
+        
+        const trainers = await Trainer.aggregate(aggregation)
+
         if (!trainers || trainers.length ==0){
             return null
         }
@@ -80,7 +99,8 @@ scheduleSchema.methods.getWorkingTrainers = async function(d){
         
 
         let finalTrainersArray = [] 
-        for (const trainer of trainers) {
+        for (const trainerData of trainers) {
+            const trainer = Trainer.hydrate(trainerData) //aggregation returns objects, hydrate converts them back to mongoose docs
             const availableHours = await trainer.getAvailableHours(date, this.appointmentTime.workoutPeriod, this.appointmentTime.unit);
             if (availableHours.availableHours && availableHours.availableHours.length > 0) {
                 const record = {
@@ -97,7 +117,6 @@ scheduleSchema.methods.getWorkingTrainers = async function(d){
         return finalTrainersArray
         
     } catch (error) {
-        console.log("Error in the getWorkingTrainers method of scheduleSchema ", error)
         return null
     }
 }

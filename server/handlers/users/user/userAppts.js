@@ -1,9 +1,8 @@
 const catchAsync = require("../../../utils/catchAsync")
-// const factory = require("../../factory")
 const Appt = require("../../../models/time/Appointment")
-const utils = require("../../../utils/utils")
 const AppError = require("../../../utils/AppError")
 const Appointment = require("../../../models/time/Appointment")
+const Email = require("../../../utils/email")
 
 
 // need to add sending email
@@ -24,6 +23,12 @@ exports.makeAnAppt = catchAsync(async (req, res, next)=>{
         if (!doc){
             return next(new AppError("failed to make an appointment"), 500)
     }
+
+    try {
+        await new Email(req.user).sendScheduledAppt(workout, date, hour)
+    } catch (error) {
+        return next(new AppError("Your appointment was scheduled, but the email wasn't sent successfuly.", 500))
+    }
     res.status(200).json({status: "success", doc})
         
     }else{
@@ -41,13 +46,24 @@ exports.makeAnAppt = catchAsync(async (req, res, next)=>{
  */
 exports.cancelAppt = catchAsync(async (req, res, next)=>{
         const caller = req.user.role
+        let doc
         try {
             if (caller == "trainee"){
-                await Appt.findOneAndDelete({_id: req.params.apptId, trainee: req.user._id})
+                doc = await Appt.findOneAndDelete({_id: req.params.apptId, trainee: req.user._id}, { returnDocument: "before" })
             }else if (caller=="trainer"){
-                await Appt.findOneAndDelete({_id: req.params.apptId, trainer: req.user._id})
+                doc = await Appt.findOneAndDelete({_id: req.params.apptId, trainer: req.user._id}, { returnDocument: "before" })
             }else if(caller==="manager"){
-                await Appt.findByIdAndDelete(req.params.apptId)
+                doc = await Appt.findByIdAndDelete(req.params.apptId, { returnDocument: "before" })
+            }
+
+            if(!doc){
+                return next(new AppError("appointment wasn't found"), 404)
+            }
+
+            try {
+                await new Email(doc.trainee).sendCancelAppt(doc.date, doc.workout, doc.hour, caller==="trainee")
+            } catch (error) {
+                return next(new AppError("Your appointment was scheduled, but the email wasn't sent successfuly.", 500))
             }
 
             res.status(204).json({status: "success"})

@@ -106,7 +106,6 @@ trainerSchema.methods.getAvailableHours = async function(d, period = null, unit=
      return {status: "success", availableHours}
 
    } catch (error) {
-    console.log(error)
         return {status: "error", error}
    }
 }

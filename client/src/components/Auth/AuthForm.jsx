@@ -1,10 +1,11 @@
-import { Form as FormRouter, NavLink, useActionData } from "react-router";
+import { Form as FormRouter, NavLink, useActionData, useNavigation } from "react-router";
 import {Form} from 'react-bootstrap';
 
 
 import styles from "../../styles/form.module.css"
 import { useRef, useState } from "react";
 import PasswordInput from "./PasswordInput";
+import { generateActionMsg } from "../../utils/utils";
 
 
 const AuthForm = ({type}) => {
@@ -14,6 +15,10 @@ const AuthForm = ({type}) => {
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
   const passwordConfirm = useRef(null)
   const error = useActionData()
+  
+  const navigation = useNavigation()
+  const isSubmitting = navigation.state === "submitting"
+  
 
 
   const typeDict = {
@@ -26,6 +31,9 @@ const AuthForm = ({type}) => {
   const typeTitle = typeDict[type]
   const isForgotPassword = type === "forgotPassword"
   const isReset = type === "resetPassword"
+
+  const actionMsg = generateActionMsg(error)
+  
 
   let additional = (<div style={{fontSize: "13px", fontWeight: "600"}}>
     Already have a user? <NavLink to="/auth/login">Login</NavLink>
@@ -99,9 +107,13 @@ const AuthForm = ({type}) => {
                 {content}
             </div>
 
-      
-      {error && error.error && <><Form.Text className={styles.formErrorMessage}>{error.error}</Form.Text><br/></>}
-      <button className={styles.button}>{isForgotPassword || isReset  ? "Submit" : type}</button>
+      {actionMsg && actionMsg}
+
+      <button disabled={isSubmitting} className={styles.button}>
+        {!isSubmitting && (isForgotPassword || isReset  ? "Submit" : type)}
+        {isSubmitting && "Submitting..."}
+        
+        </button>
 
       {type == "login" && <NavLink className="forgotPassLink" to="/auth/forgotPassword">Forgot the password?</NavLink>}
       {!isForgotPassword && !isReset ? additional : ""}

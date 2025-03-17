@@ -33,7 +33,7 @@ export default function ScheduleForm (){
 
     return (<>
     <h2> {isCreate ? "Create" : "Update"} Schedule </h2>
-        <FormRouter  className="container" method={method}>
+        <FormRouter   method={method}>
             {/* <input hidden readOnly value={isCreate} name="isCreate"/> */}
         <Form.Group className={`${styles.formGroup}`}>
             <Form.Label htmlFor="maxDaysForward">Advance booking window (in days)</Form.Label>
@@ -53,13 +53,15 @@ export default function ScheduleForm (){
         </Form.Select>
         </div>
         {actionMsg && actionMsg}
-        {!isCreate && <>
+        <div className="btnsLine">
+        {!isCreate && < >
             <button onClick={e=> setShow(true)} className={styles.deleteButton}>Delete Schedule</button>
             <CustomModal show={show} setShow={setShow} triggerHandler={deleteSchedule} 
                 title= "Delete schedule?" body="Are you sure you want to delete the schedule"
             />
         </>}
-        <button type="submit" className={styles.button}> {isCreate ? "Create" : "Update"} </button>
+        <button type="submit" className={styles.secondBtn}> {isCreate ? "Create" : "Update"} </button>
+        </div>
         </FormRouter>
     </>)
 }

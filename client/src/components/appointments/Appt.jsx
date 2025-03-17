@@ -1,4 +1,4 @@
-import { useRouteLoaderData, useSubmit } from "react-router-dom"
+import { useNavigation, useRouteLoaderData, useSubmit } from "react-router-dom"
 import styles from "../../styles/appts.module.css"
 import { useState } from "react";
 import CustomModal from "../UI/CustomModal";
@@ -13,6 +13,9 @@ export default function Appt({date, hour, workout, apptId, trainer, trainee}){
 
     const submit =  useSubmit()
     const d = new Date(date)
+
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === "submitting"
 
     function modalClick(){
        setShow(true)
@@ -29,8 +32,9 @@ export default function Appt({date, hour, workout, apptId, trainer, trainee}){
         <div className={`${styles.apptListItem}`}>
             <span className={styles.apptTime}>{`${d.toLocaleDateString()}, ${hour}`}</span>  
             <span className={styles.apptInfoSpan}>{isTrainer ?  trainee : trainer } -  {workout}</span>  
+
            {isManager && <span className={styles.apptTrainee}>{ trainee }</span>}
-            <button style={{marginTop: "9%"}} className={styles.button} onClick={modalClick}>Cancel Appointment</button>
+            <button style={{marginTop: "9%"}} disabled={isSubmitting} className={styles.button} onClick={modalClick}>{isSubmitting ? "Canceling..." : "Cancel Appointment"} </button>
 
             <CustomModal show={show} setShow={setShow} triggerHandler={cancelSubmit} 
                 body={modalBody} title="Cancel appointment?" />

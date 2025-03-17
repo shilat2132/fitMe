@@ -1,6 +1,8 @@
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,<svg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'><path stroke='rgb(237, 247, 255)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/></svg>") !important;
   }
+
+  
   
   .okBtn{
     border: none;
@@ -14,37 +16,24 @@
     color: white;
   }
 
-  .vacationsContainer{
-    margin-top: 9%;
-  }
   
+  
+  /* the spinner */
   .loading-fallback{
     color:rgb(40, 129, 244);
     font-weight: 600;
     text-align: center;
   }
   
-  .toast{
-    margin: auto;
-    text-align: right !important;
-  }
+ 
   
-  #toastHeader{
-    margin-right: 0px !important;
-    font-size: 17px;
-  }
-  .toast-body{
-    background-color: #e7e9e9;
-    font-weight: 500;
-    font-size: 13px;
-  }
-  
-  .btn-close{
+  /* .btn-close{
     margin-right: 3% !important;
-  }
-  .box{
+  } */
+
+  /* .box{
     margin-top: 17%;
-  }
+  } */
   
   .adjacentIcon{
     height: auto;
@@ -66,6 +55,19 @@
     text-align: center;
     margin-top: 15%;
   }
+  .center {
+    margin: auto;
+  }
+
+  .homeLinksBtn{
+    background-color: rgb(40, 129, 244)
+  }
+
+  .buttonGroup{
+    margin-top: 5%;
+    margin-left: 30%;
+    
+  }
 
   .errorMessage{
     font-size: 13px;
@@ -80,31 +82,13 @@
     font-weight: 600;
   }
 
-  
-  .center {
-      margin: auto;
-      width: 50%;
-      padding: 10px;
-    }
-  
-    .invalidInput:invalid{
-      background-color: rgb(252, 151, 151);
-      /* color: rgb(237, 247, 255); */
-  }
-    
-  
-    hr{
-      border: 1.5px solid rgb(40, 129, 244);
-    }
-    .navLayer{
-      margin-left: 5%;
-      color: rgb(40, 129, 244);
-    }
    
     .input-group-text{
       border: none;
       background-color: inherit;
     }
+
+
     .forgotPassLink{
       text-decoration: none;
       font-size: 12px;
@@ -112,47 +96,38 @@
       margin-left: 3%;
     }
   
-    .accountLayout{
-      margin-top: 7%;
-    }
+    
   
+
+    /* The layouts components */
+    /* the outlet */
     .contentLayer{
       margin-top: 5%;
       font-size: 15px;
   
     }
+
+    .accountLayout{
+      margin-top: 7%;
+    }
+
+    .navLayer{
+      margin-left: 5%;
+      color: rgb(40, 129, 244);
+    }
   
     
-    /* services page */
-    .service-error-msg{
-      color: #da0000;
-    }
-    .service-success-msg{
-      color: rgb(102 255 102);
-      font-weight: 600;
-    }
-    .updateLink{
-      background-color: #86b7fe;
-      color: #343a40;
-      padding: 6px;
-      text-decoration: none;
-      font-weight: 600;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-  
-    .serviceListItem, .vacationListItem{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .body, .mainBody{
+
+    
+    
+
+  .mainBody{
       margin-top: 12%;
       margin-left: 5%;
+      margin-bottom: 30%;
     }
-    body{
-      margin-bottom: 10%;
-    }
+
+    
     .button{
       background-color: rgb(40, 129, 244);
       padding: 8px;
@@ -168,14 +143,9 @@
     padding-left: 0px !important;
   }
   
-    .accordion-button::after {
-      margin-right: 4% !important;
-    }
-  
-    .homeBody{
-      margin-top: 10px;
-      margin-bottom: 0px;
-    }
+   
+   
+
     @media screen and (max-width: 500px) {
       .body {
         margin-top: 29%;
@@ -186,12 +156,15 @@
         margin-top: 29%;
 
       }
+
+      .accountNavLink{
+        font-size: 14px;
+      }
+
+      .errorPageMessage{
+        margin-top: 35%;
+      }
     
   
-      .toast{
-        width: 70%;
-      }
-      .errorMessage{
-        font-size: 16px;
-      }
+      
     }

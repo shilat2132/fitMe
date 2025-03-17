@@ -10,7 +10,7 @@ module.exports = class Email{
     constructor(user){
         this.to = user.email,
         this.firstName = user.name.split(' ')[0]
-        this.from = "Shilat Dahan <shilat2132@gmail.com>";
+        this.from = "FitMe <shilat2132@gmail.com>";
     }
 
     /**
@@ -65,26 +65,31 @@ module.exports = class Email{
     }
 
     async sendWelcome(){
-        await this.send(`${this.firstName}, ברוכה הבאה לקוסמטיק`, "באופן רשמי את/ה חלק ממשפחת הקוסמטיק. \n עכשיו תוכל לקבוע תור מתי שרק תרצה")
+        const html = `<p style="direction: ltr; text-align:left; font-size: 15px">Hello  ${this.firstName}! <br/> Now you can schedule workouts anytime you want. <br/> You are officialy part of the FitMe family</p>`
+        await this.send("Welcome to Fitme", "", html)
     }
 
-    async sendResetPassword(message, resetUrl){
-        const html = `<p style="direction: ltr; text-align:left"><a href=${resetUrl}>${resetUrl}</a> <br/> ${message}</p>`
-        await this.send('The link for resetting your password in Fitme expires in 10 minutes', message, html)
+    async sendResetPassword(resetUrl){
+        const html = `<p style="direction: ltr; text-align:left"><a href=${resetUrl}>${resetUrl}</a> <br/> 
+            You applied a request for resetting your password? enter the link below. <br/> if you didn't request, please ignore this mail.
+        </p>`
+        await this.send('The link for resetting your password in Fitme expires in 10 minutes', "", html)
     }
 
-    async sendScheduledAppt(message){
-        await this.send("קבעת תור בהצלחה", message)
+    async sendScheduledAppt(workout, date, hour){
+        date = new Date(date)
+        const html = `<p style="direction: ltr; text-align:left; font-size: 15px"> You just scheduled a ${workout} workout, 
+            at ${date.toISOString().split("T")[0]}, in ${hour}. <br/> If you can't come, please cancel the workout at least 24 hours ahead</p>`
+        await this.send("You made an appointment for FitMe", "", html)
     }
 
-    async sendCancelAppt(message){
-        await this.send("התור שלך בוטל", message)
+    async sendCancelAppt(date, workout, hour, fromUser){
+        date = new Date(date)
+        let html = `<p style="direction: ltr; text-align:left; font-size: 15px"> ${fromUser ? "You": "The trainer or the manager"} just canceled your ${workout} workout, 
+            at ${date.toISOString().split("T")[0]}, in ${hour}. </p> `
+        
+        await this.send("Workout canceled", "", html )
     }
-
-    async sendApptNotification(message){
-        await this.send("תזכורת", message)
-    }
-
 
 }
 

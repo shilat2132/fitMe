@@ -36,7 +36,7 @@ const MainNav = ({role, isLoggedIn})=>{
                     {a}
                     </Nav>
             </Navbar.Collapse>
-            <NavLink className={`${styles.navLink} nav-link`} to="/makeAnAppt"><Button variant="outline-light">Appointment+</Button>{' '}
+            <NavLink className={`${styles.navLink} nav-link ${styles.apptsLink}`} to="/makeAnAppt"><Button className={styles.apptsBtn} variant="outline-light">Appointment+</Button>{' '}
                     </NavLink>
         </Navbar>
     )
