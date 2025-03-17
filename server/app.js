@@ -43,7 +43,7 @@ app.set('trust proxy', 1);
 
 // This middleware manages which origins are permitted to access the resources - used when having different domains for the server and client
 app.use(cors({ credentials: true, // Allow cookies and credentials in requests
-  origin: ['https://fitMe-api.onrender.com', 'https://fitMe.onrender.com', 'http://localhost:5173']
+  origin: ['https://fitme-hlbb.onrender.com', 'http://localhost:5173']
 }))
 app.options('*', cors())
 
