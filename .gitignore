@@ -27,7 +27,7 @@ lerna-debug.log*
 *.sw?
 
 # Ignore server environment files
-/server/.env
+/server/config.env
 
 # Ignore server logs
 /server/logs
