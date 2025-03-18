@@ -1,9 +1,10 @@
 import { Form as FormRouter, useActionData, useLoaderData, useSubmit } from "react-router-dom";
-import { Form, InputGroup } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import styles from "../../../styles/form.module.css"
 import { generateActionMsg } from "../../../utils/utils";
-import { useState } from "react";
-import CustomModal from "../../../components/UI/CustomModal";
+import { lazy, useState } from "react";
+
+const CustomModal = lazy(()=> import("../../../components/UI/CustomModal"))
 
 
 export default function ScheduleForm (){

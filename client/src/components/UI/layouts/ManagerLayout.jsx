@@ -1,5 +1,7 @@
 import { Outlet } from "react-router-dom"
-import ManagerUsersNav from "../navbars/ManagerUsersNav"
+import { lazy } from "react"
+
+const ManagerUsersNav = lazy(()=> import("../navbars/ManagerUsersNav"))
 
 
 const ManagerUsersLayout = ()=>{

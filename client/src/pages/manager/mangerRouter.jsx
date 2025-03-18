@@ -16,7 +16,7 @@ const WorkoutsPage = lazy(()=> import("./pages/WorkoutsPage"))
 const managerRouter = (suspenseElement, dynamicLoaderImport, dynamicActionImport)=>{
 
       return ({
-        path: "manager", loader: dynamicLoaderImport("managers", null, "restrictLoader", true) ,  children: [
+        path: "manager", loader: dynamicLoaderImport("managers", "/api/schedule/scheduleToUpdate", "restrictLoader", true) ,  children: [
            {path: "users", 
             element: <ManagerUsersLayout/>,
             action: dynamicActionImport("managers", "deleteUserAction") ,
@@ -66,14 +66,36 @@ const managerRouter = (suspenseElement, dynamicLoaderImport, dynamicActionImport
 }
 
 
-export const restrictLoader = ({context})=>{
+export const restrictLoader = async({context})=>{
     const {user} = context
     const role = user.role
 
     if(role !== "manager"){
         return redirect("/")
     }
+
     return null
+
+    // try {
+    //     const response = await fetch(apiUrl, { credentials: 'include' });
+    //     const data = await response.json();
+    
+    //     if (!response.ok) {
+    //       throw new Error(data.message || "Something went wrong");
+    //     }
+    
+    //     return data;
+
+    //   } catch (error) {
+    //     throw new Response(
+    //       JSON.stringify({ 
+    //           message: error instanceof Error ? error.message : String(error) || 'Unknown error' 
+    //       }),
+    //       { status: 500 }
+    //   );
+    //   }
+
+
 }
 
 export default managerRouter

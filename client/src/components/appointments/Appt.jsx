@@ -1,7 +1,9 @@
 import { useNavigation, useRouteLoaderData, useSubmit } from "react-router-dom"
 import styles from "../../styles/appts.module.css"
-import { useState } from "react";
-import CustomModal from "../UI/CustomModal";
+import { lazy, useState } from "react";
+
+const CustomModal = lazy(()=> import("../UI/CustomModal"))
+
 
 export default function Appt({date, hour, workout, apptId, trainer, trainee}){
     const [show, setShow] = useState(false);

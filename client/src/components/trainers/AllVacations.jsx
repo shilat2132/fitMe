@@ -1,9 +1,10 @@
 import { ListGroup } from "react-bootstrap"
 import { useActionData, useSubmit } from "react-router-dom"
 import styles from "../../styles/vacations.module.css"
-import EditVacationStatus from "../manager/EditVacationStatus"
 import { generateActionMsg } from "../../utils/utils"
+import { lazy } from "react"
 
+const EditVacationStatus = lazy(()=> import("../manager/EditVacationStatus"))
 
 export default function AllVacations({vacations, from}){
    const fromManager = from==="manager"

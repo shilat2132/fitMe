@@ -1,13 +1,13 @@
-import { useState } from "react"
-import { ListGroup } from "react-bootstrap"
+import { lazy, useState } from "react"
 import { useActionData, useLoaderData, useSubmit } from "react-router-dom"
-import CustomModal from "../../../components/UI/CustomModal"
-import { VacationForm } from "../../../components/trainers/VacationForm"
 import styles from "../../../styles/form.module.css"
 import { FaPlus } from "react-icons/fa";
 import { generateActionMsg } from "../../../utils/utils"
-import AllVacations from "../../../components/trainers/AllVacations"
 
+const CustomModal = lazy(()=> import("../../../components/UI/CustomModal"))
+
+const AllVacations = lazy(()=> import("../../../components/trainers/AllVacations"))
+const VacationForm = lazy(()=> import("../../../components/trainers/VacationForm"))
 
 
 export default function VacationsPage(){

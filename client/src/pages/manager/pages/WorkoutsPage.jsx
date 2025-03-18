@@ -2,12 +2,13 @@ import { Form as FormRouter, useActionData, useLoaderData, useSubmit } from "rea
 import { Form, Stack } from "react-bootstrap";
 import styles from "../../../styles/workoutsTypes.module.css"
 import { generateActionMsg } from "../../../utils/utils";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaMinus } from "react-icons/fa6";
-import WorkoutForm from "../../../components/manager/WorkoutForm";
-import CustomModal from "../../../components/UI/CustomModal";
 
+
+const WorkoutForm = lazy(()=> import("../../../components/manager/WorkoutForm"))
+const CustomModal = lazy(()=> import("../../../components/UI/CustomModal"))
 
 export default function WorkoutsPage (){
     const [show, setShow] = useState(false)

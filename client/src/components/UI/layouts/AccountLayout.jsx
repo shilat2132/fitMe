@@ -1,5 +1,7 @@
+import { lazy } from "react"
 import { Outlet } from "react-router-dom"
-import AccountNav from "../navbars/AccountNav"
+
+const AccountNav = lazy(()=> import("../navbars/AccountNav"))
 
 const AccountLayout = ()=>{
     return (

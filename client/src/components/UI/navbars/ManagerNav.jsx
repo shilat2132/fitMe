@@ -1,7 +1,7 @@
 import { NavLink} from "react-router-dom"
 import Nav from 'react-bootstrap/Nav';
 
-export const ManagerNav = ()=>{
+const ManagerNav = ()=>{
 
 
     return(
@@ -34,3 +34,5 @@ export const ManagerNav = ()=>{
         </Nav>
     )
 }
+
+export default ManagerNav

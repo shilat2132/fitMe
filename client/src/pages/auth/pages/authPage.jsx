@@ -1,6 +1,7 @@
+import { lazy } from "react"
 import { useParams } from "react-router-dom"
-import AuthForm  from "../../../components/Auth/AuthForm"
 
+const AuthForm = lazy(()=> import("../../../components/Auth/AuthForm"))
 
 
 const AuthPage = ()=>{

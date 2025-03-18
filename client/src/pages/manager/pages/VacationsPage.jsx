@@ -1,6 +1,7 @@
 import { useLoaderData } from "react-router-dom";
-import AllVacations from "../../../components/trainers/AllVacations";
 
+import { lazy } from "react";
+const AllVacations = lazy(()=> import("../../../components/trainers/AllVacations"))
 
 
 

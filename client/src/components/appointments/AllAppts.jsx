@@ -1,6 +1,8 @@
 
-import Appt from "./Appt";
+import { lazy } from "react"
 import styles from "../../styles/appts.module.css"
+
+const Appt = lazy(()=> import("./Appt"))
 
 export default function AllAppts({appts}){
 

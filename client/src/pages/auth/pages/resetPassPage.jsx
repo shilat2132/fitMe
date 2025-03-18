@@ -1,6 +1,6 @@
-import { useParams } from "react-router-dom"
-import AuthForm from "../../../components/Auth/AuthForm"
+import { lazy } from "react"
 
+const AuthForm = lazy(()=> import("../../../components/Auth/AuthForm"))
 
 
 const ResetPassPage = ()=>{

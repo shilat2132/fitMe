@@ -1,11 +1,13 @@
 import { useLoaderData } from "react-router-dom";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
-import { useEffect, useReducer } from "react";
+import { lazy, useEffect, useReducer } from "react";
 import { he } from 'date-fns/locale';
-import ApptForm from "../../components/appointments/ApptForm";
 import styles from "../../styles/appts.module.css"
 import { Spinner } from "react-bootstrap";
+
+
+const ApptForm = lazy(()=> import("../../components/appointments/ApptForm"))
 
 function reducer(state, action){
     switch (action.type){

@@ -1,7 +1,7 @@
 import { NavLink} from "react-router-dom"
 import Nav from 'react-bootstrap/Nav';
 
-export const TrainerNav = ()=>{
+const TrainerNav = ()=>{
 
 
     return(
@@ -26,3 +26,4 @@ export const TrainerNav = ()=>{
         </Nav>
     )
 }
+export default TrainerNav

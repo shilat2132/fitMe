@@ -5,7 +5,10 @@ import Navbar from 'react-bootstrap/Navbar'
 import Button from 'react-bootstrap/Button';
 import { CgProfile } from "react-icons/cg";
 
+
 const MainNav = ({role, isLoggedIn})=>{
+
+
     const submit = useSubmit()
     async function logoutHandler(event){
         event.preventDefault()

@@ -1,10 +1,13 @@
 import { Form as FormRouter, useActionData, useRouteLoaderData, useSubmit } from "react-router-dom"
 import styles from '../../styles/form.module.css'
 import { Form } from "react-bootstrap"
-import PasswordInput from "../Auth/PasswordInput"
-import { useRef, useState } from "react"
-import CustomModal from "../UI/CustomModal"
+import { lazy, useRef, useState } from "react"
 import { generateActionMsg } from "../../utils/utils"
+
+
+const PasswordInput = lazy(()=> import("../Auth/PasswordInput"))
+const CustomModal = lazy(()=> import("../UI/CustomModal"))
+
 
 /**
  * A form component for updating account's details

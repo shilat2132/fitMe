@@ -1,11 +1,15 @@
 import { useActionData, useLoaderData, useSubmit } from "react-router-dom"
 import Card from 'react-bootstrap/Card';
-import AllAppts from "../appointments/AllAppts";
-import CustomModal from "../UI/CustomModal";
-import {  useState } from "react";
-import AllVacations from "../trainers/AllVacations";
+import {  lazy, useState } from "react";
 import styles from "../../styles/userCard.module.css"
 import { generateActionMsg } from "../../utils/utils";
+
+
+const CustomModal = lazy(()=> import("../UI/CustomModal"))
+const AllAppts = lazy(()=> import("../appointments/AllAppts"))
+const AllVacations = lazy(()=> import("../trainers/AllVacations"))
+
+
 
 function UserCard(){
     const {user} = useLoaderData()

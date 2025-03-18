@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { Form as FormRouter, useActionData, useNavigation } from "react-router-dom";
-import TrainerInputs from "./TrainerInputs";
 import styles from "../../styles/appts.module.css"
 import { generateActionMsg } from "../../utils/utils";
+
+const TrainerInputs = lazy(()=> import("./TrainerInputs"))
+
 
 export default function ApptForm({trainers, date}){
     if (Object.keys(trainers).length== 0){

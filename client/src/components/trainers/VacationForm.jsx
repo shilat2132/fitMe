@@ -3,7 +3,7 @@ import styles from '../../styles/form.module.css'
 import { Form } from "react-bootstrap";
 
 
-export const VacationForm = ()=>{
+const VacationForm = ()=>{
     const action = useActionData()
     let actionMessage
     if (action){
@@ -45,4 +45,4 @@ export const VacationForm = ()=>{
     )
 }
 
-
+export default VacationForm

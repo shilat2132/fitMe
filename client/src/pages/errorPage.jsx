@@ -1,6 +1,9 @@
 import { useRouteError } from "react-router-dom"
-import MainNav from "../components/UI/navbars/MainNav";
 import '../styles/general.css'
+import { lazy } from "react"
+
+
+const MainNav = lazy(()=> import("../components/UI/navbars/MainNav"))
 
 export const ErrorPage = ()=>{
     const error = useRouteError()

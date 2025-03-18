@@ -3,9 +3,10 @@ import {Form} from 'react-bootstrap';
 
 
 import styles from "../../styles/form.module.css"
-import { useRef, useState } from "react";
-import PasswordInput from "./PasswordInput";
+import { lazy, useRef, useState } from "react";
 import { generateActionMsg } from "../../utils/utils";
+
+const PasswordInput = lazy(()=> import("./PasswordInput"))
 
 
 const AuthForm = ({type}) => {

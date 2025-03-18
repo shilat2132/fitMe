@@ -3,8 +3,10 @@ import styles from '../../styles/appts.module.css'
 import formStyles from "../../styles/form.module.css"
 import { Form, InputGroup } from "react-bootstrap"
 import { FaSearch } from "react-icons/fa";
-import AllAppts from "../../components/appointments/AllAppts"
+import { lazy } from "react";
 
+
+const AllAppts = lazy(()=> import("../../components/appointments/AllAppts"))
 
 
 const ApptsPage = ()=>{
