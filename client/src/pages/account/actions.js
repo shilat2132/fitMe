@@ -7,6 +7,7 @@ const accountActions = async ({request, params})=>{
 
     
     const action = formData.get("action")
+    const role = formData.get("role")
 
     let apiUrl, body
 
@@ -15,6 +16,9 @@ const accountActions = async ({request, params})=>{
         apiUrl = "/api/user/me"
     }
     if (action === "deleteUser"){
+        if(user.role ==="manager"){
+            return null
+        }
         const response = await fetch(apiUrl, {
             method,
             credentials: 'include'
@@ -62,6 +66,8 @@ const accountActions = async ({request, params})=>{
     }
 
     if (action === "updatePassword"){
+        //log the user out
+        await fetch("/api/user/logout", { credentials: 'include' }) //removes the cookie
         return redirect("/auth/login")
     }
 

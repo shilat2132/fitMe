@@ -35,7 +35,7 @@ const UpdateDetailsForm = ({type})=>{
 
     function deleteUserHandler(){
         setShowModal(false)
-        submit({action: "deleteUser"} , {method: 'DELETE'}) 
+        submit({action: "deleteUser", role: user.role} , {method: 'DELETE'}) 
     }
    
     let inputs
@@ -82,8 +82,8 @@ const UpdateDetailsForm = ({type})=>{
             {!isUpdateDetails && <p className="message">After updating the password you'll be logged out</p>}
             
            {isUpdateDetails && <>
-            <button onClick={e => setShowModal(true)} 
-                className={`${styles.button} ${styles.deleteButton}`} type="button"> Delete account</button>
+           {user.role !=="manager" && <button onClick={e => setShowModal(true)} 
+                className={`${styles.button} ${styles.deleteButton}`} type="button"> Delete account</button>}
             
             <CustomModal show={showModal} setShow={setShowModal} triggerHandler={deleteUserHandler} title="Delete User?"
             body= "Are you sure you want to delete your account? "  />
