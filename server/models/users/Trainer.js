@@ -155,6 +155,8 @@ trainerSchema.pre(/^findOneAnd/, function(next){
     next()
 })
 
+
+// a mw that ensures that when a trainer tries to update his workout types, only workouts that the admin listed would be updated
 trainerSchema.pre( /^findOneAnd/, async function (next) {
     let update = this.getUpdate()
 

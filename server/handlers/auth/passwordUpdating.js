@@ -38,7 +38,7 @@ exports.forgotPassword = catchAsync(async (req, res, next)=>{
   
   /** finds the user by the token in the request url and if it's valid - updates the password and creates new jwt token */
   exports.resetPassword = catchAsync(async (req, res, next)=>{
-    // hash the token from the request and use it to find the user. if the token was expired, it won't dind any user
+    // hash the token from the request and use it to find the user. if the token was expired, it won't find any user
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
     const user = await User.findOne(
       {passwordResetToken: hashedToken, 
