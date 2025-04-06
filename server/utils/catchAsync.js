@@ -8,6 +8,3 @@ module.exports = fn => {
   };
 
 
-// exports.func = catchAsync(async (req, res, next)=>{
-
-// })
