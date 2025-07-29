@@ -65,16 +65,26 @@ npm start
 enter the link: http://localhost:5173 after the start commends
 
 
-for admin interface, log in with: admin@gmail.com, password: admin2132
-for trainer interface, log in with: mor@gmail.com, password: trainer2132
-for trainee interface, just signup
+ Demo Credentials
+📋 Admin
+Email: admin@gmail.com
+
+Password: admin2132
+
+🧑‍🏫 Trainer
+Email: mor@gmail.com
+
+Password: trainer2132
+
+🧘‍♀️ Trainee
+Sign up with any email via the UI
 
 ```markdown
 ## Environment Variables
 
 Create a `.env` file in the `server` directory with the following variables:
 
-```env
+```sh
 DB=<your-mongodb-uri>
 JWT_COOKIE_EXPIRES_IN=<cookie-expiration-time>
 JWT_EXPIRESIN=<jwt-expiration-time>
