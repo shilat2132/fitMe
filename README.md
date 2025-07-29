@@ -65,25 +65,21 @@ npm start
 enter the link: http://localhost:5173 after the start commends
 
 
- Demo Credentials
-📋 Admin
-
+## Demo Credentials
+### Admin
 Email: admin@gmail.com
 Password: admin2132
 
-🧑‍🏫 Trainer
-
+### Trainer
 Email: mor@gmail.com
 Password: trainer2132
 
-🧘‍♀️ Trainee
+### Trainee
 Sign up with any email via the UI
 
-```markdown
 ## Environment Variables
 
 Create a `.env` file in the `server` directory with the following variables:
-```
 
 ```env
 DB=<your-mongodb-uri>
@@ -109,6 +105,8 @@ NODE_ENV= development
 ```
 
 
+```
 ## License
 This project is licensed under the MIT License.
 
+```
