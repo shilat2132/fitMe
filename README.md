@@ -67,13 +67,13 @@ enter the link: http://localhost:5173 after the start commends
 
  Demo Credentials
 📋 Admin
-Email: admin@gmail.com
 
+Email: admin@gmail.com
 Password: admin2132
 
 🧑‍🏫 Trainer
-Email: mor@gmail.com
 
+Email: mor@gmail.com
 Password: trainer2132
 
 🧘‍♀️ Trainee
@@ -83,8 +83,9 @@ Sign up with any email via the UI
 ## Environment Variables
 
 Create a `.env` file in the `server` directory with the following variables:
+```
 
-```sh
+```env
 DB=<your-mongodb-uri>
 JWT_COOKIE_EXPIRES_IN=<cookie-expiration-time>
 JWT_EXPIRESIN=<jwt-expiration-time>
@@ -94,7 +95,6 @@ MAILTRAP_PASSWORD=<mailtrap-smtp-password>
 MAILTRAP_PORT=<mailtrap-smtp-port>
 MAILTRAP_USERNAME=<mailtrap-smtp-username>
 NODE_ENV= development
-
 ```
 
 - `DB`: Your MongoDB connection URI.
