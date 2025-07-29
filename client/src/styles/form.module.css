@@ -62,13 +62,6 @@ label{
 
 
 /* auth form */
-.authFormGroup input{
-    padding: 3px !important;
-}
-
-.authFormGroup label{
-    text-align: inherit !important;
-}
 
 .formMessage{
     font-size: 13px;

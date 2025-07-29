@@ -1,0 +1,125 @@
+.container {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
+  margin: 2rem auto;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* קבוצת שדות */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+/* שדות טקסט וזמן */
+input[type="time"],
+select {
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-top: 0.3rem;
+  transition: border-color 0.3s ease;
+  background-color: #fefefe;
+}
+
+input[type="time"]:focus,
+select:focus {
+  outline: none;
+  border-color: #4682e0;
+}
+
+/* תוויות */
+label {
+  font-weight: 600;
+  color: #333;
+}
+
+/* מנוחה */
+.restingDay {
+  margin-bottom: 2rem;
+  margin-top: 0.5rem;
+  width: 100%;
+  max-width: 320px;
+  padding: 0.6rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #fefefe;
+}
+
+/* כפתור שליחה */
+.button {
+  background-color: #4682e0;
+  color: white;
+  padding: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin: 2rem auto 0 auto;
+}
+
+.button:hover {
+  background-color: #356ac3;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* קבוצת שעות */
+.input-group {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+/* אימונים בגריד */
+.workoutGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.workoutItem {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+}
+
+input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-right: 0.5rem;
+}
+
+/* רספונסיביות */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.2rem;
+  }
+
+  .formGroup {
+    width: 100%;
+  }
+
+  .input-group {
+    flex-direction: column;
+  }
+
+  .button {
+    width: 100%;
+  }
+}

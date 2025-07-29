@@ -1,40 +1,35 @@
-import styles from '../../../styles/managerUsers.module.css'
+import styles from '../../../styles/managerUsers.module.css';
 import { NavLink, useLoaderData } from 'react-router-dom';
-import ListGroup from 'react-bootstrap/ListGroup';
+import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 
+function AllUsers({ isTrainees }) {
+    const { docs: users, amount } = useLoaderData();
+    const urlPrefix = isTrainees ? "/manager/users/trainees" : "/manager/users/trainers";
 
-function AllUsers({isTrainees}){
-    const {docs: users, amount} = useLoaderData()
+    const haveUsers = amount > 0;
 
-    let url = "/manager/users/"
-
-    if (isTrainees){
-        url += "trainees"
-    }else{
-        url += "trainers"
-    }
-
-    const haveUsers = amount>0
-    return ( 
-        <>
-            {!haveUsers && <p className="container message">There are no users yet</p>}
-            {haveUsers && 
-                <ListGroup className='container' as="ol" numbered>
-                    {users.map(user=> (
-                        <ListGroup.Item key={user._id} as="li">
-                            {user.name}
-                            <NavLink className={styles.userNavLink} to={`${url}/${user._id}`}>User Details</NavLink>
-                        </ListGroup.Item>
+    return (
+        <Container className="mt-4">
+            {!haveUsers && <p className={styles.message}>There are no users yet</p>}
+            {haveUsers &&
+                <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+                    {users.map(user => (
+                        <Col key={user._id}>
+                            <Card className={styles.userCard}>
+                                <Card.Body>
+                                    <Card.Title>{user.name}</Card.Title>
+                                  
+                                    <NavLink className={styles.userNavLink} to={`${urlPrefix}/${user._id}`}>
+                                            View Details
+                                    </NavLink>
+                                </Card.Body>
+                            </Card>
+                        </Col>
                     ))}
-                
-              </ListGroup>
-            
+                </Row>
             }
-        </>
-    )
+        </Container>
+    );
 }
 
-export default AllUsers
-
-
-
+export default AllUsers;

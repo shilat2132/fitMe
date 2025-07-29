@@ -1,5 +1,24 @@
-.userNavLink{
-  text-decoration: none;
-  margin-left: 3%;
-  font-size: 13px;
+.message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin-top: 2rem;
+}
+
+.userCard {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  border-radius: 12px;
+}
+
+.userCard:hover {
+  transform: scale(1.02);
+}
+
+.userNavLink {
+  display: inline-block;
+  text-decoration: none !important;
+  margin-top: 0.5rem;
+  color: #0d6efd;
+  font-weight: 500;
 }

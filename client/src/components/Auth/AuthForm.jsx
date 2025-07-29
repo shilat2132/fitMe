@@ -2,7 +2,7 @@ import { Form as FormRouter, NavLink, useActionData, useNavigation } from "react
 import {Form} from 'react-bootstrap';
 
 
-import styles from "../../styles/form.module.css"
+import styles from "../../styles/authForm.module.css";
 import { lazy, useRef, useState } from "react";
 import { generateActionMsg } from "../../utils/utils";
 

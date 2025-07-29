@@ -20,6 +20,7 @@ export default function TrainerInputs({availableHours, workouts}){
 
          <Form.Group className={styles.hours} >
          <label htmlFor="hour">Hour</label>
+         <div className={styles.hoursContainer}>
             {availableHours.map(h=> (
                 <div key={h} className={`form-group ${styles.hourItem} ${styles.inputOfHour}`}>
                     <input id={h} type="radio" name="hour" value={h}/>
@@ -28,7 +29,7 @@ export default function TrainerInputs({availableHours, workouts}){
                 </div>
                 
             ))}
-
+            </div>
         </Form.Group>
 
        

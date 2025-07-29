@@ -1,0 +1,111 @@
+.authForm {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  max-width: 450px;
+  margin: 4rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.authForm h2 {
+  text-align: center;
+  color: #2c3e50;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.inputsDivAuth {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.authFormGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  text-align: left;
+}
+
+.authFormGroup label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.authFormGroup input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.7rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.formErrorMessage {
+  font-size: 0.85rem;
+  color: red;
+  margin-top: 0.2rem;
+}
+
+.formMessage {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #a000a8;
+}
+
+.formSuccessMsg {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: green;
+}
+
+.authLinks {
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.authLinks a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.authLinks a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .authForm {
+    padding: 1.5rem;
+    margin: 2rem 1rem;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .authFormGroup input {
+    width: 100%;
+  }
+}

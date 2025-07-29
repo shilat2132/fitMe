@@ -1,186 +1,325 @@
-.hourItem input[type=radio]+label{
-    padding: 5px !important;
-    cursor: pointer;
-    color: white;
-    border-radius: 4px;
-    background-color: cornflowerblue;
-    text-align: center;
-    box-shadow: 10px 10px;
-    margin: 9%;
-    box-shadow: #224e8e 1px 1px 3px 1px;
-    min-width: 60px;
+/* AllAppts and Appt components */
+.apptsList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
 }
 
-.hourItem input[type=radio]:checked+label, .hourItem input[type=radio]:hover+label{
-  background-color: white;
-  color: cornflowerblue;
+/* כרטיס בודד */
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease;
 }
 
- .hourItem input[type=radio]{
-    -webkit-appearance: none;
-  -moz-appearance: none;
-  -ms-appearance: none;
-  -o-appearance: none;
-  appearance: none;
-  }
 
-.submitBtn{
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* שורות המידע */
+.date {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  margin-bottom: 0.6rem;
+}
+
+.info {
+  font-size: 1rem;
+  color: #34495e;
+  margin-bottom: 0.6rem;
+}
+
+.trainee {
+  font-size: 0.95rem;
+  color: #7f8c8d;
+  margin-bottom: 1rem;
+}
+
+/* כפתור ביטול */
+.cancelBtn {
+  background-color: #4682b4; /* cornflower blue */
   color: white;
-  background-color:black ;
-  border-radius: 3px;
   border: none;
-  margin-top: 2%;
-  padding: 2%;
-  margin-left: 30%;
-  box-shadow: black 2px 3px 2px;
-}
-
-.apptForm, .workouts, .hours{
-  margin-top: 3%;
-}
-
-  /* creates the scroll bar */
-  .hours{
-    overflow-x: auto;
-    display: flex;
-    padding: 0;
-  
-  }
-  /* width */
-  ::-webkit-scrollbar {
-    width: 20px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey;
-  }
-  
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background:black;
-    border-radius: 10px;
-  }
-  
-  
-  /* creates the space between the hours */
-  .inputOfHour{
-    margin-left: 5%;
-  }
-  
-
-  
-
-  .filterDateBtn{
-    border-radius: 5px;
-    border: none;
-    background-color: cornflowerblue;
-    color: white;
-  }
-  
-  
-  /* form modal- vacations page */
-  .modalDayPicker rdp-cell [type=button], .modalDayPicker [type=reset], .modalDayPicker button,
-  #modalForm .button,  #modalForm button{
-    font-size: 18px !important;
-  }
-  
-  
-  
-  .buttons{
-    margin-top: 8%;
-  }
-  
-  .dateListItem{
-    font-size: 13px;
-    color: rgb(98, 97, 97);
-    font-weight: 600;
-  }
-  
-  #day-grid-0{
-    margin: auto;
-    text-align: center;
-  }
-  
-  .rdp-day_selected, .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
-      border-radius: 20px;
-      background-color: rgb(81, 156, 255);
-      color: white;
-    }
-  
-    .rdp-day_today:not(.rdp-day_outside) {
-      font-weight: bold;
-    }
-  
-    .rdp-caption_label, .rdp-nav{
-      text-align: center;
-    }
-  
-    .rdp-nav_icon{
-      rotate: 180deg;
-    }
-    .rdp-caption{
-      display: inline;
-    }
-
-
-    /* the appts page */
-    .apptListItem{
-      border: 2px solid black;
-      border-radius: 4px;
-      display: flex; 
-      flex-direction: column;
-  
-      margin-bottom: 5%;
-      padding: 4px;
-     
-      align-content: center;
-      justify-content: center;
-      align-items: center;
-      max-width: 130px;
-      margin: 14px;
-      box-shadow: 0 0 5px 2px;
-  }
-
-  .apptInfoSpan{
-    font-size: 14px;
-    font-weight: 500;
-    margin-top: 10%;
-}
-
-.apptTime, .apptTrainee{
-  font-size: 13px;
-}
-
-/* .apptTime{
-  text-align: center;
-} */
-
-.button{
-  border: none;
-  background: none;
-  color: cornflowerblue;
-  font-size: 11px;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
   font-weight: 500;
-
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  align-self: center;
+  width: fit-content;
 }
-  
-    @media screen and (min-width: 501px) {
-      .dayPicker{
-        margin: auto;
-        width: fit-content;
-      }
-      /* the date input for the appts page */
-      .dateInputGroup{
-        width: 40% !important;
-      }
-    }
-  
-    @media screen and (max-width: 500px) {
-     .dayPicker{
-      margin-top: 30%;
-     }
-     .apptInfoSpan{
-      font-size: 12px;
+
+.cancelBtn:hover {
+  background-color: #5a9bd4;
+  transform: scale(1.03);
+}
+
+.cancelBtn:disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* רספונסיביות */
+@media (max-width: 500px) {
+  .card {
+    padding: 1rem;
   }
-    }    
+
+  .date {
+    font-size: 1rem;
+  }
+
+  .info {
+    font-size: 0.9rem;
+  }
+
+  .trainee {
+    font-size: 0.85rem;
+  }
+
+  .cancelBtn {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* ApptFormPage */
+.dayPicker {
+  width: fit-content;
+}
+/* ApptForm component */
+/* טופס קביעת התור */
+.apptForm {
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 1.8rem 2rem;
+
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.apptForm label {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.3rem;
+  color: #34495e;
+}
+
+/* הסלקט של הטריינר */
+.apptForm select {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1.8px solid #a0aec0;
+  font-size: 1rem;
+  color: #2c3e50;
+  transition: border-color 0.25s ease;
+  cursor: pointer;
+}
+
+.apptForm select:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+/* הודעת פעולה (Action Message) */
+.apptForm .message {
+  background-color: #e1f5fe;
+  color: #0277bd;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(2, 119, 189, 0.2);
+}
+
+/* כפתור שליחה */
+.submitBtn {
+  margin-top: 1.5rem;
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background-color: #4a90e2;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.6);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  align-self: center;
+  min-width: 180px;
+}
+
+.submitBtn:hover:not(:disabled) {
+  background-color: #357ABD;
+  box-shadow: 0 6px 16px rgba(53, 122, 189, 0.8);
+}
+
+.submitBtn:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* עיצוב הודעות שגיאה או הודעות מצב - לדוגמה בתוך הטופס */
+.message.container {
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  background-color: #ffe6e6;
+  color: #c0392b;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(192, 57, 43, 0.3);
+}
+
+/* רספונסיביות */
+@media (max-width: 600px) {
+  .apptForm {
+    max-width: 100%;
+    padding: 1.2rem 1.5rem;
+  }
+
+  .apptForm label {
+    font-size: 1rem;
+  }
+
+  .apptForm select {
+    font-size: 0.95rem;
+  }
+
+  .submitBtn {
+    min-width: 100%;
+    font-size: 0.95rem;
+  }
+}
+
+
+/* TrainerInputs component */
+/* קבוצה של השעות - מייצגות "כרטיסיות" במקום כפתורי רדיו */
+
+.hoursContainer{
+    display: flex;
+  flex-wrap: nowrap;
+    gap: 0.7rem;
+  margin-top: 0.5rem;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: thin; /* לפיירפוקס */
+  scrollbar-color: cornflowerblue transparent;
+}
+/* לכרום וספארי */
+.hoursContainer::-webkit-scrollbar {
+  height: 6px;
+}
+.hoursContainer::-webkit-scrollbar-thumb {
+  background-color: cornflowerblue;
+  border-radius: 4px;
+}
+
+
+/* כל שעה ככרטיסיה */
+.hourItem {
+  cursor: pointer;
+  user-select: none;
+  border-radius: 12px;
+  min-width: 60px;
+  text-align: center;
+  font-weight: 600;
+  color: #4a90e2;
+  background-color: #f0f7ff;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(74, 144, 226, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ה-label של השעה */
+.hourItem label {
+  cursor: pointer;
+  width: 100%;
+}
+
+/* input רדיו מוסתר */
+.hourItem input[type="radio"] {
+  display: none;
+}
+
+/* סטייל לשעה נבחרת */
+.hourItem input[type="radio"]:checked + label {
+  background-color: #4a90e2;
+  color: white;
+  box-shadow: 0 6px 12px rgba(74, 144, 226, 0.6);
+  border-color: #357ABD;
+}
+
+/* אפקט הובר ל-hourItem */
+.hourItem:hover label {
+  background-color: #d0e4ff;
+  border-color: #357ABD;
+  color: #2c3e50;
+}
+
+/* עיצוב הסלקט של האימונים */
+.workouts {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #34495e;
+}
+
+/* סלקט אימונים */
+.apptForm select {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1.8px solid #a0aec0;
+  font-size: 1rem;
+  color: #2c3e50;
+  transition: border-color 0.25s ease;
+  cursor: pointer;
+  width: 100%;
+}
+
+.apptForm select:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+/* רספונסיביות */
+@media (max-width: 600px) {
+  .hours {
+    justify-content: center;
+  }
+
+  .hourItem {
+    min-width: 50px;
+    font-size: 0.9rem;
+    padding: 5px;
+  }
+
+  .workouts {
+    font-size: 1rem;
+  }
+
+  .apptForm select {
+    font-size: 0.95rem;
+  }
+}
+

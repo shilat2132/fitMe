@@ -49,9 +49,6 @@ export default function ApptForm({trainers, date}){
     }
 
     
-    
-
-    
 
     return (
         <FormRouter method="POST" className={`${styles.apptForm} container`}>
