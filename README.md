@@ -22,17 +22,6 @@ Node.js, Express, MongoDB, React, React Router
 - API routes are defined in the `server/routes` directory.
 - The frontend is located in the `client` directory.
 
-# Training Schedule Management System
-
-A full-stack web application for managing training schedules. The system allows trainers and managers to efficiently create and update schedules, manage workout types, and oversee user interactions. The backend handles authentication, data storage, and role-based access control, while the frontend provides an intuitive interface for managing schedules.
-
-## Features
-- Schedule creation and management
-- Role-based access control (Managers & Trainers)
-- Authentication system
-- User-friendly interface for managing schedules
-- Data persistence with MongoDB
-
 
 ## Installation & Setup
 ### Prerequisites
@@ -56,7 +45,7 @@ npm install
 ```sh
 cd client
 npm install
-```a
+```
 
 
 ## Running the Application
